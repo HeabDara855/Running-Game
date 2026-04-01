@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Sky Runner - Endless Journey</title>
+  <meta name="description" content="Khmer Sky Runner - A Jetpack Joyride-inspired endless runner with Cambodian themes">
+  <link href="https://fonts.googleapis.com/css2?family=Moul&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div id="gameWrapper">
+    <canvas id="gameCanvas"></canvas>
+
+    <!-- In-Game HUD -->
+    <div id="hud" class="hidden">
+      <div id="hudTop">
+        <div id="distDisplay"><span id="distIcon">📏</span> <span id="distVal">0 m</span></div>
+        <div id="coinDisplay">💰 <span id="coinVal">0</span></div>
+        <div id="heartsDisplay">❤️❤️❤️</div>
+      </div>
+      <div id="puBar" class="hidden">
+        <span id="puIcon">🛡️</span>
+        <div id="puTrack"><div id="puFill"></div></div>
+      </div>
+    </div>
+
+    <!-- Start Screen -->
+    <div class="screen" id="startScreen">
+      <div class="startLeft">
+        <div class="naka">🚀</div>
+        <div class="screenTitle">Endless<br>Sky Runner</div>
+        <div class="screenSub">Jetpack Adventure</div>
+        <div class="dline"></div>
+        <button class="btn primary" id="startBtn">Start Game</button>
+        <div class="startRow">
+          <button class="btn secondary" id="skinsBtn">👤 Skins</button>
+          <button class="btn secondary" id="leaderBtn">🏆 Leaderboard</button>
+        </div>
+        <div class="instruct">
+          👆 Hold to fly &nbsp;|&nbsp; Release to fall<br>
+          🚧 Avoid obstacles &nbsp;|&nbsp; 💰 Collect coins<br>
+          ⚡ Grab power-ups!
+        </div>
+      </div>
+      <div class="startRight">
+        <div id="totalCoinsBox">💰 <span id="totalCoinsStart">0</span></div>
+        <div id="dailyNotif" class="hidden">🎁 Daily Reward!</div>
+      </div>
+    </div>
+
+    <!-- Game Over Screen -->
+    <div class="screen hidden" id="gameOverScreen">
+      <div class="screenTitle">💀 Game Over</div>
+      <div class="screenSub">Better luck next time!</div>
+      <div class="dline"></div>
+      <div class="goStats">
+        <div class="goStat"><span>📏 Distance</span><span id="goDist">0 m</span></div>
+        <div class="goStat"><span>💰 Coins</span><span id="goCoins">0</span></div>
+        <div class="goStat"><span>🎯 Score</span><span id="goScore">0</span></div>
+        <div class="goStat best"><span>🏆 Best</span><span id="goBest">0</span></div>
+      </div>
+      <div class="goButtons">
+        <button class="btn primary" id="restartBtn">Play Again</button>
+        <button class="btn secondary" id="homeBtn">🏠 Home</button>
+      </div>
+    </div>
+
+    <!-- Skins Overlay -->
+    <div class="overlay hidden" id="skinsOverlay">
+      <div class="panel">
+        <div class="panelTitle">👤 Character Skins <span class="panelClose" id="skinsClose">✕</span></div>
+        <div id="skinsList"></div>
+      </div>
+    </div>
+
+    <!-- Leaderboard Overlay -->
+    <div class="overlay hidden" id="leaderOverlay">
+      <div class="panel">
+        <div class="panelTitle">🏆 Leaderboard <span class="panelClose" id="leaderClose">✕</span></div>
+        <div id="leaderList"></div>
+      </div>
+    </div>
+
+    <!-- Daily Reward Overlay -->
+    <div class="overlay hidden" id="dailyOverlay">
+      <div class="panel panelSmall">
+        <div class="panelTitle">🎁 Daily Reward</div>
+        <div id="dailyContent"></div>
+        <button class="btn primary" id="claimBtn">Claim Reward</button>
+      </div>
+    </div>
+
+    <button id="muteBtn">🔊</button>
+  </div>
+
+  <script src="js/audio.js"></script>
+  <script src="js/backgrounds.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/game.js"></script>
+  <script>
+    if (new URLSearchParams(location.search).has('autostart')) {
+      setTimeout(function() {
+        try { initAudio(); } catch(e) {}
+        try { startGame(); } catch(e) {}
+      }, 800);
+    }
+  </script>
+</body>
+</html>
