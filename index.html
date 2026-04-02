@@ -9,6 +9,13 @@
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
+  <!-- Rotate Device Overlay for Mobile Portrait -->
+  <div id="rotateOverlay">
+    <div style="font-size: 50px; margin-bottom: 16px;">🔄</div>
+    <h2>Please Rotate Screen</h2>
+    <p>Sky Runner is designed to be played in landscape mode.</p>
+  </div>
+
   <div id="gameWrapper">
     <canvas id="gameCanvas"></canvas>
 
@@ -68,9 +75,15 @@
 
     <!-- Skins Overlay -->
     <div class="overlay hidden" id="skinsOverlay">
-      <div class="panel">
-        <div class="panelTitle">👤 Character Skins <span class="panelClose" id="skinsClose">✕</span></div>
-        <div id="skinsList"></div>
+      <div class="panel" style="display:flex; flex-direction:column;">
+        <div class="panelTitle">Skins & Gear <span class="panelClose" id="skinsClose">✕</span></div>
+        <div class="tabRow">
+          <button class="tabBtn active" id="tabChars">👤 Characters</button>
+          <button class="tabBtn" id="tabJets">🚀 Jetpacks</button>
+        </div>
+        <div class="panelScroll">
+          <div id="skinsList"></div>
+        </div>
       </div>
     </div>
 

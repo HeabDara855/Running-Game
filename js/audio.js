@@ -3,6 +3,7 @@ let AC = null, masterGain = null, musicInt = null, musicIdx = 0, muted = false;
 let jetOsc = null, jetGain = null; // continuous jetpack sound
 
 const MUSIC = {
+  bridge:   { notes:[262,0,330,392,0,330,294,0,262,330,392,440,392,330,262,0], tempo:350, type:'triangle', vol:0.06 },
   village:  { notes:[330,294,330,392,440,392,330,262,294,330,392,330], tempo:400, type:'triangle', vol:0.07 },
   forest:   { notes:[523,659,784,880,784,659,523,587,698,880,698,587], tempo:270, type:'sine', vol:0.055 },
   city:     { notes:[220,0,277,0,330,220,220,0,247,0,330,247], tempo:180, type:'square', vol:0.03 },
@@ -49,6 +50,7 @@ const sfx = {
   missile: () => { tone(80,.4,'sawtooth',.08); tone(120,.3,'square',.05,.1); },
   electric:() => { tone(1200,.08,'square',.04); tone(1800,.06,'square',.03,.04); },
   reward:  () => { [523,659,784,1047,1320].forEach((f,i) => tone(f,.18,'triangle',.08,i*.12)); },
+  heart:   () => { [440,554,659,880].forEach((f,i) => tone(f,.16,'sine',.1,i*.09)); tone(1108,.2,'triangle',.06,.4); },
 };
 
 function startJetpackSound() {
