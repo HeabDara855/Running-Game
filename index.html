@@ -1,13 +1,20 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="viewport"
+    content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#080810">
   <title>Sky Runner - Endless Journey</title>
   <meta name="description" content="Khmer Sky Runner - A Jetpack Joyride-inspired endless runner with Cambodian themes">
   <link href="https://fonts.googleapis.com/css2?family=Moul&family=Hanuman:wght@400;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
+
 <body>
   <!-- Rotate Device Overlay for Mobile Portrait -->
   <div id="rotateOverlay">
@@ -31,7 +38,9 @@
       </div>
       <div id="puBar" class="hidden">
         <span id="puIcon">🛡️</span>
-        <div id="puTrack"><div id="puFill"></div></div>
+        <div id="puTrack">
+          <div id="puFill"></div>
+        </div>
       </div>
     </div>
 
@@ -119,6 +128,7 @@
     </div>
 
     <button id="muteBtn">🔊</button>
+    <button id="fullscreenBtn" title="Toggle Fullscreen">⛶</button>
   </div>
 
   <script src="js/audio.js"></script>
@@ -127,11 +137,12 @@
   <script src="js/game.js"></script>
   <script>
     if (new URLSearchParams(location.search).has('autostart')) {
-      setTimeout(function() {
-        try { initAudio(); } catch(e) {}
-        try { startGame(); } catch(e) {}
+      setTimeout(function () {
+        try { initAudio(); } catch (e) { }
+        try { startGame(); } catch (e) { }
       }, 800);
     }
   </script>
 </body>
+
 </html>

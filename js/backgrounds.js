@@ -342,7 +342,7 @@ function drawBG_forest() {
   const t = frame;
   const sp = bgX * 0.4; // Slower parallax for image
 
-  if (ruinsImg.complete && ruinsImg.naturalWidth > 0) {
+  if (ruinsImg && ruinsImg.complete && ruinsImg.naturalWidth > 0) {
     // Determine scale to fill height up to ground level
     const scale = gY / ruinsImg.naturalHeight;
     const drawW = ruinsImg.naturalWidth * scale;
@@ -351,29 +351,19 @@ function drawBG_forest() {
     // Parallax scrolling offset
     const bgOx = sp % drawW;
 
-    // Draw mirrored seamless instances horizontally
+    // Tiles horizontally without mirroring to avoid uncany artifacts
     for (let i = -drawW - bgOx; i < W + drawW; i += drawW) {
-      const tileIdx = Math.floor((i + sp + 10) / drawW);
-      const isFlipped = Math.abs(tileIdx % 2) === 1;
-
-      if (isFlipped) {
-        ctx.save();
-        ctx.translate(i + drawW, 0);
-        ctx.scale(-1, 1);
-        ctx.drawImage(ruinsImg, 0, 0, drawW, drawH);
-        ctx.restore();
-      } else {
-        ctx.drawImage(ruinsImg, i, 0, drawW, drawH);
-      }
+      const tileIdx = Math.floor((i + sp) / drawW);
+      ctx.drawImage(ruinsImg, i, 0, drawW, drawH);
 
       // ANIMATION 1: God Rays / Light shafts passing through the archways
       ctx.save();
       ctx.globalCompositeOperation = 'overlay';
       ctx.globalAlpha = 0.5 + 0.15 * Math.sin(t * 0.02 + tileIdx);
 
-      const archRatio = isFlipped ? 0.42 : 0.58; // Arch is approx at 58% horizontally on the original
+      const archRatio = 0.58; // Arch is approx at 58% horizontally on the original
       const archX = i + drawW * archRatio;
-      const rayDir = isFlipped ? 1 : -1;
+      const rayDir = -1;
 
       const rayG = ctx.createLinearGradient(archX, 0, archX + 150 * rayDir, gY);
       rayG.addColorStop(0, 'rgba(255,255,255,0.7)');
@@ -766,26 +756,27 @@ function drawBanner() {
   banner.timer--;
   const fade = Math.min(1, banner.timer / 25) * Math.min(1, (220 - banner.timer) / 20 + .2);
   if (fade <= 0) return;
-  const W = canvas.gameW || canvas.width, H = canvas.gameH || canvas.height;
+  const W = canvas.gameW, H = canvas.gameH; // Strictly use logical dimensions
   ctx.save(); ctx.globalAlpha = fade * .92;
-  const bg = ctx.createLinearGradient(0, H * .36, 0, H * .64);
+  const bg = ctx.createLinearGradient(0, H * .38, 0, H * .62);
   bg.addColorStop(0, 'rgba(0,0,0,0)'); bg.addColorStop(.2, 'rgba(0,0,0,.82)');
   bg.addColorStop(.8, 'rgba(0,0,0,.82)'); bg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = bg; ctx.fillRect(0, H * .36, W, H * .28);
+  ctx.fillStyle = bg; ctx.fillRect(0, H * .38, W, H * .24);
   ctx.globalAlpha = fade;
-  const fontSize = Math.max(26, Math.round(W * .06));
-  ctx.font = `bold ${fontSize}px "Moul",cursive`;
+  // Font size capped at 48px for 650px total logical height
+  const fontSize = Math.min(48, Math.round(H * .08));
+  ctx.font = `900 ${fontSize}px "Moul", cursive`;
   ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
-  // Text glow
-  ctx.shadowColor = '#FF6600'; ctx.shadowBlur = 20;
+  // Advanced neon-gold text glow
+  ctx.shadowColor = '#FF8800'; ctx.shadowBlur = 12;
   ctx.fillStyle = '#FFD700';
   ctx.fillText(banner.text, W / 2, H * .5);
-  // Second pass for stronger glow
-  ctx.shadowBlur = 40;
+  // High intensity pass
+  ctx.shadowBlur = 22;
   ctx.fillText(banner.text, W / 2, H * .5);
   ctx.shadowBlur = 0;
   // Outline
-  ctx.strokeStyle = '#8B4000'; ctx.lineWidth = 2;
+  ctx.strokeStyle = '#8B4000'; ctx.lineWidth = 1;
   ctx.strokeText(banner.text, W / 2, H * .5);
   ctx.restore();
 }

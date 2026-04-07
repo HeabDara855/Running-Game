@@ -5,11 +5,14 @@ const wrapper = document.getElementById('gameWrapper');
 
 function resize() {
   const dpr = Math.min(window.devicePixelRatio || 1, 2);
-  const w = wrapper.offsetWidth, h = wrapper.offsetHeight;
+  // Use window dimensions in fullscreen since wrapper may not have updated yet
+  const isFS = document.fullscreenElement || document.webkitFullscreenElement;
+  const w = isFS ? window.innerWidth : wrapper.offsetWidth;
+  const h = isFS ? window.innerHeight : wrapper.offsetHeight;
   canvas.width = w * dpr; canvas.height = h * dpr;
   canvas.style.width = w + 'px'; canvas.style.height = h + 'px';
-  // Lock virtual height to exactly 500 virtual pixels, expanding width to match screen ratio
-  const GAME_HEIGHT = 500;
+  // Lock virtual height to a fixed 650px to keep consistent field of view
+  const GAME_HEIGHT = 650;
   const scale = h / GAME_HEIGHT;
   ctx.setTransform(dpr * scale, 0, 0, dpr * scale, 0, 0);
   canvas._logicalW = w / scale;
@@ -130,6 +133,27 @@ document.getElementById('muteBtn').addEventListener('click', e => {
   e.stopPropagation();
   document.getElementById('muteBtn').textContent = toggleMute(state) ? '🔇' : '🔊';
 });
+document.getElementById('fullscreenBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  const el = document.documentElement;
+  const isFS = document.fullscreenElement || document.webkitFullscreenElement;
+  if (!isFS) {
+    (el.requestFullscreen || el.webkitRequestFullscreen || function () { }).call(el);
+  } else {
+    (document.exitFullscreen || document.webkitExitFullscreen || function () { }).call(document);
+  }
+});
+document.addEventListener('fullscreenchange', () => {
+  const btn = document.getElementById('fullscreenBtn');
+  btn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+  btn.style.opacity = document.fullscreenElement ? '1' : '0.7';
+  setTimeout(() => { resize(); if (state !== 'playing') drawBG(); }, 150);
+});
+document.addEventListener('webkitfullscreenchange', () => {
+  const btn = document.getElementById('fullscreenBtn');
+  btn.style.opacity = document.webkitFullscreenElement ? '1' : '0.7';
+  setTimeout(() => { resize(); if (state !== 'playing') drawBG(); }, 150);
+});
 document.getElementById('resumeBtn').addEventListener('click', e => {
   e.stopPropagation(); resumeGame();
 });
@@ -163,14 +187,18 @@ function spawnLaser(overrideType = null) {
 
     for (let i = 0; i < count; i++) {
       const r = Math.random();
-      let beamH = 50 + Math.random() * 20; // Short 
-      if (r > 0.35) beamH = 110 + Math.random() * 40; // Medium
-      if (count === 1 && r > 0.75) beamH = 200 + Math.random() * 80; // Massive Wall (only solo)
+      let beamH = 120 + Math.random() * 50; // Buffed 'Short'
+      if (r > 0.35) beamH = 280 + Math.random() * 120; // Massive 'Medium'
+      if (count === 1 && r > 0.75) beamH = 450 + Math.random() * 100; // Screen-dominating 'Mega-Blade' (only solo)
 
       const y = 20 + Math.random() * (gY - beamH - 40);
       const offsetX = i * (80 + Math.random() * 40);
 
-      obstacles.push({ type: 'laser', x: W + 40 + offsetX, y, beamH, w: 22, warningTimer: 40, beamOn: false, passed: false });
+      obstacles.push({
+        type: 'laser', x: W + 40 + offsetX, cy: y + beamH / 2, len: beamH,
+        w: 22, warningTimer: 40, beamOn: false, passed: false,
+        angle: 0, spinSpeed: (Math.random() - 0.5) * 0.03 // Dynamic rotation!
+      });
     }
   }
 }
@@ -503,21 +531,21 @@ function spawnBoss(bossType) {
     // Sentinel Turret at 2000m
     boss = {
       type: 'sentinel', x: W + 80, y: gY * 0.35, targetX: W * 0.72, w: 60, h: 70,
-      hp: 600, maxHp: 600, phase: 0, shootTimer: 60, shootInterval: 50,
+      hp: 1200, maxHp: 1200, phase: 0, shootTimer: 60, shootInterval: 30, // ULTRA BUFFED HP & FIRE RATE
       entered: false, defeated: false, retreating: false, t: 0
     };
   } else if (bossType === 2) {
     // Warden Mech at 4000m
     boss = {
       type: 'warden', x: W + 100, y: gY * 0.4, targetX: W * 0.68, w: 80, h: 90,
-      hp: 900, maxHp: 900, phase: 0, shootTimer: 40, shootInterval: 55, // nerfed interval
+      hp: 800, maxHp: 800, phase: 0, shootTimer: 45, shootInterval: 75, // nerfed HP and fire rate
       entered: false, defeated: false, retreating: false, t: 0, walkFrame: 0
     };
   } else {
     // Overlord Gunship at 5000m
     boss = {
       type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: 1200, maxHp: 1200, phase: 0, shootTimer: 30, shootInterval: 25,
+      hp: 1000, maxHp: 1000, phase: 0, shootTimer: 40, shootInterval: 45, // nerfed HP and fire rate
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
   }
@@ -548,39 +576,78 @@ function updateBoss(dt, spd) {
     }
     return;
   }
-  // HP drains over time (survival boss — ~10-15 seconds => extended by ~20% for challenge)
-  boss.hp -= dt * (boss.type === 'overlord' ? 1.2 : boss.type === 'warden' ? 0.9 : 0.8);
-  // Hover movement
-  const gY = canvas.gameH * GROUND_RATIO;
-  boss.y = boss.targetX ? (gY * 0.2 + Math.sin(boss.t * 0.02) * gY * 0.25) : boss.y;
-  // Shooting
+  // HP drains over time (survival boss — tuned for fairness)
+  boss.hp -= dt * (boss.type === 'overlord' ? 1.5 : boss.type === 'warden' ? 1.2 : 1.0);
+  const gY = canvas.gameH * GROUND_RATIO; // Required for vertical movement calculations
+  // Dynamic vertical movement: Sentinel now DIVES UNDER FLOOR!
+  if (boss.type === 'sentinel' && !boss.retreating) {
+    boss.y = (gY * 0.5 + Math.sin(boss.t * 0.015) * gY * 0.75); // Deep dives below gY
+  } else if (!boss.retreating) {
+    boss.y = (gY * 0.2 + Math.sin(boss.t * 0.02) * gY * 0.25); // Regular hover for other bosses
+  }
+  // ── BOSS ATTACK SYSTEM (2-phase: Charge → Fire with DODGE warning) ──
   boss.shootTimer -= dt;
+
+  // Phase 1: Charging — show DODGE! warning before firing
+  if (!boss.isCharging && boss.shootTimer <= boss.shootInterval * 0.45) {
+    boss.isCharging = true;
+    floatingTexts.push({ x: boss.x - 20, y: boss.y - 55, text: '⚠️ DODGE!', color: '#ff2200', life: 1.2, vy: -0.4 });
+  }
+
+  // Phase 2: Fire!
   if (boss.shootTimer <= 0) {
-    // HARD MODE: 40% faster shooting interval logic
-    boss.shootTimer = boss.shootInterval * (0.4 + Math.random() * 0.4);
-    // Different attack patterns per boss
+    boss.isCharging = false;
+    boss.shootTimer = boss.shootInterval * (0.7 + Math.random() * 0.6);
+
     if (boss.type === 'sentinel') {
-      // 5-way spread shot — cyan plasma bolts (Faster 4.5 speed)
-      for (let a = -2; a <= 2; a++) {
-        const bs = 4.5; const angle = Math.PI + a * 0.15;
-        enemyBullets.push({ x: boss.x - 30, y: boss.y + a * 15, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs * 0.6, r: 12, life: 1, btype: 'sentinel_plasma' });
-      }
+      // Sentinel: 4-way spread with CLEAR CENTER GAP so player can slot through the middle
+      const bs = 5.0;
+      const salvo1 = [-0.40, -0.18, 0.18, 0.40];
+      salvo1.forEach(offset => {
+        const angle = Math.PI + offset;
+        enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 11, life: 1, btype: 'sentinel_plasma' });
+      });
+      // Second salvo delayed — gap shifts slightly so player must adjust
+      setTimeout(() => {
+        if (!boss || boss.type !== 'sentinel') return;
+        const salvo2 = [-0.50, -0.08, 0.08, 0.50];
+        salvo2.forEach(offset => {
+          const angle = Math.PI + offset;
+          enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 11, life: 1, btype: 'sentinel_plasma' });
+        });
+        sfx.laser();
+      }, 380);
       sfx.laser();
+
     } else if (boss.type === 'warden') {
-      // Rapid burst — explosive orange shells (Nerfed: 3 shells at slower -4.5 speed)
-      for (let b = 0; b < 3; b++) {
-        const spread = (Math.random() - 0.5) * 3;
-        enemyBullets.push({ x: boss.x - 40, y: boss.y - 20 + b * 20, vx: -4.5, vy: spread, r: 14, life: 1, btype: 'warden_shell' });
-      }
-      // Plus a large homing fireball (Nerfed tracking)
-      enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: -3.8, vy: (Math.random() - 0.5) * 2, r: 20, life: 1, btype: 'warden_fireball' });
+      // Warden: TOP + BOTTOM rows fire with a clear MIDDLE LANE safe zone
+      [-55, -28].forEach(yOff => {
+        enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
+      });
+      setTimeout(() => {
+        if (!boss || boss.type !== 'warden') return;
+        [28, 55].forEach(yOff => {
+          enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
+        });
+        sfx.laser();
+      }, 320);
+      // Slow homing fireball — easy to drift away from
+      enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: -2.5, vy: 0, r: 18, life: 1, btype: 'warden_fireball' });
       sfx.laser();
+
     } else {
-      // Overlord: massive missile barrage — green plasma missiles (7 missiles)
-      for (let a = -3; a <= 3; a++) {
-        const bs = 5.0; const angle = Math.PI + a * 0.15;
-        enemyBullets.push({ x: boss.x - 50, y: boss.y + a * 12, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs * 0.5, r: 14, life: 1, btype: 'overlord_missile' });
-      }
+      // Overlord: alternating UP wave / DOWN wave — player ducks to whichever side is clear
+      boss._waveToggle = !boss._waveToggle;
+      const yDir = boss._waveToggle ? -1 : 1;
+      const bs = 3.5;
+      [-1.5, -0.5, 0.5, 1.5].forEach(mult => {
+        const angle = Math.PI + (mult * 0.14 * yDir);
+        enemyBullets.push({
+          x: boss.x - 50, y: boss.y + mult * 18,
+          vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs * 0.5,
+          r: 13, life: 1, btype: 'overlord_missile'
+        });
+      });
       sfx.missileLaunch();
     }
   }
@@ -1437,37 +1504,47 @@ function drawLaserHoriz(ob) {
 }
 function drawLaser(ob) {
   ctx.save();
+  const cx = ob.x + ob.w / 2;
+  const hl = ob.len / 2;
+
+  ctx.translate(cx, ob.cy);
+  ctx.rotate(ob.angle);
+
   // Cyberpunk Laser Emitters (Blue Theme)
-  ctx.fillStyle = '#1c1f26'; ctx.fillRect(ob.x - 4, ob.y - 18, ob.w + 8, 18); ctx.fillRect(ob.x - 4, ob.y + ob.beamH, ob.w + 8, 18);
-  ctx.fillStyle = '#2b303a'; ctx.fillRect(ob.x - 2, ob.y - 16, ob.w + 4, 16); ctx.fillRect(ob.x - 2, ob.y + ob.beamH, ob.w + 4, 16);
-  // Glowing emitter slits
-  ctx.fillStyle = '#00f3ff'; ctx.shadowColor = '#00f3ff'; ctx.shadowBlur = 12;
-  ctx.fillRect(ob.x + 4, ob.y - 6, ob.w - 8, 6); ctx.fillRect(ob.x + 4, ob.y + ob.beamH, ob.w - 8, 6);
-  ctx.shadowBlur = 0;
+  const drawNode = (yPos) => {
+    ctx.fillStyle = '#1c1f26'; ctx.fillRect(-ob.w / 2 - 4, yPos - 9, ob.w + 8, 18);
+    ctx.fillStyle = '#2b303a'; ctx.fillRect(-ob.w / 2 - 2, yPos - 8, ob.w + 4, 16);
+    ctx.fillStyle = '#00f3ff'; ctx.shadowColor = '#00f3ff'; ctx.shadowBlur = 12;
+    ctx.fillRect(-ob.w / 2 + 4, yPos - 3, ob.w - 8, 6);
+    ctx.shadowBlur = 0;
+  };
+
+  drawNode(-hl);
+  drawNode(hl);
 
   // Warning phase
   if (ob.warningTimer > 0) {
     const fl = Math.sin(frame * .3) * .5 + .5; ctx.fillStyle = `rgba(0,240,255,${fl * .7})`;
-    ctx.beginPath(); ctx.arc(ob.x + ob.w / 2, ob.y, 6, 0, Math.PI * 2); ctx.fill();
-    ctx.beginPath(); ctx.arc(ob.x + ob.w / 2, ob.y + ob.beamH, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, -hl, 6, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, hl, 6, 0, Math.PI * 2); ctx.fill();
   }
 
   // Active Laser Beam
   if (ob.beamOn) {
     // Outer ambient glow width
-    ctx.globalAlpha = .2; ctx.fillStyle = '#00f3ff'; ctx.fillRect(ob.x - 10, ob.y, ob.w + 20, ob.beamH);
+    ctx.globalAlpha = .2; ctx.fillStyle = '#00f3ff'; ctx.fillRect(-ob.w / 2 - 10, -hl, ob.w + 20, ob.len);
     ctx.globalAlpha = 1;
 
     // Gradient core beam
-    const bg = ctx.createLinearGradient(ob.x, 0, ob.x + ob.w, 0);
+    const bg = ctx.createLinearGradient(-ob.w / 2, 0, ob.w / 2, 0);
     bg.addColorStop(0, 'rgba(0,80,255,.1)'); bg.addColorStop(.3, 'rgba(0,200,255,.9)');
     bg.addColorStop(.5, 'rgba(255,255,255,1)');
     bg.addColorStop(.7, 'rgba(0,200,255,.9)'); bg.addColorStop(1, 'rgba(0,80,255,.1)');
-    ctx.fillStyle = bg; ctx.fillRect(ob.x - 6, ob.y, ob.w + 12, ob.beamH);
+    ctx.fillStyle = bg; ctx.fillRect(-ob.w / 2 - 6, -hl, ob.w + 12, ob.len);
 
     // Intense internal solid core
     ctx.fillStyle = '#ffffff'; ctx.shadowColor = '#00f3ff'; ctx.shadowBlur = 8;
-    ctx.fillRect(ob.x + ob.w / 2 - 2, ob.y, 4, ob.beamH);
+    ctx.fillRect(- 2, -hl, 4, ob.len);
   }
   ctx.restore();
 }
@@ -1710,8 +1787,21 @@ function updateP() {
 function dist(x1, y1, x2, y2) { return Math.sqrt((x1 - x2) ** 2 + (y1 - y2) ** 2); }
 function checkCollLaser(ob) {
   if (!ob.beamOn) return false;
-  const px = player.x + 8, py = player.y + 8, pw = player.w - 16, ph = player.h - 16;
-  return px < ob.x + ob.w && px + pw > ob.x && py < ob.y + ob.beamH && py + ph > ob.y;
+  const px = player.x + player.w / 2, py = player.y + player.h / 2;
+  const cx = ob.x + ob.w / 2;
+
+  // Segment math for rotating laser
+  const dx = Math.cos(ob.angle - Math.PI / 2) * (ob.len / 2);
+  const dy = Math.sin(ob.angle - Math.PI / 2) * (ob.len / 2);
+  const x1 = cx - dx, y1 = ob.cy - dy;
+  const x2 = cx + dx, y2 = ob.cy + dy;
+
+  const l2 = (x2 - x1) ** 2 + (y2 - y1) ** 2;
+  if (l2 === 0) return dist(px, py, x1, y1) < 15;
+  let t = ((px - x1) * (x2 - x1) + (py - y1) * (y2 - y1)) / l2;
+  t = Math.max(0, Math.min(1, t));
+  const projX = x1 + t * (x2 - x1), projY = y1 + t * (y2 - y1);
+  return dist(px, py, projX, projY) < 14;
 }
 function checkCollLaserHoriz(ob) {
   if (!ob.beamOn) return false;
@@ -1881,9 +1971,9 @@ function loop(ts) {
   else { player.onGround = false; }
 
   // ── BOSS SPAWNING ──
-  if (!boss && distance >= 2000 && !bossDefeated[0]) spawnBoss(1);
-  if (!boss && distance >= 4000 && !bossDefeated[1]) spawnBoss(2);
-  if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3);
+  if (!boss && distance >= 2000 && !bossDefeated[0]) spawnBoss(2); // Warden Mech at 2000m
+  if (!boss && distance >= 4000 && !bossDefeated[1]) spawnBoss(1); // Sentinel Turret at 4000m
+  if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m
 
   // ── PHASE-BASED SPAWNING (fewer enemies!) ──
   let si, enemyChance, missileChance;
@@ -1914,9 +2004,10 @@ function loop(ts) {
     const r = Math.random();
 
     if (distance < 2000) {
-      // 0 - 2000: Missiles, Electric Zappers, and Cyberpunk Laser Emitter
-      if (r < 0.25) spawnLaser('horiz');
-      else if (r < 0.65) spawnElectric();
+      // 0 - 2000: Missiles, Electric Zappers, Cyberpunk Emitters, AND Vertical Lasers
+      if (r < 0.15) spawnLaser('vert');
+      else if (r < 0.30) spawnLaser('horiz');
+      else if (r < 0.70) spawnElectric();
       else spawnMissileWarning();
     }
     else if (distance < 4000) {
@@ -1996,7 +2087,11 @@ function loop(ts) {
     }
 
     if (ob.type === 'laser') {
-      if (ob.warningTimer > 0) { ob.warningTimer -= dt; if (ob.warningTimer <= 0) { ob.beamOn = true; sfx.laserVertical(); } }
+      ob.angle += ob.spinSpeed * dt; // Dynamic active rotation!
+      if (ob.warningTimer > 0) {
+        ob.warningTimer -= dt;
+        if (ob.warningTimer <= 0) { ob.beamOn = true; }
+      }
       if (!ob.passed && ob.x + ob.w < player.x) { ob.passed = true; sfx.pass(); }
       if (invincible <= 0 && !shieldActive && activePU !== 'speed' && checkCollLaser(ob)) hitPlayer();
       else if ((shieldActive || activePU === 'speed') && checkCollLaser(ob) && invincible <= 0) hitPlayer();
@@ -2073,9 +2168,9 @@ function loop(ts) {
     if (b.btype === 'warden_fireball' || b.btype === 'overlord_missile') {
       const pCen = player.y + player.h / 2;
       const dy = pCen - b.y;
-      // Overlord retains intense tracking, Warden is halved
-      const trackingSpeed = b.btype === 'warden_fireball' ? 0.04 : 0.08;
-      b.vy += Math.sign(dy) * trackingSpeed * dt; 
+      // Much lighter tracking for Overlord missiles (stay not too follow)
+      const trackingSpeed = b.btype === 'warden_fireball' ? 0.03 : 0.015;
+      b.vy += Math.sign(dy) * trackingSpeed * dt;
       b.vy = Math.max(-4, Math.min(4, b.vy)); // Cap vertical curving speed
     }
 
