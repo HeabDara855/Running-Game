@@ -1,21 +1,21 @@
 // ── UI MANAGER: Skins, Daily Rewards, Leaderboard ──
 
 const PLAYER_SKINS = [
-  { id:'cyber', name:'Cyber Ninja', body:'#1c1f26', glow:'#00f3ff', accent:'#2b303a', saber:'#ff00ff', cost:0 },
-  { id:'apsara', name:'Solar Apsara', body:'#eeeeee', glow:'#ffd700', accent:'#ccaa00', saber:'#ffaa00', cost:1000 },
-  { id:'demon', name:'Neon Demon', body:'#150505', glow:'#ff0044', accent:'#221111', saber:'#ff0033', cost:5000 }
+  { id: 'cyber', name: 'Cyber Ninja', body: '#1c1f26', glow: '#00f3ff', accent: '#2b303a', saber: '#ff00ff', cost: 0 },
+  { id: 'apsara', name: 'Solar Apsara', body: '#eeeeee', glow: '#ffd700', accent: '#ccaa00', saber: '#ffaa00', cost: 1000 },
+  { id: 'demon', name: 'Neon Demon', body: '#150505', glow: '#ff0044', accent: '#221111', saber: '#ff0033', cost: 5000 }
 ];
 
 const JETPACK_SKINS = [
-  { id:'plasma', name:'Plasma Pack', body:'#2b303a', glow:'#00f3ff', exhaust:'cyan', cost:0 },
-  { id:'dragon', name:'Dragon Engine', body:'#cc8800', glow:'#ff4400', exhaust:'fire', cost:1500 },
-  { id:'void', name:'Void Core', body:'#111122', glow:'#aa00ff', exhaust:'void', cost:7500 }
+  { id: 'plasma', name: 'Plasma Pack', body: '#2b303a', glow: '#00f3ff', exhaust: 'cyan', cost: 0 },
+  { id: 'dragon', name: 'Dragon Engine', body: '#cc8800', glow: '#ff4400', exhaust: 'fire', cost: 1500 },
+  { id: 'void', name: 'Void Core', body: '#111122', glow: '#aa00ff', exhaust: 'void', cost: 7500 }
 ];
 
 let currentTab = 'chars';
 
 const DAILY_REWARDS = [50, 100, 150, 200, 300, 400, 500];
-const KD = ['0','1','2','3','4','5','6','7','8','9'];
+const KD = ['0', '1', '2', '3', '4', '5', '6', '7', '8', '9'];
 function toK(n) { return String(n); }
 
 // ── LocalStorage helpers ──
@@ -27,11 +27,11 @@ function getData() {
 }
 function saveData(d) { localStorage.setItem('ksr_data2', JSON.stringify(d)); }
 function defaultData() {
-  return { 
-    totalCoins:0, 
-    selectedSkin:'cyber', unlockedSkins:['cyber'],
-    selectedJet:'plasma', unlockedJets:['plasma'],
-    leaderboard:[], dailyDay:0, dailyClaimed:null 
+  return {
+    totalCoins: 0,
+    selectedSkin: 'cyber', unlockedSkins: ['cyber'],
+    selectedJet: 'plasma', unlockedJets: ['plasma'],
+    leaderboard: [], dailyDay: 0, dailyClaimed: null
   };
 }
 
@@ -47,7 +47,7 @@ function renderSkins() {
   const d = getData();
   const list = document.getElementById('skinsList');
   list.innerHTML = '';
-  
+
   const dataList = currentTab === 'chars' ? PLAYER_SKINS : JETPACK_SKINS;
   const unlockedList = currentTab === 'chars' ? d.unlockedSkins : d.unlockedJets;
   const selectedId = currentTab === 'chars' ? d.selectedSkin : d.selectedJet;
@@ -57,7 +57,7 @@ function renderSkins() {
     const active = selectedId === item.id;
     const div = document.createElement('div');
     div.className = 'skinItem' + (active ? ' active' : '') + (!unlocked ? ' locked' : '');
-    
+
     // Premium frameSwatch
     div.innerHTML = `
       <div class="skinSwatch" style="background:${item.body}; border-color:${item.accent}; box-shadow: 0 0 12px ${item.glow} inset, 0 0 8px ${item.glow};"></div>
@@ -65,17 +65,17 @@ function renderSkins() {
         <div class="skinName" style="color:${item.glow}">${item.name}</div>
         <div class="skinCost">${unlocked ? (active ? '✅ Equipped' : '🔓 Unlocked') : '🔒 💰 ' + item.cost}</div>
       </div>`;
-      
+
     div.addEventListener('click', () => {
       if (!unlocked) {
         if (d.totalCoins >= item.cost) {
           d.totalCoins -= item.cost;
           if (currentTab === 'chars') d.unlockedSkins.push(item.id);
           else d.unlockedJets.push(item.id);
-          
+
           if (currentTab === 'chars') d.selectedSkin = item.id;
           else d.selectedJet = item.id;
-          
+
           saveData(d);
           renderSkins();
           updateTotalCoins();

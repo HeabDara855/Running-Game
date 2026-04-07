@@ -22,7 +22,10 @@
     <!-- In-Game HUD -->
     <div id="hud" class="hidden">
       <div id="hudTop">
-        <div id="distDisplay"><span id="distIcon">📏</span> <span id="distVal">0 m</span></div>
+        <div style="display:flex; align-items:center; gap:12px;">
+          <button id="pauseBtnHUD" title="Pause Game">⏸️</button>
+          <div id="distDisplay"><span id="distIcon">📏</span> <span id="distVal">0 m</span></div>
+        </div>
         <div id="coinDisplay">💰 <span id="coinVal">0</span></div>
         <div id="heartsDisplay">❤️❤️❤️</div>
       </div>
@@ -70,6 +73,17 @@
       <div class="goButtons">
         <button class="btn primary" id="restartBtn">Play Again</button>
         <button class="btn secondary" id="homeBtn">🏠 Home</button>
+      </div>
+    </div>
+
+    <!-- Pause Screen -->
+    <div class="screen hidden" id="pauseScreen">
+      <div class="screenTitle">⏸️ Paused</div>
+      <div class="screenSub">Take a breather!</div>
+      <div class="dline"></div>
+      <div class="goButtons">
+        <button class="btn primary" id="resumeBtn">▶️ Resume</button>
+        <button class="btn secondary" id="quitBtn">🏠 Quit to Menu</button>
       </div>
     </div>
 

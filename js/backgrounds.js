@@ -142,13 +142,65 @@ function drawLabWall(W, H, gY, wallCol1, wallCol2, accentCol) {
   ctx.fillRect(0, stripeY, W, 2);
 }
 
-function drawLabFloor(W, H, gY, floorCol1, floorCol2, lineCol) {
+function drawLabFloor(W, H, gY) {
   const sp = bgX * 0.95;
   const deckH = 14; // Thick wooden deck
   const deckTop = gY - 4;
   const deckBot = deckTop + deckH;
 
-  // ── WOODEN BRIDGE SECTIONS (separated by gaps) ──
+  const palettes = {
+    bridge: { // Warm Wood
+      sL1: '#5a3a1e', sL2: '#6a4a28', sC1: '#4e321a', sC2: '#5e4228', sX: '#5a3820', sh: '#5a3a20',
+      dTop: '#9e7e52', dd1: '#b08e5e', dd2: '#a58555', dd3: '#997848', dd4: '#8a6a3e', dBot: '#7a5a30',
+      dHi: '#c0a070', dShad: '#5a4020', dSide1: '#7a5a35', dSide2: '#604828',
+      pl: 'rgba(60,40,20,0.4)', pGrain: '#4a3018',
+      n1: '#5a4a38', n2: 'rgba(200,180,150,0.3)',
+      rp1: '#7a5a35', rp2: '#8a6a45', rb1: '#8a6a40'
+    },
+    village: { // Antique Stone (matches Angkor)
+      sL1: '#444', sL2: '#555', sC1: '#333', sC2: '#4a4a4a', sX: '#303030', sh: '#444',
+      dTop: '#999', dd1: '#aaa', dd2: '#888', dd3: '#777', dd4: '#666', dBot: '#555',
+      dHi: '#bbb', dShad: '#333', dSide1: '#666', dSide2: '#444',
+      pl: 'rgba(0,0,0,0.4)', pGrain: '#444',
+      n1: '#222', n2: 'rgba(255,255,255,0.2)',
+      rp1: '#777', rp2: '#888', rb1: '#666'
+    },
+    forest: { // Ancient Ruins - Pale Snowy Stone
+      sL1: '#637081', sL2: '#7f8c9f', sC1: '#4a5563', sC2: '#5b6a7a', sX: '#4a5563', sh: '#5b6a7a',
+      dTop: '#d0d6df', dd1: '#bac3ce', dd2: '#9ba5b3', dd3: '#7d8a98', dd4: '#626f7d', dBot: '#4e5a66',
+      dHi: '#e6ebf0', dShad: '#38434f', dSide1: '#5b6a7a', dSide2: '#38434f',
+      pl: 'rgba(0,0,0,0.3)', pGrain: '#5b6a7a',
+      n1: '#2b333d', n2: 'rgba(255,255,255,0.4)',
+      rp1: '#7d8a98', rp2: '#9ba5b3', rb1: '#626f7d'
+    },
+    city: { // Command Center - Blue Tech
+      sL1: '#1f3a52', sL2: '#2a4b69', sC1: '#14293c', sC2: '#1f3c54', sX: '#142a3f', sh: '#203d57',
+      dTop: '#8fb4d4', dd1: '#a6c6e3', dd2: '#78a2c4', dd3: '#6a97bb', dd4: '#507e9e', dBot: '#456f8f',
+      dHi: '#c6daf0', dShad: '#20394f', dSide1: '#3b5c7a', dSide2: '#20394f',
+      pl: 'rgba(30,60,90,0.4)', pGrain: '#5984aa',
+      n1: '#193045', n2: 'rgba(255,255,255,0.3)',
+      rp1: '#5487af', rp2: '#6e9bc0', rb1: '#416c91'
+    },
+    mountain: { // Reactor Core - Bright Green/Dark Steel
+      sL1: '#212f27', sL2: '#2d4035', sC1: '#17211b', sC2: '#212d26', sX: '#19241e', sh: '#23332a',
+      dTop: '#379a51', dd1: '#43b863', dd2: '#2d8442', dd3: '#267339', dd4: '#195227', dBot: '#154520',
+      dHi: '#5bed7f', dShad: '#122619', dSide1: '#22402b', dSide2: '#122619',
+      pl: 'rgba(0,0,0,0.5)', pGrain: '#1b5e30',
+      n1: '#000', n2: 'rgba(100,255,100,0.3)',
+      rp1: '#2d8442', rp2: '#379a51', rb1: '#195227'
+    },
+    ocean: { // Launch Hangar - Red Warning / Rusty
+      sL1: '#3f1a1a', sL2: '#522222', sC1: '#2e1212', sC2: '#3d1818', sX: '#2e1212', sh: '#421a1a',
+      dTop: '#ba3c3c', dd1: '#d44e4e', dd2: '#a33030', dd3: '#8c2626', dd4: '#6b1919', dBot: '#571313',
+      dHi: '#f26868', dShad: '#2e0f0f', dSide1: '#4d1e1e', dSide2: '#2e0f0f',
+      pl: 'rgba(0,0,0,0.5)', pGrain: '#5e1b1b',
+      n1: '#2e0f0f', n2: 'rgba(255,100,100,0.2)',
+      rp1: '#8c2626', rp2: '#a33030', rb1: '#6b1919'
+    }
+  };
+  const pal = palettes[curBiome] || palettes.bridge;
+
+  // ── BRIDGE SECTIONS (separated by gaps) ──
   const secW = 350, gapW = 30, totalW = secW + gapW;
   const secOx = sp % totalW;
 
@@ -156,233 +208,221 @@ function drawLabFloor(W, H, gY, floorCol1, floorCol2, lineCol) {
     const bx = sx - secOx;
 
     // ── TRESTLE SUPPORTS UNDERNEATH each section ──
-    // Left angled support post
     ctx.save();
-    ctx.strokeStyle = '#5a3a1e'; ctx.lineWidth = 7;
+    ctx.strokeStyle = pal.sL1; ctx.lineWidth = 7;
     ctx.beginPath(); ctx.moveTo(bx + 30, deckBot); ctx.lineTo(bx + 60, H); ctx.stroke();
-    ctx.strokeStyle = '#6a4a28'; ctx.lineWidth = 5;
+    ctx.strokeStyle = pal.sL2; ctx.lineWidth = 5;
     ctx.beginPath(); ctx.moveTo(bx + 30, deckBot); ctx.lineTo(bx + 60, H); ctx.stroke();
 
-    // Right angled support post
-    ctx.strokeStyle = '#5a3a1e'; ctx.lineWidth = 7;
+    ctx.strokeStyle = pal.sL1; ctx.lineWidth = 7;
     ctx.beginPath(); ctx.moveTo(bx + secW - 30, deckBot); ctx.lineTo(bx + secW - 60, H); ctx.stroke();
-    ctx.strokeStyle = '#6a4a28'; ctx.lineWidth = 5;
+    ctx.strokeStyle = pal.sL2; ctx.lineWidth = 5;
     ctx.beginPath(); ctx.moveTo(bx + secW - 30, deckBot); ctx.lineTo(bx + secW - 60, H); ctx.stroke();
 
-    // Center vertical post
-    ctx.strokeStyle = '#4e321a'; ctx.lineWidth = 8;
+    ctx.strokeStyle = pal.sC1; ctx.lineWidth = 8;
     ctx.beginPath(); ctx.moveTo(bx + secW * 0.5, deckBot); ctx.lineTo(bx + secW * 0.5, H); ctx.stroke();
-    ctx.strokeStyle = '#5e4228'; ctx.lineWidth = 6;
+    ctx.strokeStyle = pal.sC2; ctx.lineWidth = 6;
     ctx.beginPath(); ctx.moveTo(bx + secW * 0.5, deckBot); ctx.lineTo(bx + secW * 0.5, H); ctx.stroke();
 
-    // X-brace (cross supports)
-    ctx.strokeStyle = '#5a3820'; ctx.lineWidth = 4;
+    ctx.strokeStyle = pal.sX; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.moveTo(bx + 50, deckBot + 4); ctx.lineTo(bx + secW - 50, H - 5); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(bx + secW - 50, deckBot + 4); ctx.lineTo(bx + 50, H - 5); ctx.stroke();
 
-    // Horizontal beam connecting posts halfway
     const midY = deckBot + (H - deckBot) * 0.45;
-    ctx.fillStyle = '#5a3a20'; ctx.fillRect(bx + 20, midY, secW - 40, 4);
-    ctx.fillStyle = 'rgba(100,70,40,0.3)'; ctx.fillRect(bx + 20, midY, secW - 40, 1);
+    ctx.fillStyle = pal.sh; ctx.fillRect(bx + 20, midY, secW - 40, 4);
+    ctx.fillStyle = 'rgba(0,0,0,0.2)'; ctx.fillRect(bx + 20, midY, secW - 40, 1);
     ctx.restore();
 
-    // ── WOODEN DECK SURFACE ──
-    // Deck body (warm brown wooden planks)
+    // ── DECK SURFACE ──
     const deckG = ctx.createLinearGradient(0, deckTop, 0, deckBot);
-    deckG.addColorStop(0, '#9e7e52'); deckG.addColorStop(0.1, '#b08e5e');
-    deckG.addColorStop(0.3, '#a58555'); deckG.addColorStop(0.6, '#997848');
-    deckG.addColorStop(0.85, '#8a6a3e'); deckG.addColorStop(1, '#7a5a30');
+    deckG.addColorStop(0, pal.dTop); deckG.addColorStop(0.1, pal.dd1);
+    deckG.addColorStop(0.3, pal.dd2); deckG.addColorStop(0.6, pal.dd3);
+    deckG.addColorStop(0.85, pal.dd4); deckG.addColorStop(1, pal.dBot);
     ctx.fillStyle = deckG; ctx.fillRect(bx, deckTop, secW, deckH);
 
-    // Deck top highlight edge (lighter wood)
-    ctx.fillStyle = '#c0a070'; ctx.fillRect(bx, deckTop, secW, 2);
-    // Deck bottom shadow edge (darker wood)
-    ctx.fillStyle = '#5a4020'; ctx.fillRect(bx, deckBot - 2, secW, 3);
+    ctx.fillStyle = pal.dHi; ctx.fillRect(bx, deckTop, secW, 2);
+    ctx.fillStyle = pal.dShad; ctx.fillRect(bx, deckBot - 2, secW, 3);
+    ctx.fillStyle = pal.dSide1; ctx.fillRect(bx, deckBot - 1, secW, 3);
+    ctx.fillStyle = pal.dSide2; ctx.fillRect(bx, deckBot + 2, secW, 1);
 
-    // Deck side edge (thickness visible)
-    ctx.fillStyle = '#7a5a35'; ctx.fillRect(bx, deckBot - 1, secW, 3);
-    ctx.fillStyle = '#604828'; ctx.fillRect(bx, deckBot + 2, secW, 1);
-
-    // ── PLANK LINES (gaps between wooden planks) ──
+    // ── PLANK/PANEL SEAMS ──
     const plankW = 35;
-    ctx.strokeStyle = 'rgba(60,40,20,0.4)'; ctx.lineWidth = 1;
+    ctx.strokeStyle = pal.pl; ctx.lineWidth = 1;
     for (let pl = bx + plankW; pl < bx + secW; pl += plankW) {
       ctx.beginPath(); ctx.moveTo(pl, deckTop + 2); ctx.lineTo(pl, deckBot - 2); ctx.stroke();
     }
-    // Plank wood grain texture (subtle horizontal lines)
-    ctx.save(); ctx.globalAlpha = 0.08;
-    ctx.strokeStyle = '#4a3018'; ctx.lineWidth = 0.5;
+
+    ctx.save(); ctx.globalAlpha = 0.2;
+    ctx.strokeStyle = pal.pGrain; ctx.lineWidth = 0.5;
     for (let gy = deckTop + 4; gy < deckBot - 3; gy += 3) {
       ctx.beginPath(); ctx.moveTo(bx + 2, gy); ctx.lineTo(bx + secW - 2, gy); ctx.stroke();
     }
     ctx.restore();
 
-    // Nail/bolt details on planks
-    ctx.fillStyle = '#5a4a38';
+    // ── NAILS/BOLTS ──
+    ctx.fillStyle = pal.n1;
     for (let pl = bx + plankW * 0.5; pl < bx + secW; pl += plankW) {
       ctx.beginPath(); ctx.arc(pl, deckTop + 4, 1.5, 0, Math.PI * 2); ctx.fill();
       ctx.beginPath(); ctx.arc(pl, deckBot - 4, 1.5, 0, Math.PI * 2); ctx.fill();
     }
-    // Nail highlights
-    ctx.fillStyle = 'rgba(200,180,150,0.3)';
+    ctx.fillStyle = pal.n2;
     for (let pl = bx + plankW * 0.5; pl < bx + secW; pl += plankW) {
       ctx.beginPath(); ctx.arc(pl - 0.5, deckTop + 3.5, 0.8, 0, Math.PI * 2); ctx.fill();
     }
 
-    // ── SHORT RAILING POSTS on top of deck ──
-    // Left end post
-    ctx.fillStyle = '#7a5a35';
+    // ── RAILING POSTS & BARS ──
+    ctx.fillStyle = pal.rp1;
     ctx.fillRect(bx + 5, deckTop - 18, 5, 20);
-    ctx.fillStyle = '#8a6a45';
+    ctx.fillStyle = pal.rp2;
     ctx.fillRect(bx + 4, deckTop - 20, 7, 3);
-    // Right end post
-    ctx.fillStyle = '#7a5a35';
+
+    ctx.fillStyle = pal.rp1;
     ctx.fillRect(bx + secW - 10, deckTop - 18, 5, 20);
-    ctx.fillStyle = '#8a6a45';
+    ctx.fillStyle = pal.rp2;
     ctx.fillRect(bx + secW - 11, deckTop - 20, 7, 3);
-    // Middle post
-    ctx.fillStyle = '#7a5a35';
+
+    ctx.fillStyle = pal.rp1;
     ctx.fillRect(bx + secW * 0.5 - 2, deckTop - 15, 5, 17);
-    ctx.fillStyle = '#8a6a45';
+    ctx.fillStyle = pal.rp2;
     ctx.fillRect(bx + secW * 0.5 - 3, deckTop - 17, 7, 3);
 
-    // Top railing bar (connecting posts horizontally)
-    ctx.fillStyle = '#8a6a40';
+    ctx.fillStyle = pal.rb1;
     ctx.fillRect(bx + 5, deckTop - 16, secW - 10, 3);
-    ctx.fillStyle = 'rgba(180,150,100,0.2)';
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
     ctx.fillRect(bx + 5, deckTop - 16, secW - 10, 1);
   }
 }
 
-// ── BIOME 1: LAB SECTOR ──
+const angkorImg = new Image();
+angkorImg.src = 'img/angkor.png';
+
+// ── BIOME 1: ANGKOR WAT TEMPLE ──
 function drawBG_village() {
   const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
-  drawLabWall(W, H, gY, '#2e3e4e', '#3a4d5e', '#1e2e3e');
-  const t = frame, sp = bgX * 0.95;
+  const sp = bgX * 0.4; // Slower parallax for image
 
-  // Sterilization chambers (glass tubes with blue glow)
-  const chSp = 360, chOx = sp % chSp;
-  for (let i = -chSp; i < W + chSp; i += chSp) {
-    const sx = i - chOx;
-    const tw = 50, th = gY * 0.55, ty = gY * 0.12;
-    // Chamber frame
-    ctx.fillStyle = '#4a5a6a'; ctx.fillRect(sx - 4, ty - 6, tw + 8, th + 12);
-    ctx.fillStyle = '#3a4a5a'; ctx.fillRect(sx - 2, ty - 4, tw + 4, th + 8);
-    // Glass tube
-    const gg = ctx.createLinearGradient(sx, 0, sx + tw, 0);
-    gg.addColorStop(0, 'rgba(80,150,220,0.08)'); gg.addColorStop(0.3, 'rgba(100,180,255,0.15)');
-    gg.addColorStop(0.7, 'rgba(100,180,255,0.15)'); gg.addColorStop(1, 'rgba(80,150,220,0.08)');
-    ctx.fillStyle = gg; ctx.fillRect(sx, ty, tw, th);
-    // Liquid fill (animated)
-    const fillH = th * (0.6 + Math.sin(t * 0.008 + i) * 0.05);
-    const lg = ctx.createLinearGradient(0, ty + th - fillH, 0, ty + th);
-    lg.addColorStop(0, 'rgba(0,180,255,0.07)'); lg.addColorStop(1, 'rgba(0,100,200,0.2)');
-    ctx.fillStyle = lg; ctx.fillRect(sx + 2, ty + th - fillH, tw - 4, fillH);
-    // Bubbles
-    for (let b = 0; b < 3; b++) {
-      const bx = sx + 10 + b * 15, by = ty + th - 20 - Math.abs(Math.sin(t * 0.03 + b * 2 + i)) * (fillH - 20);
-      ctx.save(); ctx.globalAlpha = 0.25;
-      ctx.fillStyle = '#66ccff';
-      ctx.beginPath(); ctx.arc(bx, by, 2 + b, 0, Math.PI * 2); ctx.fill();
-      ctx.restore();
+  if (angkorImg.complete && angkorImg.naturalWidth > 0) {
+    // Determine scale to fill height up to ground level
+    const scale = gY / angkorImg.naturalHeight;
+    const drawW = angkorImg.naturalWidth * scale;
+    const drawH = gY;
+
+    // Draw tiled mirrored instances horizontally for organic seamless stitching
+    const bgOx = sp % drawW;
+    for (let i = -drawW - bgOx; i < W + drawW; i += drawW) {
+      const tileIdx = Math.floor((i + sp + 10) / drawW);
+      const isFlipped = Math.abs(tileIdx % 2) === 1;
+
+      if (isFlipped) {
+        ctx.save();
+        ctx.translate(i + drawW, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(angkorImg, 0, 0, drawW, drawH);
+        ctx.restore();
+      } else {
+        ctx.drawImage(angkorImg, i, 0, drawW, drawH);
+      }
     }
-    // Status light
-    const ledC = Math.sin(t * 0.05 + i) > 0 ? '#00ff88' : '#004422';
-    ctx.fillStyle = ledC;
-    ctx.beginPath(); ctx.arc(sx + tw / 2, ty + th + 10, 3, 0, Math.PI * 2); ctx.fill();
+  } else {
+    // fallback color while loading
+    ctx.fillStyle = '#dfa658';
+    ctx.fillRect(0, 0, W, gY);
   }
 
-  // Holographic data displays (floating panels)
-  const hdSp = 500, hdOx = (sp * 0.7) % hdSp;
-  for (let i = -hdSp; i < W + hdSp; i += hdSp) {
-    const sx = i - hdOx + 200, sy = gY * 0.2;
-    ctx.save(); ctx.globalAlpha = 0.12 + 0.04 * Math.sin(t * 0.05 + i);
-    // Hologram panel
-    ctx.fillStyle = 'rgba(0,200,255,0.15)';
-    ctx.fillRect(sx, sy, 70, 45);
-    ctx.strokeStyle = 'rgba(0,200,255,0.3)'; ctx.lineWidth = 1;
-    ctx.strokeRect(sx, sy, 70, 45);
-    // Data lines
-    ctx.fillStyle = 'rgba(0,255,200,0.6)';
-    for (let l = 0; l < 4; l++) {
-      const lw = 20 + Math.sin(t * 0.02 + l + i) * 15;
-      ctx.fillRect(sx + 5, sy + 8 + l * 10, lw, 2);
-    }
-    ctx.restore();
-  }
-
-  // Ceiling LED strip
-  const stripP = 0.3 + Math.sin(t * 0.03) * 0.1;
-  ctx.save(); ctx.globalAlpha = stripP;
-  ctx.fillStyle = '#4488ff';
-  ctx.fillRect(0, 0, W, 3);
-  ctx.globalAlpha = stripP * 0.3;
-  const slg = ctx.createLinearGradient(0, 0, 0, gY * 0.15);
-  slg.addColorStop(0, '#4488ff'); slg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = slg; ctx.fillRect(0, 0, W, gY * 0.15);
-  ctx.restore();
-
-  drawLabFloor(W, H, gY, '#222e38', '#2a3640', '#446688');
+  // Still draw the ground floor so player has a platform
+  drawLabFloor(W, H, gY);
 }
 
-// ── BIOME 2: CARGO BAY (Warehouse) ──
+const ruinsImg = new Image();
+ruinsImg.src = 'img/ruins.jpg';
+
+// ── BIOME 2: ANCIENT RUINS ──
 function drawBG_forest() {
   const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
-  drawLabWall(W, H, gY, '#2a2820', '#3a3828', '#1a1810');
-  const t = frame, sp = bgX * 0.95;
+  const t = frame;
+  const sp = bgX * 0.4; // Slower parallax for image
 
-  // Stacked cargo containers (large, colorful)
-  const cSp = 280, cOx = (sp * 0.6) % cSp;
-  for (let i = -cSp; i < W + cSp; i += cSp) {
-    const sx = i - cOx;
-    // Bottom container (large)
-    const colors = [['#4a6a4a', '#5a7a5a'], ['#4a4a6a', '#5a5a7a'], ['#6a4a4a', '#7a5a5a']];
-    const ci = Math.abs(Math.floor(i * 0.017)) % 3;
-    const cg1 = ctx.createLinearGradient(sx, gY - 80, sx + 90, gY);
-    cg1.addColorStop(0, colors[ci][0]); cg1.addColorStop(1, colors[ci][1]);
-    ctx.fillStyle = cg1; ctx.fillRect(sx, gY - 80, 90, 80);
-    ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 2; ctx.strokeRect(sx, gY - 80, 90, 80);
-    // Container ridges
-    ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 1;
-    for (let r = 0; r < 8; r++) ctx.strokeRect(sx + r * 11 + 2, gY - 78, 9, 76);
-    // Label
-    ctx.fillStyle = 'rgba(255,255,255,0.15)'; ctx.fillRect(sx + 25, gY - 55, 40, 25);
-    ctx.fillStyle = 'rgba(0,0,0,0.3)'; ctx.font = '8px monospace'; ctx.textAlign = 'left';
-    ctx.fillText('LOT-' + (Math.abs(Math.floor(i * 0.01)) % 999).toString().padStart(3, '0'), sx + 28, gY - 40);
-    // Top container (smaller, offset)
-    if (ci !== 1) {
-      const ci2 = (ci + 1) % 3;
-      const cg2 = ctx.createLinearGradient(sx + 10, gY - 140, sx + 75, gY - 80);
-      cg2.addColorStop(0, colors[ci2][0]); cg2.addColorStop(1, colors[ci2][1]);
-      ctx.fillStyle = cg2; ctx.fillRect(sx + 10, gY - 140, 65, 58);
-      ctx.strokeStyle = 'rgba(0,0,0,0.3)'; ctx.lineWidth = 2; ctx.strokeRect(sx + 10, gY - 140, 65, 58);
-      for (let r = 0; r < 6; r++) ctx.strokeRect(sx + 12 + r * 10, gY - 138, 8, 54);
+  if (ruinsImg.complete && ruinsImg.naturalWidth > 0) {
+    // Determine scale to fill height up to ground level
+    const scale = gY / ruinsImg.naturalHeight;
+    const drawW = ruinsImg.naturalWidth * scale;
+    const drawH = gY;
+
+    // Parallax scrolling offset
+    const bgOx = sp % drawW;
+
+    // Draw mirrored seamless instances horizontally
+    for (let i = -drawW - bgOx; i < W + drawW; i += drawW) {
+      const tileIdx = Math.floor((i + sp + 10) / drawW);
+      const isFlipped = Math.abs(tileIdx % 2) === 1;
+
+      if (isFlipped) {
+        ctx.save();
+        ctx.translate(i + drawW, 0);
+        ctx.scale(-1, 1);
+        ctx.drawImage(ruinsImg, 0, 0, drawW, drawH);
+        ctx.restore();
+      } else {
+        ctx.drawImage(ruinsImg, i, 0, drawW, drawH);
+      }
+
+      // ANIMATION 1: God Rays / Light shafts passing through the archways
+      ctx.save();
+      ctx.globalCompositeOperation = 'overlay';
+      ctx.globalAlpha = 0.5 + 0.15 * Math.sin(t * 0.02 + tileIdx);
+
+      const archRatio = isFlipped ? 0.42 : 0.58; // Arch is approx at 58% horizontally on the original
+      const archX = i + drawW * archRatio;
+      const rayDir = isFlipped ? 1 : -1;
+
+      const rayG = ctx.createLinearGradient(archX, 0, archX + 150 * rayDir, gY);
+      rayG.addColorStop(0, 'rgba(255,255,255,0.7)');
+      rayG.addColorStop(1, 'rgba(255,255,255,0)');
+
+      ctx.fillStyle = rayG;
+      ctx.beginPath();
+      ctx.moveTo(archX - 60 * rayDir, 40);
+      ctx.lineTo(archX + (350 + Math.sin(t * 0.015) * 60) * rayDir, gY);
+      ctx.lineTo(archX + (100 - Math.cos(t * 0.01) * 40) * rayDir, gY);
+      ctx.lineTo(archX + 150 * rayDir, 40);
+      ctx.fill();
+      ctx.restore();
     }
+  } else {
+    // fallback color while loading
+    ctx.fillStyle = '#657ea5';
+    ctx.fillRect(0, 0, W, gY);
   }
 
-  // Loading bay markers (floor arrows)
-  const aSp = 320, aOx = sp % aSp;
-  for (let i = -aSp; i < W + aSp; i += aSp) {
-    const sx = i - aOx + 150;
-    ctx.save(); ctx.globalAlpha = 0.08;
-    ctx.fillStyle = '#ffaa00';
-    ctx.beginPath();
-    ctx.moveTo(sx, gY * 0.75); ctx.lineTo(sx + 15, gY * 0.72);
-    ctx.lineTo(sx + 15, gY * 0.68); ctx.lineTo(sx + 30, gY * 0.75);
-    ctx.lineTo(sx + 15, gY * 0.82); ctx.lineTo(sx + 15, gY * 0.78);
-    ctx.lineTo(sx, gY * 0.75);
-    ctx.closePath(); ctx.fill();
-    ctx.restore();
+  ctx.save();
+  // ANIMATION 2: Drifting Ground Fog / Mist
+  const fogSp = 700;
+  const fogOx = (bgX * 0.7 + t * 0.5) % fogSp;
+  for (let i = -fogSp; i < W + fogSp; i += fogSp) {
+    const fx = i - fogOx;
+    const fogG = ctx.createRadialGradient(fx + 350, gY - 20, 20, fx + 350, gY - 20, 250);
+    fogG.addColorStop(0, 'rgba(215, 225, 240, 0.25)');
+    fogG.addColorStop(1, 'rgba(215, 225, 240, 0)');
+    ctx.fillStyle = fogG;
+    ctx.fillRect(fx, gY - 200, 700, 200);
   }
 
-  // Amber industrial lighting
-  ctx.save(); ctx.globalAlpha = 0.04;
-  const alg = ctx.createRadialGradient(W * 0.5, 0, 0, W * 0.5, 0, W * 0.6);
-  alg.addColorStop(0, '#ffaa44'); alg.addColorStop(1, 'rgba(0,0,0,0)');
-  ctx.fillStyle = alg; ctx.fillRect(0, 0, W, gY);
+  // ANIMATION 3: Soft falling snow / magic dust motes
+  ctx.fillStyle = '#ffffff';
+  for (let p = 0; p < 45; p++) {
+    // Pseudo-random deterministic movement
+    const pX = ((p * 293 + t * (0.8 + p * 0.02) - bgX * 1.1) % W + W) % W;
+    const pY = ((p * 173 + t * (0.4 + p * 0.01) + Math.sin(t * 0.02 + p) * 30) % gY + gY) % gY;
+    const pSize = 1.5 + (p % 3);
+    const pAlpha = 0.2 + 0.5 * Math.abs(Math.sin((t + p * 20) * 0.03));
+
+    ctx.globalAlpha = pAlpha;
+    ctx.beginPath(); ctx.arc(pX, pY, pSize, 0, Math.PI * 2); ctx.fill();
+  }
   ctx.restore();
 
-  drawLabFloor(W, H, gY, '#1a1810', '#222018', '#665533');
+  // Draw the ground floor based on the biome payload
+  drawLabFloor(W, H, gY);
 }
 
 // ── BIOME 3: COMMAND CENTER (Control Room) ──

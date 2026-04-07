@@ -25,11 +25,19 @@ canvas { display:block; width:100%; height:100%; }
   background:var(--glass); backdrop-filter:blur(6px);
   border:1px solid var(--glassBorder); border-radius:20px; padding:6px 18px;
 }
+#pauseBtnHUD {
+  pointer-events:all; cursor:pointer; font-size:clamp(16px,2.2vw,24px); 
+  background:var(--glass); backdrop-filter:blur(6px); color:#fff;
+  border:1px solid var(--glassBorder); border-radius:12px; 
+  padding:6px 12px; transition:transform 0.15s, background 0.15s;
+}
+#pauseBtnHUD:hover { background:rgba(255,200,0,0.2); transform:translateY(-2px); }
+#pauseBtnHUD:active { transform:translateY(1px); }
 #heartsDisplay {
   font-size:clamp(24px,3.5vw,38px); filter:drop-shadow(0 0 6px #FF3300);
 }
 #puBar {
-  position:absolute; top:58px; left:24px; display:flex; align-items:center; gap:8px;
+  position:absolute; top:76px; left:24px; display:flex; align-items:center; gap:8px;
   background:var(--glass); backdrop-filter:blur(6px);
   border:1px solid var(--glassBorder); border-radius:16px; padding:4px 14px;
   font-size:18px; color:#fff; transition:opacity .3s;
@@ -60,6 +68,10 @@ canvas { display:block; width:100%; height:100%; }
 #gameOverScreen {
   background:linear-gradient(180deg,rgba(5,0,0,.94),rgba(60,0,0,.88),rgba(5,0,0,.96));
   flex-direction:column; gap:10px;
+}
+#pauseScreen {
+  background:linear-gradient(180deg,rgba(5,5,15,.88),rgba(10,20,30,.82),rgba(5,5,15,.90));
+  flex-direction:column; justify-content:center; align-items:center; gap:12px;
 }
 .startLeft { display:flex; flex-direction:column; align-items:center; gap:6px; }
 .startRight { display:flex; flex-direction:row; flex-wrap:wrap; justify-content:center; align-items:center; gap:16px; margin-top:8px; }
@@ -227,7 +239,7 @@ canvas { display:block; width:100%; height:100%; }
   #hudTop { padding: 6px 12px 0; gap: 8px; }
   #distDisplay, #coinDisplay { font-size: 14px; padding: 4px 12px; }
   #heartsDisplay { font-size: 20px; }
-  #puBar { top: 40px; left: 12px; font-size: 14px; padding: 2px 10px; }
+  #puBar { top: 54px; left: 12px; font-size: 14px; padding: 2px 10px; }
   #puTrack { width: 70px; height: 6px; }
   .screenTitle { font-size: 26px; }
   .btn { padding: 8px 20px; font-size: 14px; }
