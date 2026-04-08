@@ -131,7 +131,10 @@ document.getElementById('homeBtn').addEventListener('click', e => {
 });
 document.getElementById('muteBtn').addEventListener('click', e => {
   e.stopPropagation();
-  document.getElementById('muteBtn').textContent = toggleMute(state) ? '🔇' : '🔊';
+  const isMuted = toggleMute(state);
+  document.getElementById('muteBtn').innerHTML = isMuted 
+    ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><line x1="23" y1="1" x2="1" y2="23"/></svg>'
+    : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>';
 });
 document.getElementById('fullscreenBtn').addEventListener('click', e => {
   e.stopPropagation();
@@ -145,7 +148,9 @@ document.getElementById('fullscreenBtn').addEventListener('click', e => {
 });
 document.addEventListener('fullscreenchange', () => {
   const btn = document.getElementById('fullscreenBtn');
-  btn.textContent = document.fullscreenElement ? '⛶' : '⛶';
+  btn.innerHTML = document.fullscreenElement 
+    ? '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3m18 0h-3a2 2 0 0 1-2-2V3m0 18v-3a2 2 0 0 1 2-2h3M3 16h3a2 2 0 0 1 2 2v3"/></svg>'
+    : '<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>';
   btn.style.opacity = document.fullscreenElement ? '1' : '0.7';
   setTimeout(() => { resize(); if (state !== 'playing') drawBG(); }, 150);
 });
@@ -531,21 +536,28 @@ function spawnBoss(bossType) {
     // Sentinel Turret at 2000m
     boss = {
       type: 'sentinel', x: W + 80, y: gY * 0.35, targetX: W * 0.72, w: 60, h: 70,
-      hp: 1200, maxHp: 1200, phase: 0, shootTimer: 60, shootInterval: 30, // ULTRA BUFFED HP & FIRE RATE
+      hp: 1200, maxHp: 1200, phase: 0, shootTimer: 60, shootInterval: 30, bossIdx: 0,
       entered: false, defeated: false, retreating: false, t: 0
     };
   } else if (bossType === 2) {
     // Warden Mech at 4000m
     boss = {
       type: 'warden', x: W + 100, y: gY * 0.4, targetX: W * 0.68, w: 80, h: 90,
-      hp: 800, maxHp: 800, phase: 0, shootTimer: 45, shootInterval: 75, // nerfed HP and fire rate
+      hp: 800, maxHp: 800, phase: 0, shootTimer: 45, shootInterval: 75, bossIdx: 1,
       entered: false, defeated: false, retreating: false, t: 0, walkFrame: 0
     };
-  } else {
-    // Overlord Gunship at 5000m
+  } else if (bossType === 3) {
+    // Overlord Gunship at 6000m
     boss = {
       type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: 1000, maxHp: 1000, phase: 0, shootTimer: 40, shootInterval: 45, // nerfed HP and fire rate
+      hp: 1000, maxHp: 1000, phase: 0, shootTimer: 40, shootInterval: 45, bossIdx: 2,
+      entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
+    };
+  } else {
+    // Supreme Overlord at 12000m (Final Boss)
+    boss = {
+      type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
+      hp: 2000, maxHp: 2000, phase: 0, shootTimer: 25, shootInterval: 30, bossIdx: 3,
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
   }
@@ -578,10 +590,10 @@ function updateBoss(dt, spd) {
   }
   // HP drains over time (survival boss — tuned for fairness)
   boss.hp -= dt * (boss.type === 'overlord' ? 1.5 : boss.type === 'warden' ? 1.2 : 1.0);
+  // Dynamic vertical movement: Sentinel sweeps aggressively but stays visible
   const gY = canvas.gameH * GROUND_RATIO; // Required for vertical movement calculations
-  // Dynamic vertical movement: Sentinel now DIVES UNDER FLOOR!
   if (boss.type === 'sentinel' && !boss.retreating) {
-    boss.y = (gY * 0.5 + Math.sin(boss.t * 0.015) * gY * 0.75); // Deep dives below gY
+    boss.y = (gY * 0.35 + Math.sin(boss.t * 0.015) * gY * 0.3); // Keeps Sentinel within screen bounds
   } else if (!boss.retreating) {
     boss.y = (gY * 0.2 + Math.sin(boss.t * 0.02) * gY * 0.25); // Regular hover for other bosses
   }
@@ -600,17 +612,17 @@ function updateBoss(dt, spd) {
     boss.shootTimer = boss.shootInterval * (0.7 + Math.random() * 0.6);
 
     if (boss.type === 'sentinel') {
-      // Sentinel: 4-way spread with CLEAR CENTER GAP so player can slot through the middle
+      // Sentinel: Reduced bullet spread for fewer bullets
       const bs = 5.0;
-      const salvo1 = [-0.40, -0.18, 0.18, 0.40];
+      const salvo1 = [-0.30, 0.30];
       salvo1.forEach(offset => {
         const angle = Math.PI + offset;
         enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 11, life: 1, btype: 'sentinel_plasma' });
       });
-      // Second salvo delayed — gap shifts slightly so player must adjust
+      // Second salvo delayed
       setTimeout(() => {
         if (!boss || boss.type !== 'sentinel') return;
-        const salvo2 = [-0.50, -0.08, 0.08, 0.50];
+        const salvo2 = [-0.15, 0.15];
         salvo2.forEach(offset => {
           const angle = Math.PI + offset;
           enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 11, life: 1, btype: 'sentinel_plasma' });
@@ -620,13 +632,13 @@ function updateBoss(dt, spd) {
       sfx.laser();
 
     } else if (boss.type === 'warden') {
-      // Warden: TOP + BOTTOM rows fire with a clear MIDDLE LANE safe zone
-      [-55, -28].forEach(yOff => {
+      // Warden: TOP + BOTTOM rows fire with a clear MIDDLE LANE safe zone. Added extreme lower bullets to hit ground targets.
+      [-60, -30].forEach(yOff => {
         enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
       });
       setTimeout(() => {
         if (!boss || boss.type !== 'warden') return;
-        [28, 55].forEach(yOff => {
+        [60, 110, 160, 220].forEach(yOff => {
           enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
         });
         sfx.laser();
@@ -654,7 +666,7 @@ function updateBoss(dt, spd) {
   // Check defeated
   if (boss.hp <= 0) {
     boss.defeated = true; boss.retreating = true;
-    const idx = boss.type === 'sentinel' ? 0 : boss.type === 'warden' ? 1 : 2;
+    const idx = boss.bossIdx !== undefined ? boss.bossIdx : (boss.type === 'sentinel' ? 0 : boss.type === 'warden' ? 1 : 2);
     bossDefeated[idx] = true;
     sfx.hit(); spawnP(boss.x, boss.y, '#ffaa00', 30);
   }
@@ -1198,12 +1210,18 @@ function checkCollBullet(b) {
 }
 
 // ── UI UPDATES ──────────────────────────────
-function updateHearts() { heartsEl.textContent = '❤️'.repeat(hearts); }
+function updateHearts() { 
+  const hSVG = '<svg width="24" height="24" viewBox="0 0 24 24" fill="#ff2a55" stroke="#ff2a55" stroke-width="1" style="filter:drop-shadow(0 0 4px #ff2a55);"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>';
+  heartsEl.innerHTML = hSVG.repeat(hearts); 
+}
 function updateHUD() { distEl.textContent = Math.floor(distance) + ' m'; coinEl.textContent = runCoins; }
 function updatePUBar() {
   if (activePU && puTimer > 0) {
     puBarEl.classList.remove('hidden'); puFillEl.style.width = (puTimer / puMaxTime * 100) + '%';
-    puIconEl.textContent = activePU === 'shield' ? '🛡️' : activePU === 'speed' ? '⚡' : activePU === 'ultimate' ? '⭐' : '🧲';
+    if(activePU === 'shield') puIconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>';
+    else if(activePU === 'speed') puIconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>';
+    else if(activePU === 'ultimate') puIconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor" stroke="currentColor" stroke-width="2"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>';
+    else puIconEl.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m6 15-4-4 6.75-6.77a7.79 7.79 0 0 1 11 11L13 22l-4-4 6.39-6.36a2.14 2.14 0 0 0-3-3L6 15"/></svg>';
     if (activePU === 'ultimate') puFillEl.style.background = 'linear-gradient(90deg,#9933ff,#ff44ff,#ffd700)';
     else puFillEl.style.background = '';
   } else { puBarEl.classList.add('hidden'); puFillEl.style.background = ''; }
@@ -1896,7 +1914,7 @@ function startGame() {
     enemies = []; enemyBullets = [];
     score = 0; distance = 0; runCoins = 0; frame = 0; hearts = 3; invincible = 0;
     activePU = null; puTimer = 0; shieldActive = false; bgX = 0;
-    boss = null; bossDefeated = [false, false, false]; bossWarning = 0;
+    boss = null; bossDefeated = [false, false, false, false]; bossWarning = 0;
     graceFrames = 60;
     curBiome = 'bridge'; window.curBiome = 'bridge';
     banner = { text: '', timer: 0 }; window.banner = banner;
@@ -1971,9 +1989,10 @@ function loop(ts) {
   else { player.onGround = false; }
 
   // ── BOSS SPAWNING ──
-  if (!boss && distance >= 2000 && !bossDefeated[0]) spawnBoss(2); // Warden Mech at 2000m
-  if (!boss && distance >= 4000 && !bossDefeated[1]) spawnBoss(1); // Sentinel Turret at 4000m
-  if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m
+  if (!boss && distance >= 2000 && !bossDefeated[1]) spawnBoss(2); // Warden Mech at 2000m (index 1)
+  if (!boss && distance >= 4000 && !bossDefeated[0]) spawnBoss(1); // Sentinel Turret at 4000m (index 0)
+  if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m (index 2)
+  if (!boss && distance >= 12000 && !bossDefeated[3]) spawnBoss(4); // Supreme Overlord at 12000m (index 3)
 
   // ── PHASE-BASED SPAWNING (fewer enemies!) ──
   let si, enemyChance, missileChance;
@@ -2019,15 +2038,17 @@ function loop(ts) {
 
     else if (distance < 9900) {
       // 4000 - 9900: ONLY Vertical Lasers, SOME Electric Zappers, and Cyberpunk Emitters (NO MISSILES)
-      if (r < 0.40) spawnLaser('vert');
-      else if (r < 0.75) spawnLaser('horiz');
+      // Reduced vertical laser chance from 40% to 15%
+      if (r < 0.15) spawnLaser('vert');
+      else if (r < 0.60) spawnLaser('horiz');
       else spawnElectric();
     }
     else {
       // 9900+: All obstacles: Missiles, Zappers, Cyberpunk Emitters, and Vertical Lasers (Hard but balanced)
-      if (r < 0.25) spawnLaser('vert');
-      else if (r < 0.45) spawnLaser('horiz');
-      else if (r < 0.70) spawnElectric();
+      // Reduced vertical laser chance from 25% to 10%
+      if (r < 0.10) spawnLaser('vert');
+      else if (r < 0.30) spawnLaser('horiz');
+      else if (r < 0.65) spawnElectric();
       else spawnMissileWarning();
     }
   }
@@ -2168,9 +2189,7 @@ function loop(ts) {
     if (b.btype === 'warden_fireball' || b.btype === 'overlord_missile') {
       const pCen = player.y + player.h / 2;
       const dy = pCen - b.y;
-      // Much lighter tracking for Overlord missiles (stay not too follow)
-      const trackingSpeed = b.btype === 'warden_fireball' ? 0.03 : 0.015;
-      b.vy += Math.sign(dy) * trackingSpeed * dt;
+      b.vy += Math.sign(dy) * 0.03 * dt;
       b.vy = Math.max(-4, Math.min(4, b.vy)); // Cap vertical curving speed
     }
 
