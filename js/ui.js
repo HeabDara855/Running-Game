@@ -58,9 +58,22 @@ function renderSkins() {
     const div = document.createElement('div');
     div.className = 'skinItem' + (active ? ' active' : '') + (!unlocked ? ' locked' : '');
 
-    // Premium frameSwatch
+    let modelHTML = '';
+    if (currentTab === 'chars') {
+      let saberColor = item.saber || item.glow;
+      modelHTML = `<div class="css-ninja" style="transform: scale(0.22); transform-origin: top left; position: absolute; left: 8px; top: 2px; --bg-body: ${item.body}; --accent-glow: ${item.glow}; --accent-saber: ${saberColor};">
+          <div class="cn-jetpack"></div><div class="cn-flame"></div><div class="cn-ring"></div><div class="cn-body"></div><div class="cn-core"></div><div class="cn-head"></div><div class="cn-strap"></div><div class="cn-visor"></div><div class="cn-arm"></div><div class="cn-saber"></div><div class="cn-leg1"></div><div class="cn-leg2"></div><div class="cn-boot1"></div><div class="cn-boot2"></div>
+      </div>`;
+    } else {
+      modelHTML = `<div class="css-pack" style="transform: scale(0.6); position: absolute; left: 4px; top: 10px; --bg-body: ${item.body}; --accent-glow: ${item.glow};">
+          <div class="cp-body"></div><div class="cp-core"></div><div class="cp-flame"></div>
+      </div>`;
+    }
+
     div.innerHTML = `
-      <div class="skinSwatch" style="background:${item.body}; border-color:${item.accent}; box-shadow: 0 0 12px ${item.glow} inset, 0 0 8px ${item.glow};"></div>
+      <div class="skinModel" style="border-color:${item.accent}; background: rgba(0,0,0,0.4); box-shadow: inset 0 0 20px ${item.glow}44;">
+        ${modelHTML}
+      </div>
       <div class="skinInfo">
         <div class="skinName" style="color:${item.glow}">${item.name}</div>
         <div class="skinCost">${unlocked ? (active ? '✅ Equipped' : '🔓 Unlocked') : '🔒 💰 ' + item.cost}</div>
