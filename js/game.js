@@ -2154,7 +2154,7 @@ function loop(ts) {
   // Coin clusters: Only spawn if the screen is relatively clear of coins on the right side to prevent grids smashing together!
   let maxCoinX = 0;
   for (let c of coins) { if (c.x > maxCoinX) maxCoinX = c.x; }
-  if (maxCoinX < canvas.gameW - 100 && frame % 180 === 0 && !bossActive) spawnCoinPattern();
+  if (maxCoinX < canvas.gameW - 100 && frame % 60 === 0 && !bossActive) spawnCoinPattern();
 
   if (frame % 400 === 0) spawnPickup();
   // Heart packs: spawn every ~500 frames, only when player has lost hearts (now up to 5 hearts max)
@@ -2301,7 +2301,7 @@ function loop(ts) {
   coins.forEach(c => {
     c.x -= spd; if (!c.collected) {
       drawCoin(c);
-      if (dist(player.x + player.w * .5, player.y + player.h * .5, c.x, c.y) < 22) {
+      if (dist(player.x + player.w * .5, player.y + player.h * .5, c.x, c.y) < 50) {
         c.collected = true; runCoins++; sfx.coin(); spawnP(c.x, c.y, '#FFD700', 8); c.alpha = 0; checkBiome();
       }
     }
