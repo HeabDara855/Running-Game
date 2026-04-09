@@ -25,17 +25,19 @@ Object.defineProperty(canvas, 'gameH', { get() { return this._logicalH || wrappe
 
 // ── CONSTANTS ────────────────────────────────
 const GRAVITY = 0.45, THRUST = -0.56, MAX_FALL = 8.5, MAX_RISE = -7;
-const BASE_SPEED = 4.5, GROUND_RATIO = 0.87, TARGET_DT = 1000 / 60;
+let BASE_SPEED = 5;
+const GROUND_RATIO = 0.87, TARGET_DT = 1000 / 60;
 
 // ── STATE ────────────────────────────────────
 let state = 'start', score = 0, distance = 0, runCoins = 0;
 let frame = 0, speed = 0, bgX = 0;
-let hearts = 3, invincible = 0;
+let hearts = 5, invincible = 0;
+let gameMode = 'beginner'; // 'beginner' or 'pro'
 let activePU = null, puTimer = 0, puMaxTime = 0;
 let shieldActive = false;
 let graceFrames = 0, lastT = 0, loopRunning = false;
 // Boss system
-let boss = null, bossDefeated = [false, false, false], bossWarning = 0;
+let boss = null, bossDefeated = [false, false, false, false, false], bossWarning = 0;
 let isHolding = false, startClickGuard = false;
 let curBiome = 'bridge'; window.curBiome = curBiome;
 let banner = { text: '', timer: 0 }; window.banner = banner;
@@ -118,11 +120,28 @@ document.addEventListener('keyup', e => {
 // Buttons
 document.getElementById('startBtn').addEventListener('click', e => {
   e.stopPropagation(); initAudio();
-  startClickGuard = true; setTimeout(() => startClickGuard = false, 150);
-  startGame();
+  document.getElementById('difficultyOverlay').classList.remove('hidden');
 });
 document.getElementById('restartBtn').addEventListener('click', e => {
   e.stopPropagation(); initAudio();
+  document.getElementById('difficultyOverlay').classList.remove('hidden');
+});
+
+// Difficulty Selection
+document.getElementById('diffClose').addEventListener('click', () => {
+  document.getElementById('difficultyOverlay').classList.add('hidden');
+});
+document.getElementById('diffBeginnerBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  gameMode = 'beginner';
+  document.getElementById('difficultyOverlay').classList.add('hidden');
+  startClickGuard = true; setTimeout(() => startClickGuard = false, 150);
+  startGame();
+});
+document.getElementById('diffProBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  gameMode = 'pro';
+  document.getElementById('difficultyOverlay').classList.add('hidden');
   startClickGuard = true; setTimeout(() => startClickGuard = false, 150);
   startGame();
 });
@@ -182,19 +201,23 @@ function spawnLaser(overrideType = null) {
     obstacles.push({ type: 'laser_horiz', x: 0, y: y, beamH: 26, w: W, warningTimer: 80, beamOn: false, passed: false, life: 35 });
     sfx.laserCharge();
   } else {
-    // Dynamic Volleys (1, 2, or 4 at once) past 1000m
+    // Dynamic Volleys based on difficulty
     let count = 1;
-    if (distance > 1000) {
+    const thresh = gameMode === 'pro' ? 1000 : 1500;
+    if (distance > thresh) {
       const roll = Math.random();
-      if (roll < 0.15) count = 4;
-      else if (roll < 0.40) count = 2;
+      if (gameMode === 'pro') {
+        if (roll < 0.3) count = 2;
+      } else {
+        if (roll < 0.1) count = 2;
+      }
     }
 
     for (let i = 0; i < count; i++) {
       const r = Math.random();
-      let beamH = 120 + Math.random() * 50; // Buffed 'Short'
-      if (r > 0.35) beamH = 280 + Math.random() * 120; // Massive 'Medium'
-      if (count === 1 && r > 0.75) beamH = 450 + Math.random() * 100; // Screen-dominating 'Mega-Blade' (only solo)
+      let beamH = 80 + Math.random() * 40; // Short
+      if (r > 0.35) beamH = 150 + Math.random() * 100; // Medium
+      if (count === 1 && r > 0.75) beamH = 300 + Math.random() * 100; // Mega-Blade (only solo)
 
       const y = 20 + Math.random() * (gY - beamH - 40);
       const offsetX = i * (80 + Math.random() * 40);
@@ -210,13 +233,12 @@ function spawnLaser(overrideType = null) {
 function spawnElectric() {
   const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
 
-  // Dynamic Volleys past 1000m
+  // Dynamic Volleys
   let count = 1;
   const roll = Math.random();
-  if (distance > 1000) {
-    if (roll < 0.2) count = 4;
-    else if (roll < 0.4) count = 2;
-  }
+  const thresh = gameMode === 'pro' ? 1000 : 1500;
+  // Zappers never spawn in clusters in either mode anymore based on user feedback.
+  // Count will remain 1 forever.
 
   for (let i = 0; i < count; i++) {
     const r = Math.random();
@@ -472,7 +494,7 @@ function spawnP(x, y, col, n) {
 function spawnEnemy(forceType) {
   const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const type = forceType || (Math.random() < 0.55 ? 'demon' : Math.random() < 0.7 ? 'robot' : 'dragon');
-  const shootInterval = Math.max(90, 160 - distance * 0.006);
+  const shootInterval = gameMode === 'pro' ? Math.max(90, 160 - distance * 0.006) : Math.max(180, 280 - distance * 0.002);
   if (type === 'robot') {
     // Robot hovers mid-height (not underground)
     const ey = gY * 0.45 + Math.random() * (gY * 0.3);
@@ -505,7 +527,7 @@ function spawnEnemy(forceType) {
   }
 }
 function spawnEnemyBullet(ex, ey, bulletType) {
-  const bulletSpeed = 2.8 + distance * 0.0003;
+  const bulletSpeed = gameMode === 'pro' ? 2.8 + distance * 0.0003 : 1.5 + distance * 0.0001;
   if (bulletType === 'laser_beam') {
     // Robot: shoots straight left (very predictable)
     enemyBullets.push({ x: ex, y: ey, vx: -bulletSpeed * 1.5, vy: 0, r: 10, life: 1, btype: 'laser_beam' });
@@ -536,29 +558,36 @@ function spawnBoss(bossType) {
     // Sentinel Turret at 2000m
     boss = {
       type: 'sentinel', x: W + 80, y: gY * 0.35, targetX: W * 0.72, w: 60, h: 70,
-      hp: 1200, maxHp: 1200, phase: 0, shootTimer: 60, shootInterval: 30, bossIdx: 0,
+      hp: gameMode === 'pro' ? 1200 : 400, maxHp: gameMode === 'pro' ? 1200 : 400, phase: 0, shootTimer: 60, shootInterval: 30, bossIdx: 0,
       entered: false, defeated: false, retreating: false, t: 0
     };
   } else if (bossType === 2) {
     // Warden Mech at 4000m
     boss = {
       type: 'warden', x: W + 100, y: gY * 0.4, targetX: W * 0.68, w: 80, h: 90,
-      hp: 800, maxHp: 800, phase: 0, shootTimer: 45, shootInterval: 75, bossIdx: 1,
+      hp: gameMode === 'pro' ? 800 : 350, maxHp: gameMode === 'pro' ? 800 : 350, phase: 0, shootTimer: 45, shootInterval: 75, bossIdx: 1,
       entered: false, defeated: false, retreating: false, t: 0, walkFrame: 0
     };
   } else if (bossType === 3) {
     // Overlord Gunship at 6000m
     boss = {
       type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: 1000, maxHp: 1000, phase: 0, shootTimer: 40, shootInterval: 45, bossIdx: 2,
+      hp: gameMode === 'pro' ? 1000 : 450, maxHp: gameMode === 'pro' ? 1000 : 450, phase: 0, shootTimer: 40, shootInterval: 45, bossIdx: 2,
+      entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
+    };
+  } else if (bossType === 4) {
+    // Supreme Overlord at 12000m
+    boss = {
+      type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
+      hp: gameMode === 'pro' ? 2000 : 800, maxHp: gameMode === 'pro' ? 2000 : 800, phase: 0, shootTimer: 25, shootInterval: 30, bossIdx: 3,
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
   } else {
-    // Supreme Overlord at 12000m (Final Boss)
+    // Annihilator at 19000m (Final Boss)
     boss = {
-      type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: 2000, maxHp: 2000, phase: 0, shootTimer: 25, shootInterval: 30, bossIdx: 3,
-      entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
+      type: 'annihilator', x: W + 150, y: gY * 0.4, targetX: W * 0.6, w: 120, h: 120,
+      hp: gameMode === 'pro' ? 3500 : 1200, maxHp: gameMode === 'pro' ? 3500 : 1200, phase: 0, shootTimer: 50, shootInterval: 50, bossIdx: 4,
+      entered: false, defeated: false, retreating: false, t: 0, orbitalAngle: 0
     };
   }
   banner = { text: '⚠️ BOSS INCOMING ⚠️', timer: 150 }; window.banner = banner;
@@ -589,11 +618,14 @@ function updateBoss(dt, spd) {
     return;
   }
   // HP drains over time (survival boss — tuned for fairness)
-  boss.hp -= dt * (boss.type === 'overlord' ? 1.5 : boss.type === 'warden' ? 1.2 : 1.0);
+  boss.hp -= dt * (boss.type === 'annihilator' ? 1.8 : boss.type === 'overlord' ? 1.5 : boss.type === 'warden' ? 1.2 : 1.0);
   // Dynamic vertical movement: Sentinel sweeps aggressively but stays visible
   const gY = canvas.gameH * GROUND_RATIO; // Required for vertical movement calculations
   if (boss.type === 'sentinel' && !boss.retreating) {
     boss.y = (gY * 0.35 + Math.sin(boss.t * 0.015) * gY * 0.3); // Keeps Sentinel within screen bounds
+  } else if (boss.type === 'annihilator' && !boss.retreating) {
+    boss.y = (gY * 0.45 + Math.sin(boss.t * 0.02) * gY * 0.4); // Huge sweeping vertical hover
+    boss.x = boss.targetX + Math.cos(boss.t * 0.01) * 60; // Sweeping horizontal
   } else if (!boss.retreating) {
     boss.y = (gY * 0.2 + Math.sin(boss.t * 0.02) * gY * 0.25); // Regular hover for other bosses
   }
@@ -647,7 +679,7 @@ function updateBoss(dt, spd) {
       enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: -2.5, vy: 0, r: 18, life: 1, btype: 'warden_fireball' });
       sfx.laser();
 
-    } else {
+    } else if (boss.type === 'overlord') {
       // Overlord: alternating UP wave / DOWN wave — player ducks to whichever side is clear
       boss._waveToggle = !boss._waveToggle;
       const yDir = boss._waveToggle ? -1 : 1;
@@ -659,6 +691,19 @@ function updateBoss(dt, spd) {
           vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs * 0.5,
           r: 13, life: 1, btype: 'overlord_missile'
         });
+      });
+      sfx.missileLaunch();
+    } else if (boss.type === 'annihilator') {
+      // Annihilator: Spawns 3 massive sweeping energy waves in a fan pattern
+      boss.orbitalAngle += 0.5;
+      const bs = gameMode === 'pro' ? 5.5 : 4.0;
+      [-0.4, 0, 0.4].forEach(offset => {
+         const angle = Math.PI + offset + Math.sin(boss.orbitalAngle) * 0.3;
+         enemyBullets.push({
+            x: boss.x - 60, y: boss.y,
+            vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs * 0.4,
+            r: 18, life: 1, btype: 'annihilator_wave'
+         });
       });
       sfx.missileLaunch();
     }
@@ -754,7 +799,7 @@ function drawBoss() {
     ctx.fillStyle = `rgba(255,80,0,${0.4 + Math.sin(t * 0.12) * 0.3})`;
     ctx.beginPath(); ctx.arc(-31, -11, 3, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.arc(28, -11, 3, 0, Math.PI * 2); ctx.fill();
-  } else {
+  } else if (b.type === 'overlord') {
     // OVERLORD GUNSHIP — huge attack helicopter
     const scale = 2.8;
     ctx.scale(scale, scale);
@@ -800,9 +845,41 @@ function drawBoss() {
     ctx.beginPath(); ctx.moveTo(-38, 0); ctx.lineTo(38, 0); ctx.stroke();
     ctx.beginPath(); ctx.moveTo(0, -38); ctx.lineTo(0, 38); ctx.stroke();
     ctx.fillStyle = '#dd4400';
-    ctx.beginPath(); ctx.arc(-38, 0, 3, 0, Math.PI * 2); ctx.fill();
     ctx.beginPath(); ctx.arc(38, 0, 3, 0, Math.PI * 2); ctx.fill();
     ctx.restore();
+  } else if (b.type === 'annihilator') {
+    // ANNIHILATOR DRONE — A huge floating geometric eye/core
+    const scale = 2.8;
+    ctx.scale(scale, scale);
+    const pulse = Math.sin(t * 0.1) * 0.2 + 1.0;
+    
+    // Core glow
+    ctx.shadowColor = '#cc00ff'; ctx.shadowBlur = 25 * pulse;
+    
+    // Outer floating rings
+    ctx.strokeStyle = `rgba(200, 0, 255, ${0.5 + 0.3 * Math.sin(t * 0.05)})`;
+    ctx.lineWidth = 3;
+    ctx.save(); ctx.rotate(t * 0.02);
+    ctx.beginPath(); ctx.arc(0, 0, 25 + Math.sin(t * 0.15) * 4, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+    
+    ctx.save(); ctx.rotate(-t * 0.03);
+    ctx.beginPath(); ctx.ellipse(0, 0, 32, 12, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.beginPath(); ctx.ellipse(0, 0, 12, 32, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+    
+    // Inner mechanical casing
+    ctx.fillStyle = '#222233';
+    ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill();
+    ctx.lineWidth = 2; ctx.strokeStyle = '#444455'; ctx.stroke();
+    
+    // The giant eye!
+    const ebg = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * pulse);
+    ebg.addColorStop(0, '#ffffff'); ebg.addColorStop(0.3, '#ff00ff'); ebg.addColorStop(1, '#550055');
+    ctx.fillStyle = ebg;
+    ctx.beginPath(); ctx.arc(0, 0, 12 * pulse, 0, Math.PI * 2); ctx.fill();
+    
+    ctx.shadowBlur = 0;
   }
   ctx.restore();
   // Health bar
@@ -1201,6 +1278,24 @@ function drawEnemyBullet(b) {
     ctx.fillStyle = '#888888';
     ctx.beginPath(); ctx.moveTo(-b.r * 0.6, -b.r * 0.4); ctx.lineTo(-b.r * 0.9, -b.r * 0.9); ctx.lineTo(-b.r * 0.2, -b.r * 0.4); ctx.fill();
     ctx.beginPath(); ctx.moveTo(-b.r * 0.6, b.r * 0.4); ctx.lineTo(-b.r * 0.9, b.r * 0.9); ctx.lineTo(-b.r * 0.2, b.r * 0.4); ctx.fill();
+  } else if (b.btype === 'annihilator_wave') {
+    // Massive spinning purple energy wave!
+    ctx.rotate(-angle);
+    ctx.shadowColor = '#ff00ff'; ctx.shadowBlur = 20;
+    
+    const pgrad = ctx.createRadialGradient(0, 0, 0, 0, 0, b.r * 1.5);
+    pgrad.addColorStop(0, '#ffffff'); pgrad.addColorStop(0.3, '#ff00ff'); pgrad.addColorStop(0.7, '#8800cc'); pgrad.addColorStop(1, 'rgba(50,0,100,0)');
+    ctx.fillStyle = pgrad;
+    ctx.beginPath(); ctx.arc(0, 0, b.r * 1.5, 0, Math.PI * 2); ctx.fill();
+    
+    // Core spin
+    ctx.fillStyle = '#ffffff';
+    ctx.rotate(t * 0.1);
+    ctx.beginPath();
+    for (let i = 0; i < 4; i++) {
+       ctx.moveTo(0, 0); ctx.lineTo(b.r * 2.0, -b.r * 0.2); ctx.lineTo(b.r * 2.0, b.r * 0.2); ctx.fill();
+       ctx.rotate(Math.PI / 2);
+    }
   }
   ctx.restore();
 }
@@ -1862,7 +1957,7 @@ function hitPlayer() {
     sfx.shieldBreak(); spawnP(player.x + player.w * .5, player.y + player.h * .5, '#44ff88', 15);
     screenShake = 12; return;
   }
-  hearts--; updateHearts(); invincible = 90;
+  hearts--; updateHearts(); invincible = gameMode === 'pro' ? 90 : 180;
   sfx.hit(); spawnP(player.x + player.w * .5, player.y + player.h * .5, '#FF2200', 12);
   screenShake = 18;
   floatingTexts.push({ x: player.x + player.w * .5, y: player.y - 10, text: '💔', color: '#ff3344', life: 1, vy: -2 });
@@ -1912,9 +2007,12 @@ function startGame() {
     player.x = W * .12; player.y = H * .4; player.vy = 0; player.trail = []; player.onGround = false;
     obstacles = []; coins = []; pickups = []; heartPacks = []; particles = []; missiles = []; missileWarnings = [];
     enemies = []; enemyBullets = [];
-    score = 0; distance = 0; runCoins = 0; frame = 0; hearts = 3; invincible = 0;
+    score = 0; distance = 0; runCoins = 0; frame = 0;
+    hearts = gameMode === 'pro' ? 3 : 5;
+    BASE_SPEED = gameMode === 'pro' ? 6 : 5;
+    invincible = 0;
     activePU = null; puTimer = 0; shieldActive = false; bgX = 0;
-    boss = null; bossDefeated = [false, false, false, false]; bossWarning = 0;
+    boss = null; bossDefeated = [false, false, false, false, false]; bossWarning = 0;
     graceFrames = 60;
     curBiome = 'bridge'; window.curBiome = 'bridge';
     banner = { text: '', timer: 0 }; window.banner = banner;
@@ -1940,10 +2038,17 @@ function loop(ts) {
   const speedMult = (activePU === 'speed' || activePU === 'ultimate') ? 1.6 : 1;
   // Phase-based difficulty (Flattens out endgame to prevent impossibility)
   let speedAccel;
-  if (distance < 2000) speedAccel = distance * 0.0008;       // Phase 1: Easy
-  else if (distance < 4000) speedAccel = 1.6 + (distance - 2000) * 0.0018; // Phase 2: Medium
-  else if (distance < 9000) speedAccel = 5.2 + (distance - 4000) * 0.0012; // Phase 3: Hard (5k-9k growth slowed)
-  else speedAccel = 11.2 + (distance - 9000) * 0.0005;       // Phase 4: Extreme 9k+ (growth very slow)
+  if (gameMode === 'pro') {
+    if (distance < 2000) speedAccel = distance * 0.0008;
+    else if (distance < 4000) speedAccel = 1.6 + (distance - 2000) * 0.0018;
+    else if (distance < 9000) speedAccel = 5.2 + (distance - 4000) * 0.0012;
+    else speedAccel = 11.2 + (distance - 9000) * 0.0005;
+  } else {
+    if (distance < 2000) speedAccel = distance * 0.0005;
+    else if (distance < 4000) speedAccel = 1.0 + (distance - 2000) * 0.0010;
+    else if (distance < 9000) speedAccel = 3.0 + (distance - 4000) * 0.0008;
+    else speedAccel = 7.0 + (distance - 9000) * 0.0003;
+  }
   speed = (BASE_SPEED + speedAccel) * speedMult;
   const spd = speed * dt;
   bgX += spd;
@@ -1993,29 +2098,19 @@ function loop(ts) {
   if (!boss && distance >= 4000 && !bossDefeated[0]) spawnBoss(1); // Sentinel Turret at 4000m (index 0)
   if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m (index 2)
   if (!boss && distance >= 12000 && !bossDefeated[3]) spawnBoss(4); // Supreme Overlord at 12000m (index 3)
-
+  if (!boss && distance >= 19000 && !bossDefeated[4]) spawnBoss(5); // Annihilator at 19000m (index 4)
   // ── PHASE-BASED SPAWNING (fewer enemies!) ──
   let si, enemyChance, missileChance;
-  if (distance < 2000) {
-    // PHASE 1: Easy — mostly obstacles, rare enemies
-    si = Math.max(80, 140 - distance * 0.02);
-    enemyChance = 0.12;
-    missileChance = 0.20;
-  } else if (distance < 5000) {
-    // PHASE 2: Medium — tighter intervals and more enemies
-    si = Math.max(65, 100 - (distance - 2000) * 0.015);
-    enemyChance = 0.22;
-    missileChance = 0.25;
-  } else if (distance < 9000) {
-    // PHASE 3: Hard — 5000-9000 density scaled back slightly
-    si = Math.max(50, 75 - (distance - 5000) * 0.01);
-    enemyChance = 0.25;
-    missileChance = 0.30;
+  if (gameMode === 'pro') {
+    if (distance < 2000) { si = Math.max(80, 140 - distance * 0.02); enemyChance = 0.12; missileChance = 0.20; }
+    else if (distance < 5000) { si = Math.max(65, 100 - (distance - 2000) * 0.015); enemyChance = 0.22; missileChance = 0.25; }
+    else if (distance < 9000) { si = Math.max(50, 75 - (distance - 5000) * 0.01); enemyChance = 0.25; missileChance = 0.30; }
+    else { si = Math.max(45, 55 - (distance - 9000) * 0.005); enemyChance = 0.28; missileChance = 0.35; }
   } else {
-    // PHASE 4: 9000+ Balanced end-game density (Not hard also not easy)
-    si = Math.max(45, 55 - (distance - 9000) * 0.005);
-    enemyChance = 0.28;
-    missileChance = 0.35;
+    if (distance < 2000) { si = Math.max(160, 240 - distance * 0.015); enemyChance = 0.04; missileChance = 0.05; }
+    else if (distance < 5000) { si = Math.max(140, 200 - (distance - 2000) * 0.01); enemyChance = 0.08; missileChance = 0.07; }
+    else if (distance < 9000) { si = Math.max(120, 180 - (distance - 5000) * 0.01); enemyChance = 0.10; missileChance = 0.10; }
+    else { si = Math.max(100, 160 - (distance - 9000) * 0.005); enemyChance = 0.12; missileChance = 0.12; }
   }
   // Don't spawn regular enemies during boss fights
   const bossActive = boss && boss.entered && !boss.retreating;
@@ -2025,29 +2120,28 @@ function loop(ts) {
     if (distance < 2000) {
       // 0 - 2000: Missiles, Electric Zappers, Cyberpunk Emitters, AND Vertical Lasers
       if (r < 0.15) spawnLaser('vert');
-      else if (r < 0.30) spawnLaser('horiz');
-      else if (r < 0.70) spawnElectric();
+      else if (r < 0.45) spawnLaser('horiz');
+      else if (r < 0.65) spawnElectric();
       else spawnMissileWarning();
     }
     else if (distance < 4000) {
       // 2000 - 4000: Missiles, Electric Zappers, and Cyberpunk Laser Emitter (Horiz)
-      if (r < 0.30) spawnLaser('horiz');
+      if (r < 0.40) spawnLaser('horiz');
       else if (r < 0.60) spawnElectric();
       else spawnMissileWarning();
     }
-
     else if (distance < 9900) {
       // 4000 - 9900: ONLY Vertical Lasers, SOME Electric Zappers, and Cyberpunk Emitters (NO MISSILES)
       // Reduced vertical laser chance from 40% to 15%
       if (r < 0.15) spawnLaser('vert');
-      else if (r < 0.60) spawnLaser('horiz');
+      else if (r < 0.75) spawnLaser('horiz');
       else spawnElectric();
     }
     else {
       // 9900+: All obstacles: Missiles, Zappers, Cyberpunk Emitters, and Vertical Lasers (Hard but balanced)
       // Reduced vertical laser chance from 25% to 10%
       if (r < 0.10) spawnLaser('vert');
-      else if (r < 0.30) spawnLaser('horiz');
+      else if (r < 0.45) spawnLaser('horiz');
       else if (r < 0.65) spawnElectric();
       else spawnMissileWarning();
     }
@@ -2063,8 +2157,8 @@ function loop(ts) {
   if (maxCoinX < canvas.gameW - 100 && frame % 180 === 0 && !bossActive) spawnCoinPattern();
 
   if (frame % 400 === 0) spawnPickup();
-  // Heart packs: spawn every ~500 frames, only when player has lost hearts (now up to 4 hearts max)
-  if (frame % 500 === 0 && hearts < 4) spawnHeartPack();
+  // Heart packs: spawn every ~500 frames, only when player has lost hearts (now up to 5 hearts max)
+  if (frame % 500 === 0 && hearts < 5) spawnHeartPack();
   // Ultimate packs: rare, every ~700 frames, only after 1200m
   if (frame % 700 === 0 && distance > 1200 && Math.random() < 0.3) spawnUltimatePack();
 
@@ -2239,7 +2333,7 @@ function loop(ts) {
   heartPacks.forEach(hp => {
     hp.x -= spd; drawHeartPack(hp);
     if (dist(player.x + player.w * .5, player.y + player.h * .5, hp.x, hp.y + Math.sin(hp.bob) * 6) < 28) {
-      if (hearts < 4) { hearts++; updateHearts(); }
+      if (hearts < 5) { hearts++; updateHearts(); }
       sfx.heart();
       spawnP(hp.x, hp.y, '#ff4466', 16);
       spawnP(hp.x, hp.y, '#ffaacc', 8);
