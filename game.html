@@ -46,7 +46,23 @@
           </span>
           <span id="coinVal">0</span>
         </div>
-        <div id="heartsDisplay">❤️❤️❤️</div>
+        <div style="display:flex; flex-direction:column; align-items:flex-end; gap: 4px;">
+          <div id="heartsDisplay">❤️❤️❤️</div>
+          <div id="ammoDisplay" style="display: flex; gap: 12px;">
+            <div class="hud-panel" style="color: #ff00ff; border-color: rgba(255,0,255,0.3); box-shadow: inset 0 0 10px rgba(255,0,255,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff00ff; padding: 6px 14px; font-size: 20px;">
+              <span style="display:flex; align-items:center; margin-right: 8px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12l3-3h3v4h-3l-3 3H4z"/><path d="M8 14v4l-4-4"/></svg>
+              </span>
+              <span id="laserAmmoVal">x5</span>
+            </div>
+            <div class="hud-panel" style="color: #ff4400; border-color: rgba(255,68,0,0.3); box-shadow: inset 0 0 10px rgba(255,68,0,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff4400; padding: 6px 14px; font-size: 20px;">
+              <span style="display:flex; align-items:center; margin-right: 8px;">
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5"/><path d="M11 20l9-9c1.66-1.66 1.66-4.34 0-6c-1.66-1.66-4.34-1.66-6 0l-9 9c-1.66 1.66-1.66 4.34 0 6c1.66 1.66 4.34 1.66 6 0z"/><circle cx="15" cy="9" r="1.5"/></svg>
+              </span>
+              <span id="missileAmmoVal">x3</span>
+            </div>
+          </div>
+        </div>
       </div>
       <div id="puBar" class="hidden">
         <span id="puIcon">🛡️</span>
@@ -54,6 +70,7 @@
           <div id="puFill"></div>
         </div>
       </div>
+      <button id="shootBtn" class="hidden" style="position: absolute; right: 20px; bottom: 80px; width: 60px; height: 60px; border-radius: 50%; background: rgba(255,20,80,0.8); border: 2px solid #fff; color: white; font-size: 24px; display: none; align-items: center; justify-content: center; box-shadow: 0 0 15px rgba(255,20,80,0.8); z-index: 1000; cursor: pointer; user-select: none; -webkit-user-select: none;">🔫</button>
     </div>
 
     <!-- Start Screen -->
@@ -65,7 +82,7 @@
         <div class="dline"></div>
         <button class="btn primary" id="startBtn">Start Game</button>
         <div class="startRow">
-          <button class="btn secondary" id="skinsBtn">👤 Skins</button>
+          <button class="btn secondary" id="skinsBtn">🛒 Shop</button>
           <button class="btn secondary" id="leaderBtn">🏆 Leaderboard</button>
         </div>
         <div class="instruct">
@@ -122,10 +139,11 @@
     <!-- Skins Overlay -->
     <div class="overlay hidden" id="skinsOverlay">
       <div class="panel" style="display:flex; flex-direction:column;">
-        <div class="panelTitle">Skins & Gear <span class="panelClose" id="skinsClose">✕</span></div>
+        <div class="panelTitle">Gear Shop <span class="panelClose" id="skinsClose">✕</span></div>
         <div class="tabRow">
           <button class="tabBtn active" id="tabChars">👤 Characters</button>
           <button class="tabBtn" id="tabJets">🚀 Jetpacks</button>
+          <button class="tabBtn" id="tabPets">🐾 Pets</button>
         </div>
         <div class="panelScroll">
           <div id="skinsList"></div>

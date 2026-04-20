@@ -115,6 +115,43 @@ const sfx = {
   over: () => { [440, 370, 330, 262].forEach((f, i) => tone(f, .38, 'triangle', .1, i * .38)); },
   biome: () => { [523, 659, 784, 1047].forEach((f, i) => tone(f, .14, 'triangle', .07, i * .11)); playDrum(3, 0.5); },
   laser: () => { tone(140, .15, 'sawtooth', .06); },
+  pew: () => { tone(800, 0.1, 'square', 0.05); tone(600, 0.15, 'square', 0.05, 0.02); },
+  meow: () => { 
+    if (!AC || muted) return;
+    try {
+      const t = AC.currentTime, o = AC.createOscillator(), g = AC.createGain();
+      o.connect(g); g.connect(masterGain);
+      o.type = 'sine'; o.frequency.setValueAtTime(600, t);
+      o.frequency.exponentialRampToValueAtTime(1200, t + 0.15);
+      o.frequency.exponentialRampToValueAtTime(800, t + 0.3);
+      g.gain.setValueAtTime(0.001, t); g.gain.linearRampToValueAtTime(0.1, t + 0.05);
+      g.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      o.start(t); o.stop(t + 0.35);
+    } catch(e) {}
+  },
+  fireball: () => { 
+    if (!AC || muted) return;
+    try {
+      const t = AC.currentTime;
+      const o = AC.createOscillator(), gO = AC.createGain();
+      o.connect(gO); gO.connect(masterGain);
+      o.type = 'sine'; o.frequency.setValueAtTime(150, t); o.frequency.exponentialRampToValueAtTime(30, t + 0.3);
+      gO.gain.setValueAtTime(0.3, t); gO.gain.exponentialRampToValueAtTime(0.01, t + 0.3);
+      o.start(t); o.stop(t + 0.3);
+
+      const bufSize = AC.sampleRate * 0.4;
+      const buf = AC.createBuffer(1, bufSize, AC.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = AC.createBufferSource(), filter = AC.createBiquadFilter(), g = AC.createGain(); 
+      noise.buffer = buf; filter.type = 'bandpass'; 
+      filter.frequency.setValueAtTime(1200, t);
+      filter.frequency.exponentialRampToValueAtTime(200, t + 0.4);
+      noise.connect(filter); filter.connect(g); g.connect(masterGain);
+      g.gain.setValueAtTime(0.5, t); g.gain.exponentialRampToValueAtTime(0.01, t + 0.4);
+      noise.start(t);
+    } catch(e) {}
+  },
   laserCharge: () => {
     // High-pitched sweeping 'charging up' sound during targeting phase
     if (!AC || muted) return;
@@ -218,6 +255,75 @@ const sfx = {
   electric: () => { tone(1200, .08, 'square', .04); tone(1800, .06, 'square', .03, .04); },
   reward: () => { [523, 659, 784, 1047, 1320].forEach((f, i) => tone(f, .18, 'triangle', .08, i * .12)); },
   heart: () => { [440, 554, 659, 880].forEach((f, i) => tone(f, .16, 'sine', .1, i * .09)); tone(1108, .2, 'triangle', .06, .4); },
+  bounce: () => { tone(120, .15, 'square', .1); tone(80, .15, 'sawtooth', .1); playDrum(1, 0.6); },
+  skid: () => { 
+    if (!AC || muted) return;
+    try {
+      const t = AC.currentTime, bufSize = AC.sampleRate * 0.08;
+      const buf = AC.createBuffer(1, bufSize, AC.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1;
+      const noise = AC.createBufferSource(); noise.buffer = buf;
+      const filter = AC.createBiquadFilter(); filter.type = 'highpass'; filter.frequency.value = 4000;
+      const g = AC.createGain(); 
+      noise.connect(filter); filter.connect(g); g.connect(masterGain);
+      g.gain.setValueAtTime(0.05, t); g.gain.exponentialRampToValueAtTime(0.001, t + 0.07);
+      noise.start(t);
+    } catch(e) {}
+  },
+  explode: () => {
+    if (!AC || muted) return;
+    try {
+      const t = AC.currentTime;
+      
+      // 1. Initial High-Energy Digital Crack (Zapp!)
+      const o1 = AC.createOscillator(), g1 = AC.createGain();
+      o1.connect(g1); g1.connect(masterGain);
+      o1.type = 'square';
+      o1.frequency.setValueAtTime(1200, t);
+      o1.frequency.exponentialRampToValueAtTime(100, t + 0.3);
+      g1.gain.setValueAtTime(0.5, t);
+      g1.gain.exponentialRampToValueAtTime(0.001, t + 0.3);
+      o1.start(t); o1.stop(t + 0.4);
+
+      // 2. Heavy Sub-Bass Boom (The massive physical impact)
+      const o2 = AC.createOscillator(), g2 = AC.createGain();
+      o2.connect(g2); g2.connect(masterGain);
+      o2.type = 'sine';
+      o2.frequency.setValueAtTime(150, t);
+      o2.frequency.exponentialRampToValueAtTime(20, t + 1.2);
+      g2.gain.setValueAtTime(0.8, t);
+      g2.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+      o2.start(t); o2.stop(t + 1.3);
+
+      // 3. Sci-Fi Shattering Noise (Filtered White Noise)
+      const bufSize = AC.sampleRate * 1.5;
+      const buf = AC.createBuffer(1, bufSize, AC.sampleRate);
+      const data = buf.getChannelData(0);
+      for (let i = 0; i < bufSize; i++) data[i] = Math.random() * 2 - 1; // Noise
+      
+      const noise = AC.createBufferSource(); noise.buffer = buf;
+      const filter = AC.createBiquadFilter(); filter.type = 'lowpass';
+      filter.frequency.setValueAtTime(4000, t);
+      filter.frequency.exponentialRampToValueAtTime(200, t + 1.2);
+      
+      const g3 = AC.createGain(); 
+      noise.connect(filter); filter.connect(g3); g3.connect(masterGain);
+      g3.gain.setValueAtTime(0.8, t); g3.gain.exponentialRampToValueAtTime(0.001, t + 1.2);
+      noise.start(t);
+      
+      // 4. Secondary Glitching Cyber-Sweep (Metallic Resonance)
+      const o3 = AC.createOscillator(), g4 = AC.createGain();
+      o3.connect(g4); g4.connect(masterGain);
+      o3.type = 'sawtooth';
+      o3.frequency.setValueAtTime(500, t);
+      o3.frequency.linearRampToValueAtTime(50, t + 0.8);
+      g4.gain.setValueAtTime(0.4, t);
+      g4.gain.exponentialRampToValueAtTime(0.001, t + 0.8);
+      o3.start(t); o3.stop(t + 0.9);
+      
+    } catch(e) {}
+  },
 };
 
 let jetSrc = null;
