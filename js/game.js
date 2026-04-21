@@ -495,7 +495,7 @@ function spawnP(x, y, col, n) {
 function spawnEnemy(forceType) {
   const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const type = forceType || (Math.random() < 0.33 ? 'standard' : Math.random() < 0.66 ? 'spinning_robot' : 'chopper');
-  const shootInterval = gameMode === 'pro' ? Math.max(90, 160 - distance * 0.006) : Math.max(180, 280 - distance * 0.002);
+  const shootInterval = gameMode === 'pro' ? Math.max(90, 160 - distance * 0.006) : Math.max(240, 360 - distance * 0.001);
   if (type === 'spinning_robot') {
     const ey = gY * 0.45 + Math.random() * (gY * 0.3);
     enemies.push({
@@ -526,7 +526,7 @@ function spawnEnemy(forceType) {
   }
 }
 function spawnEnemyBullet(ex, ey, bulletType) {
-  const bulletSpeed = gameMode === 'pro' ? 2.8 + distance * 0.0003 : 1.5 + distance * 0.0001;
+  const bulletSpeed = gameMode === 'pro' ? 2.8 + distance * 0.0003 : 1.0 + distance * 0.00005;
   if (bulletType === 'laser_beam') {
     // Robot: shoots straight left (very predictable)
     enemyBullets.push({ x: ex, y: ey, vx: -bulletSpeed * 1.5, vy: 0, r: 10, life: 1, btype: 'laser_beam' });
@@ -557,35 +557,35 @@ function spawnBoss(bossType) {
     // Sentinel Turret at 2000m
     boss = {
       type: 'sentinel', x: W + 80, y: gY * 0.35, targetX: W * 0.72, w: 60, h: 70,
-      hp: gameMode === 'pro' ? 80 : 40, maxHp: gameMode === 'pro' ? 80 : 40, phase: 0, shootTimer: 60, shootInterval: 30, bossIdx: 0,
+      hp: gameMode === 'pro' ? 80 : 40, maxHp: gameMode === 'pro' ? 80 : 40, phase: 0, shootTimer: 60, shootInterval: gameMode === 'pro' ? 30 : 60, bossIdx: 0,
       entered: false, defeated: false, retreating: false, t: 0
     };
   } else if (bossType === 2) {
     // Warden Mech at 4000m
     boss = {
       type: 'warden', x: W + 100, y: gY * 0.4, targetX: W * 0.68, w: 80, h: 90,
-      hp: gameMode === 'pro' ? 120 : 60, maxHp: gameMode === 'pro' ? 120 : 60, phase: 0, shootTimer: 45, shootInterval: 75, bossIdx: 1,
+      hp: gameMode === 'pro' ? 120 : 60, maxHp: gameMode === 'pro' ? 120 : 60, phase: 0, shootTimer: 45, shootInterval: gameMode === 'pro' ? 75 : 120, bossIdx: 1,
       entered: false, defeated: false, retreating: false, t: 0, walkFrame: 0
     };
   } else if (bossType === 3) {
     // Overlord Gunship at 6000m
     boss = {
       type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: gameMode === 'pro' ? 160 : 80, maxHp: gameMode === 'pro' ? 160 : 80, phase: 0, shootTimer: 40, shootInterval: 45, bossIdx: 2,
+      hp: gameMode === 'pro' ? 160 : 80, maxHp: gameMode === 'pro' ? 160 : 80, phase: 0, shootTimer: 40, shootInterval: gameMode === 'pro' ? 45 : 80, bossIdx: 2,
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
   } else if (bossType === 4) {
     // Supreme Overlord at 12000m
     boss = {
       type: 'overlord', x: W + 120, y: gY * 0.25, targetX: W * 0.65, w: 100, h: 60,
-      hp: gameMode === 'pro' ? 240 : 120, maxHp: gameMode === 'pro' ? 240 : 120, phase: 0, shootTimer: 25, shootInterval: 30, bossIdx: 3,
+      hp: gameMode === 'pro' ? 240 : 120, maxHp: gameMode === 'pro' ? 240 : 120, phase: 0, shootTimer: 25, shootInterval: gameMode === 'pro' ? 30 : 60, bossIdx: 3,
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
   } else {
     // Annihilator at 19000m (Final Boss)
     boss = {
       type: 'annihilator', x: W + 150, y: gY * 0.4, targetX: W * 0.6, w: 120, h: 120,
-      hp: gameMode === 'pro' ? 320 : 160, maxHp: gameMode === 'pro' ? 320 : 160, phase: 0, shootTimer: 50, shootInterval: 50, bossIdx: 4,
+      hp: gameMode === 'pro' ? 320 : 160, maxHp: gameMode === 'pro' ? 320 : 160, phase: 0, shootTimer: 50, shootInterval: gameMode === 'pro' ? 50 : 90, bossIdx: 4,
       entered: false, defeated: false, retreating: false, t: 0, orbitalAngle: 0
     };
   }
@@ -644,7 +644,7 @@ function updateBoss(dt, spd) {
 
     if (boss.type === 'sentinel') {
       // Sentinel: Reduced bullet spread for fewer bullets
-      const bs = 5.0;
+      const bs = gameMode === 'pro' ? 5.0 : 3.0;
       const salvo1 = [-0.30, 0.30];
       salvo1.forEach(offset => {
         const angle = Math.PI + offset;
@@ -664,25 +664,27 @@ function updateBoss(dt, spd) {
 
     } else if (boss.type === 'warden') {
       // Warden: TOP + BOTTOM rows fire with a clear MIDDLE LANE safe zone. Added extreme lower bullets to hit ground targets.
+      const wbs = gameMode === 'pro' ? -4.0 : -2.5;
       [-60, -30].forEach(yOff => {
-        enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
+        enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: wbs, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
       });
       setTimeout(() => {
         if (!boss || boss.type !== 'warden') return;
         [60, 110, 160, 220].forEach(yOff => {
-          enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: -4.0, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
+          enemyBullets.push({ x: boss.x - 40, y: boss.y + yOff, vx: wbs, vy: 0, r: 13, life: 1, btype: 'warden_shell' });
         });
         sfx.laser();
       }, 320);
       // Slow homing fireball — easy to drift away from
-      enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: -2.5, vy: 0, r: 18, life: 1, btype: 'warden_fireball' });
+      const wfb = gameMode === 'pro' ? -2.5 : -1.5;
+      enemyBullets.push({ x: boss.x - 30, y: boss.y, vx: wfb, vy: 0, r: 18, life: 1, btype: 'warden_fireball' });
       sfx.laser();
 
     } else if (boss.type === 'overlord') {
       // Overlord: alternating UP wave / DOWN wave — player ducks to whichever side is clear
       boss._waveToggle = !boss._waveToggle;
       const yDir = boss._waveToggle ? -1 : 1;
-      const bs = 3.5;
+      const bs = gameMode === 'pro' ? 3.5 : 2.0;
       [-1.5, -0.5, 0.5, 1.5].forEach(mult => {
         const angle = Math.PI + (mult * 0.14 * yDir);
         enemyBullets.push({
@@ -724,6 +726,17 @@ function drawBoss() {
     // SENTINEL TURRET — large automated defense platform
     const scale = 2.2;
     ctx.scale(scale, scale);
+
+    // Anti-Gravity Thruster Flame underneath
+    ctx.save();
+    ctx.translate(0, 15);
+    ctx.scale(1, 1 + Math.sin(t * 0.4) * 0.3); // Pulsing thrust
+    const fb = ctx.createLinearGradient(0, 0, 0, 25);
+    fb.addColorStop(0, '#00f3ff'); fb.addColorStop(0.5, '#0088ff'); fb.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fb;
+    ctx.beginPath(); ctx.moveTo(-16, 0); ctx.lineTo(16, 0); ctx.lineTo(0, 35 + Math.random() * 10); ctx.closePath(); ctx.fill();
+    ctx.restore();
+
     // Base platform
     const pbg = ctx.createLinearGradient(-20, 5, 20, 20);
     pbg.addColorStop(0, '#5a6a7a'); pbg.addColorStop(1, '#3a4a5a');
@@ -763,14 +776,21 @@ function drawBoss() {
     // WARDEN MECH — massive armored bipedal walker
     const scale = 2.5;
     ctx.scale(scale, scale);
-    b.walkFrame = (b.walkFrame || 0) + 0.08;
-    const legL = Math.sin(b.walkFrame) * 6, legR = Math.sin(b.walkFrame + Math.PI) * 6;
-    // Legs
-    ctx.strokeStyle = '#4a5a6a'; ctx.lineWidth = 7; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-12, 16); ctx.lineTo(-16 + legL, 28); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(12, 16); ctx.lineTo(16 + legR, 28); ctx.stroke();
+    b.walkFrame = (b.walkFrame || 0) + 0.12;
+    const p1 = Math.sin(b.walkFrame), p2 = Math.sin(b.walkFrame + Math.PI);
+    const legL = p1 * 8, legR = p2 * 8;
+    const liftL = Math.max(0, -p1 * 6), liftR = Math.max(0, -p2 * 6); // Dynamic knee lift!
+    
+    // Legs (multi-jointed)
+    ctx.strokeStyle = '#4a5a6a'; ctx.lineWidth = 6; ctx.lineCap = 'round';
+    // Back leg
+    ctx.beginPath(); ctx.moveTo(8, 16); ctx.lineTo(12 + legR/2, 22 - liftR); ctx.lineTo(16 + legR, 30 - liftR/2); ctx.stroke();
+    // Front leg
+    ctx.beginPath(); ctx.moveTo(-8, 16); ctx.lineTo(-12 + legL/2, 22 - liftL); ctx.lineTo(-16 + legL, 30 - liftL/2); ctx.stroke();
+    
     ctx.fillStyle = '#3a4a5a';
-    ctx.fillRect(-22 + legL, 26, 16, 6); ctx.fillRect(6 + legR, 26, 16, 6);
+    // Feet (pivot dynamically)
+    ctx.fillRect(-22 + legL, 28 - liftL/2, 16, 5); ctx.fillRect(6 + legR, 28 - liftR/2, 16, 5);
     // Body
     const mbg = ctx.createLinearGradient(-20, -24, 20, 18);
     mbg.addColorStop(0, '#5a6878'); mbg.addColorStop(0.5, '#8a9aa8'); mbg.addColorStop(1, '#4a5868');
@@ -802,17 +822,28 @@ function drawBoss() {
     // OVERLORD GUNSHIP — huge attack helicopter
     const scale = 2.8;
     ctx.scale(scale, scale);
-    b.wingFrame = (b.wingFrame || 0) + 0.3;
+    ctx.translate(0, Math.sin(t * 0.15) * 2); // Smooth hover bobbing for the entire chassis!
+    b.wingFrame = (b.wingFrame || 0) + 0.4; // Faster animation
+    
     // Tail
     ctx.fillStyle = '#4a5a68';
     ctx.beginPath(); ctx.moveTo(12, -3); ctx.lineTo(42, -4); ctx.lineTo(44, -2);
     ctx.lineTo(44, 2); ctx.lineTo(42, 4); ctx.lineTo(12, 3); ctx.closePath(); ctx.fill();
     ctx.fillStyle = '#dd4400'; ctx.fillRect(34, -2, 6, 4);
-    // Tail rotor
+    
+    // Engine thruster glow
+    ctx.save(); ctx.translate(34, -2);
+    ctx.fillStyle = `rgba(0, 243, 255, ${0.4 + Math.sin(t * 0.8) * 0.4})`;
+    ctx.shadowColor = '#00f3ff'; ctx.shadowBlur = 12;
+    ctx.beginPath(); ctx.arc(4, 2, 4 + Math.random() * 2, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
+
+    // Tail rotor with motion blur
     ctx.save(); ctx.translate(44, 0);
-    ctx.rotate(t * 0.5);
-    ctx.strokeStyle = 'rgba(150,180,200,0.7)'; ctx.lineWidth = 2;
+    ctx.rotate(t * 0.8);
+    ctx.strokeStyle = 'rgba(150,180,200,0.5)'; ctx.lineWidth = 4;
     ctx.beginPath(); ctx.moveTo(0, -10); ctx.lineTo(0, 10); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(-10, 0); ctx.lineTo(10, 0); ctx.stroke();
     ctx.restore();
     // Fuselage
     const fbg = ctx.createLinearGradient(0, -16, 0, 16);
@@ -869,14 +900,23 @@ function drawBoss() {
 
     // Inner mechanical casing
     ctx.fillStyle = '#222233';
-    ctx.beginPath(); ctx.arc(0, 0, 18, 0, Math.PI * 2); ctx.fill();
+    ctx.beginPath(); ctx.arc(0, 0, 18 + Math.sin(t * 0.3) * 1.5, 0, Math.PI * 2); ctx.fill(); // Breathing casing
     ctx.lineWidth = 2; ctx.strokeStyle = '#444455'; ctx.stroke();
 
-    // The giant eye!
+    // The giant eye! (Twitching maniacally looking for the player)
+    const eyeTwitchX = (Math.random() > 0.9) ? (Math.random() - 0.5) * 6 : Math.sin(t * 0.05) * 4;
+    const eyeTwitchY = (Math.random() > 0.95) ? (Math.random() - 0.5) * 6 : 0;
+    
+    ctx.save(); ctx.translate(eyeTwitchX, eyeTwitchY);
     const ebg = ctx.createRadialGradient(0, 0, 0, 0, 0, 12 * pulse);
     ebg.addColorStop(0, '#ffffff'); ebg.addColorStop(0.3, '#ff00ff'); ebg.addColorStop(1, '#550055');
     ctx.fillStyle = ebg;
     ctx.beginPath(); ctx.arc(0, 0, 12 * pulse, 0, Math.PI * 2); ctx.fill();
+    
+    // Cyber pupil
+    ctx.fillStyle = '#000000';
+    ctx.beginPath(); ctx.ellipse(0, 0, 2 + Math.random() * 0.5, 6 * pulse, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.restore();
 
     ctx.shadowBlur = 0;
   }
@@ -1302,6 +1342,7 @@ function drawPlayer() {
 
       ctx.save();
       ctx.translate(-5, -6); // Adjust center
+      ctx.scale(0.75, 0.75); // Scale down by 25%
 
       // Back Wing
       ctx.save();
@@ -1445,8 +1486,15 @@ function drawPlayer() {
     ctx.save(); ctx.globalAlpha = tr.life * 0.15; ctx.fillStyle = shieldActive ? '#44ff88' : cGlow;
     ctx.beginPath(); ctx.ellipse(tr.x + player.w * .5, tr.y + player.h * .5, player.w * .2 * tr.life, player.h * .15 * tr.life, 0, 0, Math.PI * 2); ctx.fill(); ctx.restore();
   });
-  ctx.save(); ctx.translate(px + player.w * .5, py + player.h * .5);
-  const tilt = state === 'dying' ? (player.rotation || 0) : Math.max(-0.2, Math.min(0.2, player.vy * 0.02)); ctx.rotate(tilt);
+  if (player.onGround && state === 'playing') player.runFrame += 0.35;
+  const bob = (player.onGround && state === 'playing') ? Math.abs(Math.sin(player.runFrame)) * 5 : 0;
+
+  let renderY = py - bob;
+  let tilt = state === 'dying' ? (player.rotation || 0) : Math.max(-0.2, Math.min(0.2, player.vy * 0.02));
+  if (player.onGround && state === 'playing') tilt = 0.12; // Forward sprint posture
+
+  ctx.save(); ctx.translate(px + player.w * .5, renderY + player.h * .5);
+  ctx.rotate(tilt);
   if (invincible > 0 && Math.floor(invincible / 4) % 2 === 0) { ctx.restore(); return; }
   // Shield bubble
   if (shieldActive) {
@@ -1508,30 +1556,61 @@ function drawPlayer() {
     ctx.restore();
   }
 
-  // ── LEGS (Cyber Armor) ──
   const legColor = char.id === 'apsara' ? cAccent : '#1a1d24'; // Brighter gold/white legs for Apsara
   if (player.onGround) {
-    player.runFrame += .22;
-    const lL = Math.sin(player.runFrame) * 11, lR = Math.sin(player.runFrame + Math.PI) * 11;
-    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 7; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-6, 12); ctx.lineTo(-6 + lL, 24); ctx.stroke();
-    ctx.fillStyle = cAccent; ctx.fillRect(-10 + lL, 22, 12, 5); // left boot
-    ctx.fillStyle = cGlow; ctx.fillRect(-8 + lL, 24, 4, 2); // left heel
+    const lL = Math.sin(player.runFrame) * 14; // Wider stride
+    const lR = Math.sin(player.runFrame + Math.PI) * 14;
+
+    // Calculate foot lift (lifts foot during forward swing)
+    const liftL = Math.max(0, -Math.sin(player.runFrame) * 8);
+    const liftR = Math.max(0, -Math.sin(player.runFrame + Math.PI) * 8);
+
+    // Left Leg
+    const footLX = -5 + lL;
+    const footLY = 25 - liftL + bob; // Extend legs dynamically down to ground
+    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(-5, 12);
+    ctx.lineTo(-5 + lL / 2 + (liftL > 0 ? 6 : -3), 18 - liftL / 2 + bob / 2); // Dynamic knee joint
+    ctx.lineTo(footLX, footLY); ctx.stroke();
+
+    // Left Boot
+    ctx.fillStyle = cAccent; ctx.beginPath(); ctx.roundRect(footLX - 6, footLY - 3, 14, 6, 2); ctx.fill();
+    ctx.fillStyle = cGlow; ctx.fillRect(footLX - 4, footLY, 4, 3);
     ctx.restore();
-    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 7; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(6, 12); ctx.lineTo(6 + lR, 24); ctx.stroke();
-    ctx.fillStyle = cAccent; ctx.fillRect(-2 + lR, 22, 12, 5); // right boot
-    ctx.fillStyle = cGlow; ctx.fillRect(0 + lR, 24, 4, 2);
+
+    // Right Leg
+    const footRX = 5 + lR;
+    const footRY = 25 - liftR + bob; // Extend legs dynamically down to ground
+    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 7; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+    ctx.beginPath(); ctx.moveTo(5, 12);
+    ctx.lineTo(5 + lR / 2 + (liftR > 0 ? 6 : -3), 18 - liftR / 2 + bob / 2); // Dynamic knee joint
+    ctx.lineTo(footRX, footRY); ctx.stroke();
+
+    // Right Boot
+    ctx.fillStyle = cAccent; ctx.beginPath(); ctx.roundRect(footRX - 6, footRY - 3, 14, 6, 2); ctx.fill();
+    ctx.fillStyle = cGlow; ctx.fillRect(footRX - 4, footRY, 4, 3);
     ctx.restore();
   } else {
+    // Flying logic
     const d2 = Math.sin(frame * .08) * 4;
-    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 6; ctx.lineCap = 'round';
-    ctx.beginPath(); ctx.moveTo(-5, 12); ctx.lineTo(-8 + d2, 23); ctx.stroke();
-    ctx.beginPath(); ctx.moveTo(5, 12); ctx.lineTo(8 - d2, 23); ctx.stroke(); ctx.restore();
-    ctx.fillStyle = cAccent;
-    ctx.fillRect(-12 + d2, 21, 10, 5); ctx.fillStyle = cGlow; ctx.fillRect(-10 + d2, 23, 4, 2);
-    ctx.fillStyle = cAccent;
-    ctx.fillRect(4 - d2, 21, 10, 5); ctx.fillStyle = cGlow; ctx.fillRect(6 - d2, 23, 4, 2);
+    ctx.save(); ctx.strokeStyle = legColor; ctx.lineWidth = 6; ctx.lineCap = 'round'; ctx.lineJoin = 'round';
+
+    // Left leg flying
+    ctx.beginPath(); ctx.moveTo(-5, 12);
+    ctx.lineTo(-8 + d2 / 2, 17);
+    ctx.lineTo(-8 + d2, 23); ctx.stroke();
+
+    // Right leg flying
+    ctx.beginPath(); ctx.moveTo(5, 12);
+    ctx.lineTo(8 - d2 / 2, 17);
+    ctx.lineTo(8 - d2, 23); ctx.stroke(); ctx.restore();
+
+    // Flying Boots
+    ctx.fillStyle = cAccent; ctx.beginPath(); ctx.roundRect(-14 + d2, 20, 14, 6, 2); ctx.fill();
+    ctx.fillStyle = cGlow; ctx.fillRect(-12 + d2, 23, 4, 3);
+
+    ctx.fillStyle = cAccent; ctx.beginPath(); ctx.roundRect(2 - d2, 20, 14, 6, 2); ctx.fill();
+    ctx.fillStyle = cGlow; ctx.fillRect(4 - d2, 23, 4, 3);
   }
 
   // ── TORSO (Cyber Suit) ──
@@ -1595,7 +1674,33 @@ function drawPlayer() {
   ctx.restore();
 
   // Front Arm + ENERGY SABER
-  const swingOffset = (player.saberSwing || 0) * Math.PI * 0.4;
+  const swingPhase = player.saberSwing || 0;
+
+  // High-Velocity Slash Trail
+  if (swingPhase > 0.05) {
+    ctx.save(); ctx.translate(10, -6);
+    ctx.rotate(0.3 - armSwing * 0.5 - attackAngle * 0.5); // Anchor to shoulder
+    ctx.globalAlpha = Math.min(1, swingPhase * 1.5);
+    ctx.shadowColor = cSaber; ctx.shadowBlur = 20 + Math.random() * 10;
+
+    // Gradient arc
+    const arcG = ctx.createLinearGradient(-10, -40, 30, 30);
+    arcG.addColorStop(0, 'rgba(255,255,255,0.9)');
+    arcG.addColorStop(0.4, cSaber);
+    arcG.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = arcG;
+
+    ctx.beginPath();
+    ctx.moveTo(-10, -45);
+    ctx.quadraticCurveTo(55, -40, 25, 45); // Outer massive sweep
+    ctx.quadraticCurveTo(35, -5, -5, -35); // Sharp inner hook returning to hilt
+    ctx.closePath(); ctx.fill();
+    ctx.restore();
+  }
+
+  // Saber snaps down dramatically and organic spring back up
+  const swingOffset = swingPhase > 0 ? Math.sin(swingPhase * Math.PI) * 1.6 : 0;
+
   ctx.save(); ctx.translate(10, -6); ctx.rotate(0.3 - armSwing * 0.5 - attackAngle * 0.5 + swingOffset);
   ctx.fillStyle = cBody; ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill();
   ctx.fillStyle = cAccent; ctx.fillRect(-3, 0, 7, 14);
@@ -1608,15 +1713,18 @@ function drawPlayer() {
   ctx.fillStyle = '#222'; ctx.fillRect(-4, -4, 8, 3);
   ctx.fillStyle = cGlow; ctx.fillRect(-1, 8, 2, 2);
 
-  // Energy Saber
+  // Energy Saber Blade
   const sLen = 38 + Math.random() * 2;
   ctx.shadowColor = cSaber; ctx.shadowBlur = 20 + Math.sin(t * 0.7) * 5;
   ctx.fillStyle = cSaber;
   ctx.beginPath(); ctx.roundRect(-3, -sLen - 4, 6, sLen, 3); ctx.fill();
   ctx.shadowBlur = 0;
+
+  // White plasma core inside sword
   ctx.fillStyle = '#ffffff';
   ctx.beginPath(); ctx.roundRect(-1.5, -sLen - 3, 3, sLen - 2, 1.5); ctx.fill();
 
+  // Speed lines trailing off sword when flying fast
   if (!player.onGround && player.vy > 1) {
     ctx.globalAlpha = 0.4; ctx.fillStyle = cSaber;
     ctx.beginPath(); ctx.moveTo(-3, -sLen); ctx.lineTo(-18, -sLen - player.vy * 2); ctx.lineTo(0, -4); ctx.fill();
@@ -2110,7 +2218,7 @@ function shootPlayerGun() {
     vy: 0,
     type: 'player_laser',
     life: 1,
-    damage: 1,
+    damage: 3, // Increased damage for the saber!
     color: playerColor
   });
   if (sfx.pew) sfx.pew(); else if (sfx.laser) sfx.laser();
@@ -2291,11 +2399,6 @@ function loop(ts) {
   const isBossActive = boss && boss.entered && !boss.retreating && !boss.defeated;
   if (!isBossActive) {
     distance += spd * 0.1;
-    document.getElementById('shootBtn').style.display = 'none';
-    if (document.getElementById('missileBtn')) document.getElementById('missileBtn').style.display = 'none';
-  } else {
-    document.getElementById('shootBtn').style.display = 'flex';
-    if (document.getElementById('missileBtn')) document.getElementById('missileBtn').style.display = 'flex';
   }
 
   if (player.shootCooldown > 0) player.shootCooldown -= dt;
@@ -2427,25 +2530,24 @@ function loop(ts) {
   if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m (index 2)
   if (!boss && distance >= 12000 && !bossDefeated[3]) spawnBoss(4); // Supreme Overlord at 12000m (index 3)
   if (!boss && distance >= 19000 && !bossDefeated[4]) spawnBoss(5); // Annihilator at 19000m (index 4)
-  // ── PHASE-BASED SPAWNING (fewer enemies!) ──
+  // ── PHASE-BASED SPAWNING ──
   let si, enemyChance, missileChance;
   if (gameMode === 'pro') {
-    if (distance < 2000) { si = Math.max(80, 140 - distance * 0.02); enemyChance = 0.12; missileChance = 0.20; }
-    else if (distance < 5000) { si = Math.max(65, 100 - (distance - 2000) * 0.015); enemyChance = 0.22; missileChance = 0.25; }
-    else if (distance < 9000) { si = Math.max(50, 75 - (distance - 5000) * 0.01); enemyChance = 0.25; missileChance = 0.30; }
-    else { si = Math.max(45, 55 - (distance - 9000) * 0.005); enemyChance = 0.28; missileChance = 0.35; }
+    if (distance < 2000) { si = Math.max(80, 140 - distance * 0.02); enemyChance = 0.35; missileChance = 0.20; }
+    else if (distance < 5000) { si = Math.max(65, 100 - (distance - 2000) * 0.015); enemyChance = 0.50; missileChance = 0.25; }
+    else if (distance < 9000) { si = Math.max(50, 75 - (distance - 5000) * 0.01); enemyChance = 0.65; missileChance = 0.30; }
+    else { si = Math.max(45, 55 - (distance - 9000) * 0.005); enemyChance = 0.75; missileChance = 0.35; }
   } else {
-    if (distance < 2000) { si = Math.max(160, 240 - distance * 0.015); enemyChance = 0.04; missileChance = 0.05; }
-    else if (distance < 5000) { si = Math.max(140, 200 - (distance - 2000) * 0.01); enemyChance = 0.08; missileChance = 0.07; }
-    else if (distance < 9000) { si = Math.max(120, 180 - (distance - 5000) * 0.01); enemyChance = 0.10; missileChance = 0.10; }
-    else { si = Math.max(100, 160 - (distance - 9000) * 0.005); enemyChance = 0.12; missileChance = 0.12; }
+    // Beginner: Very relaxed, low enemy spawn chance
+    if (distance < 2000) { si = Math.max(220, 300 - distance * 0.01); enemyChance = 0.15; missileChance = 0.02; }
+    else if (distance < 5000) { si = Math.max(200, 260 - (distance - 2000) * 0.01); enemyChance = 0.20; missileChance = 0.04; }
+    else if (distance < 9000) { si = Math.max(180, 220 - (distance - 5000) * 0.01); enemyChance = 0.25; missileChance = 0.06; }
+    else { si = Math.max(160, 200 - (distance - 9000) * 0.005); enemyChance = 0.35; missileChance = 0.08; }
   }
-  // Don't spawn regular enemies during boss fights or when dying
   // Don't spawn regular enemies during boss fights or when dying
   const bossActive = boss && boss.entered && !boss.retreating;
   if (state === 'playing' && frame > 80 && frame % Math.floor(si) === 0 && !bossActive) {
-    // Enemies spawn from the very beginning of the game alongside obstacles!
-    if (Math.random() < enemyChance * 1.5) { // Boosted slightly to ensure they appear
+    if (Math.random() < enemyChance) {
       spawnEnemy();
     } else {
       const r = Math.random();
@@ -2574,7 +2676,8 @@ function loop(ts) {
       drawEnemyByType(e);
       return;
     }
-    const moveSpeed = e.type === 'dragon' ? spd * 0.25 : e.type === 'robot' ? spd * 0.35 : spd * 0.3;
+    const baseMult = gameMode === 'pro' ? 1.0 : 0.5;
+    const moveSpeed = (e.type === 'dragon' ? spd * 0.25 : e.type === 'robot' ? spd * 0.35 : spd * 0.3) * baseMult;
     e.x -= moveSpeed;
     // Movement: all enemies hover now
     e.hoverPhase += (e.hoverSpeed || 0.01) * dt;
@@ -2644,7 +2747,7 @@ function loop(ts) {
       if (boss && boss.entered && !boss.defeated && !boss.retreating) checkTarget(boss.x + boss.w / 2, boss.y + boss.h / 2, 0, 0, boss.hp);
       missiles.forEach(m => { if (!m.destroyed) checkTarget(m.x + m.w / 2, m.y + m.h / 2, m.vx, 0, 1); });
 
-      let expectedSpd = petObj.type === 'ufo' ? speed * 2 + 12 : (petObj.type === 'dragon' ? speed * 1.5 + 4 : speed * 1.8 + 6);
+      let expectedSpd = petObj.type === 'ufo' ? speed * 2 + 12 : (petObj.type === 'dragon' ? speed * 1.5 + 4 : speed * 0.9 + 3);
       let finalVx = expectedSpd, finalVy = 0;
 
       if (target) {
@@ -2669,7 +2772,7 @@ function loop(ts) {
         playerBullets.push({ x: petObj.x + 10, y: petObj.y, vx: finalVx, vy: finalVy, type: 'ufo', life: 3, damage: 1 });
         if (sfx.pew) sfx.pew(); else if (sfx.laser) sfx.laser();
       } else if (petObj.type === 'cat') {
-        petObj.cooldown = 35;
+        petObj.cooldown = 300; // 5 second cooldown (60 ticks/sec * 5)
         playerBullets.push({ x: petObj.x + 10, y: petObj.y, vx: finalVx, vy: finalVy, type: 'cat', life: 1, damage: 1, bounces: 0 });
         if (sfx.meow) sfx.meow(); else if (sfx.laser) sfx.laser();
       }
@@ -2700,9 +2803,14 @@ function loop(ts) {
       const dx = (target.x + (target.w || 0) / 2) - pb.x, dy = (target.y + (target.h || 0) / 2) - pb.y;
       const dist = Math.hypot(dx, dy);
       if (dist > 0) {
-        const turnSpeed = pb.type === 'player_missile' ? 2.5 : (pb.type === 'player_laser' ? 4 : 3);
+        // Lower turning acceleration for the Cat
+        const turnSpeed = pb.type === 'player_missile' ? 2.5 : (pb.type === 'cat' ? 1.0 : (pb.type === 'player_laser' ? 4 : 3));
         pb.vx += (dx / dist) * turnSpeed; pb.vy += (dy / dist) * turnSpeed;
-        const s = Math.hypot(pb.vx, pb.vy), mg = speed * 2 + 10;
+        
+        const s = Math.hypot(pb.vx, pb.vy);
+        // Radically lower maximum capping speed for the glowing Cat bullet
+        const mg = pb.type === 'cat' ? speed * 0.5 + 2 : speed * 2 + 10;
+        
         if (s > mg) { pb.vx = (pb.vx / s) * mg; pb.vy = (pb.vy / s) * mg; }
       }
     }
@@ -2725,35 +2833,107 @@ function loop(ts) {
       ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(pb.x + 4, pb.y, 8, 0, Math.PI * 2); ctx.fill();
     } else if (pb.type === 'player_laser') {
       const sColor = pb.color || '#ff00ff';
-      ctx.shadowColor = sColor; ctx.shadowBlur = 15;
+      ctx.save();
+      ctx.translate(pb.x, pb.y);
+      // Optional subtle scale throb based on frame for energy wobbly feel
+      const throb = 1 + Math.sin(frame * 0.5) * 0.1;
+      ctx.scale(throb, throb);
+
+      ctx.shadowColor = sColor; ctx.shadowBlur = 20;
+
+      // Crescent energy wave (anime style slash projectile)
       ctx.fillStyle = sColor;
-      ctx.beginPath(); ctx.roundRect(pb.x - 15, pb.y - 3, 30, 6, 3); ctx.fill();
-      ctx.shadowBlur = 0;
+      ctx.beginPath();
+      ctx.moveTo(25, 0); // Front piercing tip
+      ctx.quadraticCurveTo(0, -18, -15, -28); // Top horn
+      ctx.quadraticCurveTo(-5, 0, -15, 28);   // Bottom horn hook
+      ctx.quadraticCurveTo(0, 18, 25, 0);     // Sweep back to front
+      ctx.fill();
+
+      // Blinding white inner core for plasma intensity
       ctx.fillStyle = '#ffffff';
-      ctx.beginPath(); ctx.roundRect(pb.x - 13, pb.y - 1.5, 26, 3, 1.5); ctx.fill();
+      ctx.shadowBlur = 10;
+      ctx.beginPath();
+      ctx.moveTo(16, 0);
+      ctx.quadraticCurveTo(-2, -8, -8, -16);
+      ctx.quadraticCurveTo(-3, 0, -8, 16);
+      ctx.quadraticCurveTo(-2, 8, 16, 0);
+      ctx.fill();
+
+      // Front spark star
+      ctx.beginPath(); ctx.ellipse(22, 0, 8, 2, 0, 0, Math.PI * 2); ctx.fill();
+      ctx.beginPath(); ctx.ellipse(22, 0, 2, 6, 0, 0, Math.PI * 2); ctx.fill();
+
+      ctx.restore();
     } else if (pb.type === 'player_missile') {
       ctx.save();
       ctx.translate(pb.x, pb.y);
       ctx.rotate(Math.atan2(pb.vy, pb.vx));
-      // Missile Body
-      ctx.fillStyle = '#8a9ba8'; ctx.shadowColor = '#4a5a6a';
-      ctx.beginPath(); ctx.ellipse(0, 0, 14, 5, 0, 0, Math.PI * 2); ctx.fill();
-      // Warhead
-      ctx.fillStyle = '#ff2222'; ctx.shadowColor = '#ff0000';
-      ctx.beginPath(); ctx.ellipse(10, 0, 4, 3.5, 0, 0, Math.PI * 2); ctx.fill();
+
+      const mw = 30, mh = 12; // Base dimensions
+
+      // Massive glowing plasma propulsion engine trail
+      const eLen = 25 + Math.random() * 15;
+      const eg = ctx.createLinearGradient(-mw / 2, 0, -mw / 2 - eLen, 0);
+      eg.addColorStop(0, '#ffffff');
+      eg.addColorStop(0.2, '#00f3ff');
+      eg.addColorStop(1, 'rgba(0,100,255,0)');
+
+      ctx.fillStyle = eg; ctx.shadowColor = '#00f3ff'; ctx.shadowBlur = 15;
+      ctx.beginPath();
+      ctx.moveTo(-mw / 2, -mh / 3);
+      ctx.lineTo(-mw / 2 - eLen, 0);
+      ctx.lineTo(-mw / 2, mh / 3);
+      ctx.closePath(); ctx.fill();
+      ctx.shadowBlur = 0;
+
+      // Dark carbon-fiber main metallic body
+      const mg = ctx.createLinearGradient(0, -mh / 2, 0, mh / 2);
+      mg.addColorStop(0, '#22252a');
+      mg.addColorStop(0.5, '#4a505a'); // brighter reflection
+      mg.addColorStop(1, '#1a1d24');
+      ctx.fillStyle = mg;
+      ctx.beginPath();
+      ctx.moveTo(mw * 0.5, 0);       // sharp armor-piercing nose
+      ctx.lineTo(mw * 0.1, -mh / 2);   // taper up
+      ctx.lineTo(-mw / 2, -mh / 2);      // flat back
+      ctx.lineTo(-mw / 2, mh / 2);       // back down
+      ctx.lineTo(mw * 0.1, mh / 2);    // taper down
+      ctx.closePath(); ctx.fill();
+
+      // Cyberpunk glowing energy core stripes
+      ctx.fillStyle = '#00f3ff';
+      ctx.fillRect(-mw * 0.2, -mh / 2, 4, mh); // Vertical band
+      ctx.fillRect(mw * 0.1, -2, 8, 4);      // Horizontal slit
+
+      // High-tech swept aerodynamic fins
+      ctx.fillStyle = '#111';
+      ctx.strokeStyle = '#00f3ff'; ctx.lineWidth = 1.5;
+
+      // Top flight fin
+      ctx.beginPath(); ctx.moveTo(-mw * 0.4, -mh / 2);
+      ctx.lineTo(-mw * 0.5, -mh);
+      ctx.lineTo(-mw * 0.1, -mh / 2); ctx.fill(); ctx.stroke();
+
+      // Bottom flight fin
+      ctx.beginPath(); ctx.moveTo(-mw * 0.4, mh / 2);
+      ctx.lineTo(-mw * 0.5, mh);
+      ctx.lineTo(-mw * 0.1, mh / 2); ctx.fill(); ctx.stroke();
+
       ctx.restore();
-      // Exhaust Trail
+
+      // Secondary spark trail particles popping off the engine
       pb.timer = (pb.timer || 0) + dt;
       if (pb.timer > 2) {
-        spawnP(pb.x - 14, pb.y, '#ff8800', 1);
-        spawnP(pb.x - 14, pb.y, '#ffffff', 1);
+        spawnP(pb.x - 25, pb.y + (Math.random() - 0.5) * 10, '#00f3ff', 1);
+        spawnP(pb.x - 20, pb.y, '#ffffff', 1);
         pb.timer = 0;
       }
     }
     ctx.restore();
 
     const dmg = pb.damage || 1;
-    const hitRadiusSq = pb.type === 'dragon' ? 1800 : (pb.type === 'ufo' ? 600 : 400);
+    const hitRadiusSq = pb.type === 'player_laser' ? 1200 : (pb.type === 'dragon' ? 1800 : (pb.type === 'ufo' ? 600 : 400));
 
     // Damage enemies
     enemies.forEach(e => {
@@ -2768,13 +2948,20 @@ function loop(ts) {
           else enemyDamage = e.maxHp; // Everything else (Player Bullet, Missile, Dragon) One-Hits!
 
           e.hp -= enemyDamage;
-          if (pb.type === 'ufo') pb.life--; else pb.life = 0; // UFO pierces 3 targets
+          if (pb.type === 'ufo') pb.life--; else pb.life = 0;
           if (pb.type === 'dragon') spawnP(ex, ey, '#ff6600', 10);
           else spawnP(ex, ey, '#ffffff', 5);
           e.flash = 10;
           if (e.hp <= 0) {
             e.fleeing = true; e.y -= 1000; // soft kill
-            for (let i = 0; i < 20; i++) spawnP(ex, ey, ['#ffaa00', '#ff0000', '#444444'][i % 3], 6 + Math.random() * 5);
+
+            // Massive Cinematic Explosion
+            particles.push({ x: ex, y: ey, vx: 6, vy: 0, r: 0, col: '#ffaa00', life: 1, type: 'shockwave' });
+            particles.push({ x: ex, y: ey, vx: 10, vy: 6, r: 0, col: '#ff0000', life: 1, type: 'ring' });
+            for (let i = 0; i < 25; i++) {
+              particles.push({ x: ex, y: ey, vx: (Math.random() - 0.5) * 16, vy: (Math.random() - 0.5) * 16, r: 4 + Math.random() * 8, col: ['#ffaa00', '#ff0000', '#ffffff', '#444444'][Math.floor(Math.random() * 4)], life: 1 + Math.random() * 0.5, type: 'spark' });
+            }
+            if (sfx.explode) sfx.explode(); else if (sfx.hit) sfx.hit();
           } else if (sfx.hit) sfx.hit();
         }
       }

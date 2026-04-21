@@ -13,10 +13,9 @@ const JETPACK_SKINS = [
 ];
 
 const PET_SKINS = [
-  { id: 'none', name: 'No Pet', body: 'transparent', glow: 'transparent', cost: 0 },
-  { id: 'cat', name: 'Cat', body: '#ffffff', glow: '#ff00ff', cost: 1000, model: 'cat' },
-  { id: 'ufo', name: 'UFO', body: '#222233', glow: '#00f3ff', cost: 2000, model: 'ufo' },
-  { id: 'dragon', name: 'Mini Dragon', body: '#ffaa00', glow: '#ff4400', cost: 4500, model: 'dragon' }
+  { id: 'cat', name: 'Space Cat', body: '#ffffff', glow: '#ff00ff', cost: 2000, model: 'cat' },
+  { id: 'ufo', name: 'U.F.O.', body: '#222233', glow: '#00f3ff', cost: 3500, model: 'ufo' },
+  { id: 'dragon', name: 'Mini Dragon', body: '#ffaa00', glow: '#ff4400', cost: 5500, model: 'dragon' }
 ];
 
 let currentTab = 'chars';
@@ -90,9 +89,7 @@ function renderSkins() {
         document.head.appendChild(style);
       }
 
-      if (item.id === 'none') {
-        modelHTML = `<div style="font-size:30px; line-height:50px; text-align:center; color:#555;">🚫</div>`;
-      } else if (item.id === 'cat') {
+      if (item.id === 'cat') {
         modelHTML = `
            <div style="position:relative; width:40px; height:30px; margin: 10px auto; animation: pFloat 2s ease-in-out infinite;">
              <!-- Tail -->
@@ -149,7 +146,7 @@ function renderSkins() {
            </div>`;
       } else if (item.id === 'dragon') {
         modelHTML = `
-           <div style="position:relative; width:45px; height:35px; margin: 7px auto; animation: pFloat 1.8s ease-in-out infinite;">
+           <div style="position:relative; width:45px; height:35px; margin: 7px auto; animation: pFloat 1.8s ease-in-out infinite; transform: scale(0.75);">
              <!-- Tail Base -->
              <div style="position:absolute; width: 14px; height: 16px; border-radius: 50%; border: 3px solid ${item.body}; border-top-color: transparent; border-right-color: transparent; top: 12px; left: -8px; transform: rotate(-30deg);"></div>
              <!-- Tail Spade -->

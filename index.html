@@ -789,54 +789,348 @@
     }
 
     /* Power-Up UI Models */
-    .css-power-container { width: 40px; height: 40px; position: relative; margin: 0 auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: rgba(255,255,255,0.05); }
-    
-    .p-shield { width: 24px; height: 26px; background: rgba(0, 243, 255, 0.2); border: 2px solid #00f3ff; clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%); position: relative; box-shadow: inset 0 0 10px #00f3ff; }
-    
-    .p-magnet { width: 20px; height: 20px; background: transparent; border: 5px solid #ff0044; border-bottom: 0; border-radius: 12px 12px 0 0; position: relative; }
-    .p-magnet::before { content: ''; position: absolute; width: 8px; height: 6px; left: -5px; bottom: -6px; background: #ccc; }
-    .p-magnet::after { content: ''; position: absolute; width: 8px; height: 6px; right: -5px; bottom: -6px; background: #ccc; }
-    
-    .p-speed { width: 0; height: 0; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #ffea00; position: relative; filter: drop-shadow(0 0 5px #ffea00); }
-    .p-speed::after { content: ''; position: absolute; width: 0; height: 0; border-style: solid; border-width: 10px 0 10px 16px; border-color: transparent transparent transparent #ffea00; left: -10px; top: -10px; }
-    
-    .p-heart { width: 14px; height: 14px; background: #ff0077; transform: rotate(45deg); position: relative; box-shadow: 0 0 10px #ff0077; margin-top: 4px; }
-    .p-heart::before, .p-heart::after { content: ''; position: absolute; width: 14px; height: 14px; background: #ff0077; border-radius: 50%; }
-    .p-heart::before { top: -7px; left: 0; }
-    .p-heart::after { top: 0; left: -7px; }
+    .css-power-container {
+      width: 40px;
+      height: 40px;
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+    }
 
-    .p-ultimate-wrapper { filter: drop-shadow(0 0 8px #ffea00); }
-    .p-ultimate { width: 22px; height: 22px; background: #ffea00; clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%); animation: starSpin 3s linear infinite; margin-top: 2px; }
-    @keyframes starSpin { 100% { transform: rotate(360deg); } }
+    .p-shield {
+      width: 24px;
+      height: 26px;
+      background: rgba(0, 243, 255, 0.2);
+      border: 2px solid #00f3ff;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      position: relative;
+      box-shadow: inset 0 0 10px #00f3ff;
+    }
+
+    .p-magnet {
+      width: 20px;
+      height: 20px;
+      background: transparent;
+      border: 5px solid #ff0044;
+      border-bottom: 0;
+      border-radius: 12px 12px 0 0;
+      position: relative;
+    }
+
+    .p-magnet::before {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 6px;
+      left: -5px;
+      bottom: -6px;
+      background: #ccc;
+    }
+
+    .p-magnet::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 6px;
+      right: -5px;
+      bottom: -6px;
+      background: #ccc;
+    }
+
+    .p-speed {
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 16px;
+      border-color: transparent transparent transparent #ffea00;
+      position: relative;
+      filter: drop-shadow(0 0 5px #ffea00);
+    }
+
+    .p-speed::after {
+      content: '';
+      position: absolute;
+      width: 0;
+      height: 0;
+      border-style: solid;
+      border-width: 10px 0 10px 16px;
+      border-color: transparent transparent transparent #ffea00;
+      left: -10px;
+      top: -10px;
+    }
+
+    .p-heart {
+      width: 14px;
+      height: 14px;
+      background: #ff0077;
+      transform: rotate(45deg);
+      position: relative;
+      box-shadow: 0 0 10px #ff0077;
+      margin-top: 4px;
+    }
+
+    .p-heart::before,
+    .p-heart::after {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 14px;
+      background: #ff0077;
+      border-radius: 50%;
+    }
+
+    .p-heart::before {
+      top: -7px;
+      left: 0;
+    }
+
+    .p-heart::after {
+      top: 0;
+      left: -7px;
+    }
+
+    .p-ultimate-wrapper {
+      filter: drop-shadow(0 0 8px #ffea00);
+    }
+
+    .p-ultimate {
+      width: 22px;
+      height: 22px;
+      background: #ffea00;
+      clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+      animation: starSpin 3s linear infinite;
+      margin-top: 2px;
+    }
+
+    @keyframes starSpin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
 
     /* Drone UI Models */
-    .css-drone-container { width: 60px; height: 60px; position: relative; margin: 0 auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); }
-    
-    .d-spinner { width: 20px; height: 20px; background: #334; border: 2px solid #00f3ff; border-radius: 50%; position: relative; animation: linearSpin 2s linear infinite; box-shadow: inset 0 0 5px #00f3ff; }
-    .d-spinner::before { content: ''; position: absolute; width: 4px; height: 32px; background: #00f3ff; top: -8px; left: 6px; z-index: -1; border-radius: 2px; box-shadow: 0 0 10px #00f3ff; }
-    .d-spinner::after { content: ''; position: absolute; width: 32px; height: 4px; background: #00f3ff; top: 6px; left: -8px; z-index: -1; border-radius: 2px; box-shadow: 0 0 10px #00f3ff; }
+    .css-drone-container {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+    }
 
-    .d-robot { width: 24px; height: 28px; background: #111; border: 2px solid #555; border-top: 3px solid #ff0044; border-bottom: 3px solid #ff0044; position: relative; overflow: hidden; border-radius: 4px; }
-    .d-robot::after { content: ''; position: absolute; width: 10px; height: 4px; background: #ff0044; top: 4px; left: 5px; box-shadow: 0 0 10px #ff0044; border-radius: 2px; animation: blink 1s infinite alternate; }
+    .d-spinner {
+      width: 20px;
+      height: 20px;
+      background: #334;
+      border: 2px solid #00f3ff;
+      border-radius: 50%;
+      position: relative;
+      animation: linearSpin 2s linear infinite;
+      box-shadow: inset 0 0 5px #00f3ff;
+    }
 
-    .d-heli { width: 32px; height: 16px; background: #112; border-radius: 8px 8px 4px 4px; border: 1px solid #44ff44; position: relative; margin-top: 4px; }
-    .d-heli::before { content: ''; position: absolute; width: 40px; height: 2px; background: rgba(68, 255, 68, 0.8); top: -6px; left: -5px; animation: linearSpin 0.2s linear infinite; box-shadow: 0 0 8px #44ff44; }
-    .d-heli::after { content: ''; position: absolute; width: 4px; height: 6px; background: #44ff44; top: -6px; left: 13px; }
+    .d-spinner::before {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 32px;
+      background: #00f3ff;
+      top: -8px;
+      left: 6px;
+      z-index: -1;
+      border-radius: 2px;
+      box-shadow: 0 0 10px #00f3ff;
+    }
 
-    .d-missile { width: 8px; height: 28px; background: #ccc; border-radius: 4px 4px 0 0; position: relative; transform: rotate(45deg); border-bottom: 2px solid #ff0044; }
-    .d-missile::before { content: ''; position: absolute; width: 14px; height: 4px; background: #ff0044; bottom: 2px; left: -3px; border-radius: 2px; }
-    .d-missile::after { content: ''; position: absolute; width: 8px; height: 16px; background: #ffaa00; top: 28px; left: 0; filter: blur(2px); animation: jetFlame 0.1s linear infinite alternate; }
+    .d-spinner::after {
+      content: '';
+      position: absolute;
+      width: 32px;
+      height: 4px;
+      background: #00f3ff;
+      top: 6px;
+      left: -8px;
+      z-index: -1;
+      border-radius: 2px;
+      box-shadow: 0 0 10px #00f3ff;
+    }
 
-    @keyframes linearSpin { 100% { transform: rotate(360deg); } }
-    @keyframes blink { 0% { opacity: 0.3; } 100% { opacity: 1; } }
+    .d-robot {
+      width: 24px;
+      height: 28px;
+      background: #111;
+      border: 2px solid #555;
+      border-top: 3px solid #ff0044;
+      border-bottom: 3px solid #ff0044;
+      position: relative;
+      overflow: hidden;
+      border-radius: 4px;
+    }
+
+    .d-robot::after {
+      content: '';
+      position: absolute;
+      width: 10px;
+      height: 4px;
+      background: #ff0044;
+      top: 4px;
+      left: 5px;
+      box-shadow: 0 0 10px #ff0044;
+      border-radius: 2px;
+      animation: blink 1s infinite alternate;
+    }
+
+    .d-heli {
+      width: 32px;
+      height: 16px;
+      background: #112;
+      border-radius: 8px 8px 4px 4px;
+      border: 1px solid #44ff44;
+      position: relative;
+      margin-top: 4px;
+    }
+
+    .d-heli::before {
+      content: '';
+      position: absolute;
+      width: 40px;
+      height: 2px;
+      background: rgba(68, 255, 68, 0.8);
+      top: -6px;
+      left: -5px;
+      animation: linearSpin 0.2s linear infinite;
+      box-shadow: 0 0 8px #44ff44;
+    }
+
+    .d-heli::after {
+      content: '';
+      position: absolute;
+      width: 4px;
+      height: 6px;
+      background: #44ff44;
+      top: -6px;
+      left: 13px;
+    }
+
+    .d-missile {
+      width: 8px;
+      height: 28px;
+      background: #ccc;
+      border-radius: 4px 4px 0 0;
+      position: relative;
+      transform: rotate(45deg);
+      border-bottom: 2px solid #ff0044;
+    }
+
+    .d-missile::before {
+      content: '';
+      position: absolute;
+      width: 14px;
+      height: 4px;
+      background: #ff0044;
+      bottom: 2px;
+      left: -3px;
+      border-radius: 2px;
+    }
+
+    .d-missile::after {
+      content: '';
+      position: absolute;
+      width: 8px;
+      height: 16px;
+      background: #ffaa00;
+      top: 28px;
+      left: 0;
+      filter: blur(2px);
+      animation: jetFlame 0.1s linear infinite alternate;
+    }
+
+    @keyframes linearSpin {
+      100% {
+        transform: rotate(360deg);
+      }
+    }
+
+    @keyframes blink {
+      0% {
+        opacity: 0.3;
+      }
+
+      100% {
+        opacity: 1;
+      }
+    }
 
     /* Pet UI Models */
-    .css-pet-container { width: 60px; height: 60px; position: relative; margin: 0 auto; display: flex; justify-content: center; align-items: center; border-radius: 50%; background: transparent; }
-    
-    @keyframes pFloat { 0%,100% {transform: translateY(0px);} 50% {transform: translateY(-5px);} }
-    @keyframes pTail { 0%,100% {transform: rotate(-10deg);} 50% {transform: rotate(20deg);} }
-    @keyframes pWing { 0%,100% {transform: rotateX(0deg);} 50% {transform: rotateX(60deg);} }
-    @keyframes pPulse { 0%,100% {opacity:0.4; transform:scale(0.8);} 50% {opacity:1; transform:scale(1.2);} }
+    .css-pet-container {
+      width: 60px;
+      height: 60px;
+      position: relative;
+      margin: 0 auto;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      border-radius: 50%;
+      background: transparent;
+    }
+
+    @keyframes pFloat {
+
+      0%,
+      100% {
+        transform: translateY(0px);
+      }
+
+      50% {
+        transform: translateY(-5px);
+      }
+    }
+
+    @keyframes pTail {
+
+      0%,
+      100% {
+        transform: rotate(-10deg);
+      }
+
+      50% {
+        transform: rotate(20deg);
+      }
+    }
+
+    @keyframes pWing {
+
+      0%,
+      100% {
+        transform: rotateX(0deg);
+      }
+
+      50% {
+        transform: rotateX(60deg);
+      }
+    }
+
+    @keyframes pPulse {
+
+      0%,
+      100% {
+        opacity: 0.4;
+        transform: scale(0.8);
+      }
+
+      50% {
+        opacity: 1;
+        transform: scale(1.2);
+      }
+    }
 
     /* Biome UI Models */
     .biome-grid {
@@ -845,6 +1139,7 @@
       gap: 1rem;
       margin-top: 1.5rem;
     }
+
     .biome-card {
       border-radius: 8px;
       overflow: hidden;
@@ -853,15 +1148,58 @@
       flex-direction: column;
       transition: transform 0.3s;
     }
-    .biome-card:hover { transform: translateY(-3px); border-color: #fff; box-shadow: 0 0 15px rgba(0, 243, 255, 0.4); }
-    .biome-color { height: 40px; border-bottom: 2px solid rgba(255,255,255,0.1); }
-    .biome-name { background: rgba(0,0,0,0.6); padding: 0.5rem; text-align: center; font-family: var(--font-tech); font-size: 0.85rem; color: var(--textLight); line-height: 1.2; }
-    .b-jungle { background: linear-gradient(180deg, #1A401A, #2D6A2D); border-top: 2px solid #44ff44; }
-    .b-angkor { background: linear-gradient(180deg, #AA5522, #442211); border-top: 2px solid #ffaa00; }
-    .b-ruins { background: linear-gradient(180deg, #113344, #001122); border-top: 2px solid #00f3ff; }
-    .b-catacombs { background: linear-gradient(180deg, #331144, #110022); border-top: 2px solid #aa00ff; }
-    .b-volcanic { background: linear-gradient(180deg, #661100, #220000); border-top: 2px solid #ff0044; }
-    .b-dragon { background: linear-gradient(180deg, #005588, #001133); border-top: 2px solid #bbddee; }
+
+    .biome-card:hover {
+      transform: translateY(-3px);
+      border-color: #fff;
+      box-shadow: 0 0 15px rgba(0, 243, 255, 0.4);
+    }
+
+    .biome-color {
+      height: 40px;
+      border-bottom: 2px solid rgba(255, 255, 255, 0.1);
+    }
+
+    .biome-name {
+      background: rgba(0, 0, 0, 0.6);
+      padding: 0.5rem;
+      text-align: center;
+      font-family: var(--font-tech);
+      font-size: 0.85rem;
+      color: var(--textLight);
+      line-height: 1.2;
+    }
+
+    .b-jungle {
+      background: linear-gradient(180deg, #1A401A, #2D6A2D);
+      border-top: 2px solid #44ff44;
+    }
+
+    .b-angkor {
+      background: linear-gradient(180deg, #AA5522, #442211);
+      border-top: 2px solid #ffaa00;
+    }
+
+    .b-ruins {
+      background: linear-gradient(180deg, #113344, #001122);
+      border-top: 2px solid #00f3ff;
+    }
+
+    .b-catacombs {
+      background: linear-gradient(180deg, #331144, #110022);
+      border-top: 2px solid #aa00ff;
+    }
+
+    .b-volcanic {
+      background: linear-gradient(180deg, #661100, #220000);
+      border-top: 2px solid #ff0044;
+    }
+
+    .b-dragon {
+      background: linear-gradient(180deg, #005588, #001133);
+      border-top: 2px solid #bbddee;
+    }
+
     @media (max-width: 768px) {
       h1 {
         font-size: 2.5rem !important;
@@ -960,7 +1298,8 @@
       <!-- How it works -->
       <section class="glass-card" id="how-it-works">
         <h2>How the Game Works</h2>
-        <p>The core philosophy of Endless Sky Runner is "easy to learn, hard to master." You play as an adventurer equipped with a jetpack flying through a sprawling sci-fi world. The core mechanic is simple:</p>
+        <p>The core philosophy of Endless Sky Runner is "easy to learn, hard to master." You play as an adventurer
+          equipped with a jetpack flying through a sprawling sci-fi world. The core mechanic is simple:</p>
         <ul>
           <li><strong>Hold to Fly:</strong> Tap, click, or hold the Spacebar to ignite your jetpack and defy gravity.
           </li>
@@ -991,27 +1330,37 @@
         </div>
 
         <ul>
-          <li><strong>HTML5 Canvas API:</strong> Renders all graphics, players, enemies, and backgrounds with dynamic scaling for responsive screens.</li>
-          <li><strong>Vanilla JavaScript (ES6):</strong> Powers the game engine, delta-time physics, state management, and AABB collision detection.</li>
-          <li><strong>CSS3 & HTML:</strong> Drives the sleek, cyber-HUD UI utilizing modern fonts (Outfit/Share Tech Mono).</li>
-          <li><strong>Web Audio API:</strong> Mathematically synthesizes all sound effects on the fly—zero external MP3 files needed.</li>
+          <li><strong>HTML5 Canvas API:</strong> Renders all graphics, players, enemies, and backgrounds with dynamic
+            scaling for responsive screens.</li>
+          <li><strong>Vanilla JavaScript (ES6):</strong> Powers the game engine, delta-time physics, state management,
+            and AABB collision detection.</li>
+          <li><strong>CSS3 & HTML:</strong> Drives the sleek, cyber-HUD UI utilizing modern fonts (Outfit/Share Tech
+            Mono).</li>
+          <li><strong>Web Audio API:</strong> Mathematically synthesizes all sound effects on the fly—zero external MP3
+            files needed.</li>
         </ul>
       </section>
     </div>
 
     <!-- AI Development -->
-    <section class="glass-card" style="border-color: rgba(170, 0, 255, 0.4); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(170, 0, 255, 0.1);">
+    <section class="glass-card"
+      style="border-color: rgba(170, 0, 255, 0.4); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(170, 0, 255, 0.1);">
       <h2 style="color: #d18aff; text-shadow: 0 0 10px rgba(170,0,255,0.5);">Developed with Agentic AI</h2>
-      <p>This entire project—from the core physics engine to this landing page architecture—was collaboratively built end-to-end using advanced AI coding assistants.</p>
-      
+      <p>This entire project—from the core physics engine to this landing page architecture—was collaboratively built
+        end-to-end using advanced AI coding assistants.</p>
+
       <div class="grid-2" style="margin-top: 1.5rem; gap: 2rem;">
         <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #4285F4;">
           <h3 style="color: #63a4ff; margin-bottom: 0.5rem; font-size: 1.3rem;">Google Gemini</h3>
-          <p style="font-size: 0.95rem; color: #ccc;">Acted as the lead systems architect. Gemini handled the complex processing: structuring the vanilla JavaScript game loops, mathematically balancing delta-time physics, and writing the precise AABB collision detection and boss behavior logic.</p>
+          <p style="font-size: 0.95rem; color: #ccc;">Acted as the lead systems architect. Gemini handled the complex
+            processing: structuring the vanilla JavaScript game loops, mathematically balancing delta-time physics, and
+            writing the precise AABB collision detection and boss behavior logic.</p>
         </div>
         <div style="background: rgba(0,0,0,0.4); padding: 1.5rem; border-radius: 8px; border-left: 4px solid #D97757;">
           <h3 style="color: #ff9d7f; margin-bottom: 0.5rem; font-size: 1.3rem;">Claude 3.7 Sonnet</h3>
-          <p style="font-size: 0.95rem; color: #ccc;">Served as the lead UI/UX engineer and procedural designer. Claude generated the highly complex, pure-CSS geometric character models, built out this immersive modern landing page, and synthesized the cinematic Web Audio API soundscapes.</p>
+          <p style="font-size: 0.95rem; color: #ccc;">Served as the lead UI/UX engineer and procedural designer. Claude
+            generated the highly complex, pure-CSS geometric character models, built out this immersive modern landing
+            page, and synthesized the cinematic Web Audio API soundscapes.</p>
         </div>
       </div>
     </section>
@@ -1043,7 +1392,7 @@
         <div class="step-content">
           <h3>Progression & Biomes</h3>
           <p>The game dynamically speeds up as you survive. Crossing milestones seamlessy switches biomes:</p>
-          
+
           <div class="biome-grid">
             <div class="biome-card">
               <div class="biome-color b-jungle"></div>
@@ -1234,7 +1583,8 @@
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(0, 243, 255, 0.2);">
               <h4 style="color: #00f3ff; margin-bottom: 0.5rem;">Spinning Robot</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Hovers erratically in mid-air and shoots standard bullets to the left with an unpredictable spread.</p>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Hovers erratically in mid-air and shoots
+                standard bullets to the left with an unpredictable spread.</p>
             </div>
           </div>
 
@@ -1247,7 +1597,8 @@
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(255, 0, 68, 0.2);">
               <h4 style="color: #ff0044; margin-bottom: 0.5rem;">The Standard</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Hovers stably at mid-height and fires a very fast, highly predictable straight laser beam.</p>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Hovers stably at mid-height and fires a very
+                fast, highly predictable straight laser beam.</p>
             </div>
           </div>
 
@@ -1260,7 +1611,8 @@
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(68, 255, 68, 0.2);">
               <h4 style="color: #44ff44; margin-bottom: 0.5rem;">Attack Chopper</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Flies high near the ceiling and shoots distinct, downward-angled heavy fireballs.</p>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Flies high near the ceiling and shoots
+                distinct, downward-angled heavy fireballs.</p>
             </div>
           </div>
 
@@ -1273,7 +1625,8 @@
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(255, 170, 0, 0.2);">
               <h4 style="color: #ffaa00; margin-bottom: 0.5rem;">Homing Missile</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">A high-speed tracking projectile marked by a warning alert. Weave vertically to dodge it!</p>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">A high-speed tracking projectile marked by a
+                warning alert. Weave vertically to dodge it!</p>
             </div>
           </div>
         </div>
@@ -1320,7 +1673,8 @@
               <div class="p-shield"></div>
             </div>
             <div>
-              <h4 style="justify-content: center; color: #00f3ff; font-size: 1.1rem; margin-top: 0.5rem;">Energy Shield</h4>
+              <h4 style="justify-content: center; color: #00f3ff; font-size: 1.1rem; margin-top: 0.5rem;">Energy Shield
+              </h4>
               <p style="font-size: 0.85rem; color: #aaa;">Protects you from one fatal collision.</p>
             </div>
           </div>
@@ -1331,7 +1685,8 @@
               <div class="p-magnet"></div>
             </div>
             <div>
-              <h4 style="justify-content: center; color: #ff0044; font-size: 1.1rem; margin-top: 0.5rem;">Coin Magnet</h4>
+              <h4 style="justify-content: center; color: #ff0044; font-size: 1.1rem; margin-top: 0.5rem;">Coin Magnet
+              </h4>
               <p style="font-size: 0.85rem; color: #aaa;">Pulls all nearby coins to you continuously.</p>
             </div>
           </div>
@@ -1342,7 +1697,8 @@
               <div class="p-speed"></div>
             </div>
             <div>
-              <h4 style="justify-content: center; color: #ffea00; font-size: 1.1rem; margin-top: 0.5rem;">Speed Boost</h4>
+              <h4 style="justify-content: center; color: #ffea00; font-size: 1.1rem; margin-top: 0.5rem;">Speed Boost
+              </h4>
               <p style="font-size: 0.85rem; color: #aaa;">Massively increases your scrolling speed briefly.</p>
             </div>
           </div>
@@ -1353,13 +1709,15 @@
               <div class="p-heart"></div>
             </div>
             <div>
-              <h4 style="justify-content: center; color: #ff0077; font-size: 1.1rem; margin-top: 0.5rem;">Extra Life</h4>
+              <h4 style="justify-content: center; color: #ff0077; font-size: 1.1rem; margin-top: 0.5rem;">Extra Life
+              </h4>
               <p style="font-size: 0.85rem; color: #aaa;">Restores a lost heart to your HUD.</p>
             </div>
           </div>
 
           <!-- Ultimate -->
-          <div class="boss-card" style="border-color: rgba(255,234,0,0.5); background: rgba(255,234,0,0.05); grid-column: 1 / -1; flex-direction: row; text-align: left; gap: 1.5rem; padding: 1.5rem;">
+          <div class="boss-card"
+            style="border-color: rgba(255,234,0,0.5); background: rgba(255,234,0,0.05); grid-column: 1 / -1; flex-direction: row; text-align: left; gap: 1.5rem; padding: 1.5rem;">
             <div class="css-power-container" style="transform: scale(1.5);">
               <div class="p-ultimate-wrapper">
                 <div class="p-ultimate"></div>
@@ -1367,7 +1725,8 @@
             </div>
             <div>
               <h4 style="justify-content: flex-start; color: #ffea00; font-size: 1.3rem;">Star Pack (Ultimate)</h4>
-              <p style="font-size: 0.95rem; color: #aaa;">The ultimate tactical advantage. Grants both an active Energy Shield and a massive Speed Boost simultaneously!</p>
+              <p style="font-size: 0.95rem; color: #aaa;">The ultimate tactical advantage. Grants both an active Energy
+                Shield and a massive Speed Boost simultaneously!</p>
             </div>
           </div>
         </div>
@@ -1376,38 +1735,78 @@
       <!-- Cyber Companions -->
       <section class="glass-card" id="pets">
         <h2 style="color: #ff00ff; text-shadow: 0 0 10px rgba(255,0,255,0.5);">Cyber Companions (Pets)</h2>
-        <p>Unlock loyal, floating robotic pets that hover alongside you and fire advanced homing projectiles to assist in combat.</p>
+        <p>Unlock loyal, floating robotic pets that hover alongside you and fire advanced homing projectiles to assist
+          in combat.</p>
 
         <div class="grid-3" style="gap: 1rem; margin-top: 1.5rem;">
           <!-- Mini Dragon -->
           <div class="skin-card">
             <div class="skin-visual" style="border-radius: 8px; background: rgba(255, 170, 0, 0.1); padding: 1rem 0;">
               <div class="css-pet-container" style="transform: scale(1.3);">
-                <div style="position:relative; width:45px; height:35px; margin: 7px auto; animation: pFloat 1.8s ease-in-out infinite;">
-                  <div style="position:absolute; width: 14px; height: 16px; border-radius: 50%; border: 3px solid #ffaa00; border-top-color: transparent; border-right-color: transparent; top: 12px; left: -8px; transform: rotate(-30deg);"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #fdd659; top: 10px; left: -14px; transform: rotate(-60deg);"></div>
-                  <div style="position:absolute; width: 14px; height: 18px; background: #ff4400; top: -2px; left: 12px; clip-path: polygon(0 100%, 30% 0, 100% 30%, 70% 60%, 100% 80%, 60% 100%); transform-origin: left bottom; animation: pWing 0.3s infinite alternate; opacity: 0.6; filter: drop-shadow(0 0 2px #ff4400);"></div>
-                  <div style="position:absolute; width: 6px; height: 8px; border-radius: 4px; background: #ffaa00; top: 22px; left: 8px; transform: rotate(-20deg);"></div>
-                  <div style="position:absolute; width: 22px; height: 18px; border-radius: 50%; background: #ffaa00; top: 10px; left: 6px;"></div>
-                  <div style="position:absolute; width: 10px; height: 14px; border-radius: 50%; background: #fdd659; top: 12px; left: 16px;"></div>
-                  <div style="position:absolute; width: 7px; height: 9px; border-radius: 4px; background: #ffaa00; top: 24px; left: 16px;"></div>
-                  <div style="position:absolute; width: 6px; height: 4px; border-radius: 3px; background: #ffaa00; top: 16px; left: 24px; transform: rotate(20deg);"></div>
-                  <div style="position:absolute; width: 10px; height: 14px; border-radius: 5px; background: #ffaa00; top: 2px; left: 14px; transform: rotate(15deg);"></div>
-                  <div style="position:absolute; width: 22px; height: 20px; border-radius: 10px; background: #ffaa00; top: -6px; left: 16px;"></div>
-                  <div style="position:absolute; width: 14px; height: 12px; border-radius: 6px; background: #ffaa00; top: 0px; left: 30px;"></div>
-                  <div style="position:absolute; width: 2px; height: 2px; border-radius: 50%; background: #222; top: 4px; left: 40px;"></div>
-                  <div style="position:absolute; width: 4px; height: 6px; border-radius: 50%; background: #111; top: -2px; left: 32px;"></div>
-                  <div style="position:absolute; width: 1.5px; height: 1.5px; border-radius: 50%; background: #fff; top: -1px; left: 33px;"></div>
-                  <div style="position:absolute; width: 6px; height: 4px; border-radius: 50%; background: #ff8db8; top: 6px; left: 26px; opacity: 0.8;"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 8px solid #fff; top: -12px; left: 18px; transform: rotate(-20deg);"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 12px solid #fff; top: -15px; left: 22px; transform: rotate(10deg);"></div>
-                  <div style="position:absolute; width: 18px; height: 22px; background: #ff4400; top: -6px; left: 8px; clip-path: polygon(0 100%, 30% 0, 100% 30%, 60% 60%, 100% 85%, 50% 100%); transform-origin: left bottom; animation: pWing 0.3s infinite alternate reverse; opacity: 0.95; filter: drop-shadow(0 0 2px #ff4400);"></div>
+                <div
+                  style="position:relative; width:45px; height:35px; margin: 7px auto; animation: pFloat 1.8s ease-in-out infinite;">
+                  <div
+                    style="position:absolute; width: 14px; height: 16px; border-radius: 50%; border: 3px solid #ffaa00; border-top-color: transparent; border-right-color: transparent; top: 12px; left: -8px; transform: rotate(-30deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 5px solid transparent; border-right: 5px solid transparent; border-bottom: 8px solid #fdd659; top: 10px; left: -14px; transform: rotate(-60deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 14px; height: 18px; background: #ff4400; top: -2px; left: 12px; clip-path: polygon(0 100%, 30% 0, 100% 30%, 70% 60%, 100% 80%, 60% 100%); transform-origin: left bottom; animation: pWing 0.3s infinite alternate; opacity: 0.6; filter: drop-shadow(0 0 2px #ff4400);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 6px; height: 8px; border-radius: 4px; background: #ffaa00; top: 22px; left: 8px; transform: rotate(-20deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 22px; height: 18px; border-radius: 50%; background: #ffaa00; top: 10px; left: 6px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 10px; height: 14px; border-radius: 50%; background: #fdd659; top: 12px; left: 16px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 7px; height: 9px; border-radius: 4px; background: #ffaa00; top: 24px; left: 16px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 6px; height: 4px; border-radius: 3px; background: #ffaa00; top: 16px; left: 24px; transform: rotate(20deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 10px; height: 14px; border-radius: 5px; background: #ffaa00; top: 2px; left: 14px; transform: rotate(15deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 22px; height: 20px; border-radius: 10px; background: #ffaa00; top: -6px; left: 16px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 14px; height: 12px; border-radius: 6px; background: #ffaa00; top: 0px; left: 30px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 2px; height: 2px; border-radius: 50%; background: #222; top: 4px; left: 40px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 6px; border-radius: 50%; background: #111; top: -2px; left: 32px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 1.5px; height: 1.5px; border-radius: 50%; background: #fff; top: -1px; left: 33px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 6px; height: 4px; border-radius: 50%; background: #ff8db8; top: 6px; left: 26px; opacity: 0.8;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 8px solid #fff; top: -12px; left: 18px; transform: rotate(-20deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 12px solid #fff; top: -15px; left: 22px; transform: rotate(10deg);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 18px; height: 22px; background: #ff4400; top: -6px; left: 8px; clip-path: polygon(0 100%, 30% 0, 100% 30%, 60% 60%, 100% 85%, 50% 100%); transform-origin: left bottom; animation: pWing 0.3s infinite alternate reverse; opacity: 0.95; filter: drop-shadow(0 0 2px #ff4400);">
+                  </div>
                 </div>
               </div>
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(255, 170, 0, 0.2);">
               <h4 style="color: #ffaa00; margin-bottom: 0.5rem;">Mini Dragon</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Fires massive, 1-Hit Kill tracking fireballs.</p>
+              <div class="price" style="margin-bottom: 0.5rem;">💰 5500</div>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Fires massive, 1-Hit Kill tracking
+                fireballs.</p>
             </div>
           </div>
 
@@ -1415,20 +1814,37 @@
           <div class="skin-card">
             <div class="skin-visual" style="border-radius: 8px; background: rgba(0, 243, 255, 0.1); padding: 1rem 0;">
               <div class="css-pet-container" style="transform: scale(1.4);">
-                <div style="position:relative; width:40px; height:25px; margin: 12px auto; animation: pFloat 2.5s ease-in-out infinite;">
-                  <div style="position:absolute; width: 20px; height: 14px; border-radius: 20px 20px 0 0; background: linear-gradient(to bottom, rgba(255,255,255,0.7), #00f3ff44); top: 0; left: 10px; border: 1px solid rgba(255,255,255,0.3);"></div>
-                  <div style="position:absolute; width: 6px; height: 6px; border-radius: 50%; background: #33ff33; top: 5px; left: 17px; box-shadow: 0 0 5px #33ff33;"></div>
-                  <div style="position:absolute; width: 40px; height: 10px; border-radius: 50%; background: linear-gradient(180deg, #222233, #333); top: 10px; left: 0px; box-shadow: inset 0 2px 2px rgba(255,255,255,0.2), 0 3px 5px rgba(0,0,0,0.5);"></div>
-                  <div style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 13px; left: 6px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate;"></div>
-                  <div style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 15px; left: 18.5px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate 0.3s;"></div>
-                  <div style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 13px; right: 6px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate 0.6s;"></div>
-                  <div style="position:absolute; width: 10px; height: 8px; border-radius: 50%; background: #00f3ff; top: 18px; left: 15px; filter: blur(3px); animation: pPulse 0.5s infinite alternate;"></div>
+                <div
+                  style="position:relative; width:40px; height:25px; margin: 12px auto; animation: pFloat 2.5s ease-in-out infinite;">
+                  <div
+                    style="position:absolute; width: 20px; height: 14px; border-radius: 20px 20px 0 0; background: linear-gradient(to bottom, rgba(255,255,255,0.7), #00f3ff44); top: 0; left: 10px; border: 1px solid rgba(255,255,255,0.3);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 6px; height: 6px; border-radius: 50%; background: #33ff33; top: 5px; left: 17px; box-shadow: 0 0 5px #33ff33;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 40px; height: 10px; border-radius: 50%; background: linear-gradient(180deg, #222233, #333); top: 10px; left: 0px; box-shadow: inset 0 2px 2px rgba(255,255,255,0.2), 0 3px 5px rgba(0,0,0,0.5);">
+                  </div>
+                  <div
+                    style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 13px; left: 6px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 15px; left: 18.5px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate 0.3s;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 3px; height: 3px; border-radius: 50%; background: #00f3ff; top: 13px; right: 6px; box-shadow: 0 0 3px #00f3ff; animation: pPulse 1s infinite alternate 0.6s;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 10px; height: 8px; border-radius: 50%; background: #00f3ff; top: 18px; left: 15px; filter: blur(3px); animation: pPulse 0.5s infinite alternate;">
+                  </div>
                 </div>
               </div>
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(0, 243, 255, 0.2);">
               <h4 style="color: #00f3ff; margin-bottom: 0.5rem;">U.F.O.</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Fires piercing plasma bolts that track and punch through multiple targets.</p>
+              <div class="price" style="margin-bottom: 0.5rem;">💰 3500</div>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Fires piercing plasma bolts that track and
+                punch through multiple targets.</p>
             </div>
           </div>
 
@@ -1436,34 +1852,72 @@
           <div class="skin-card">
             <div class="skin-visual" style="border-radius: 8px; background: rgba(255, 0, 255, 0.1); padding: 1rem 0;">
               <div class="css-pet-container" style="transform: scale(1.3);">
-                <div style="position:relative; width:40px; height:30px; margin: 10px auto; animation: pFloat 2s ease-in-out infinite;">
-                  <div style="position:absolute; width: 5px; height: 14px; background: #ffffff; border-radius: 2px; top: 8px; left: 0px; transform-origin: bottom center; animation: pTail 1s ease-in-out infinite;">
-                    <div style="position:absolute; width: 8px; height: 5px; background: #ffffff; border-radius: 2px; top: 0px; right: 0px;"></div>
+                <div
+                  style="position:relative; width:40px; height:30px; margin: 10px auto; animation: pFloat 2s ease-in-out infinite;">
+                  <div
+                    style="position:absolute; width: 5px; height: 14px; background: #ffffff; border-radius: 2px; top: 8px; left: 0px; transform-origin: bottom center; animation: pTail 1s ease-in-out infinite;">
+                    <div
+                      style="position:absolute; width: 8px; height: 5px; background: #ffffff; border-radius: 2px; top: 0px; right: 0px;">
+                    </div>
                   </div>
-                  <div style="position:absolute; width: 22px; height: 14px; border-radius: 4px; background: #ffffff; top: 16px; left: 4px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 6px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 12px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 18px;"></div>
-                  <div style="position:absolute; width: 16px; height: 14px; border-radius: 4px; background: #ffffff; top: 4px; left: 14px;"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid #ffffff; top: -2px; left: 15px;"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid #ffffff; top: -2px; left: 24px;"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 1.5px solid transparent; border-right: 1.5px solid transparent; border-bottom: 4px solid #ff8db8; top: 0px; left: 16.5px;"></div>
-                  <div style="position:absolute; width: 0; height: 0; border-left: 1.5px solid transparent; border-right: 1.5px solid transparent; border-bottom: 4px solid #ff8db8; top: 0px; left: 25.5px;"></div>
-                  <div style="position:absolute; width: 16px; height: 3px; border-radius: 1px; background: #ff2222; top: 16px; left: 14px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 50%; background: #fdd659; top: 18px; left: 20px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 1px; background: #ff00ff; top: 8px; left: 17px;"></div>
-                  <div style="position:absolute; width: 4px; height: 4px; border-radius: 1px; background: #ff00ff; top: 8px; left: 25px;"></div>
-                  <div style="position:absolute; width: 2px; height: 2px; border-radius: 50%; background: #ff8db8; top: 12px; left: 22px;"></div>
-                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 10px; left: 11px;"></div>
-                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 13px; left: 11px;"></div>
-                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 10px; left: 31px;"></div>
-                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 13px; left: 31px;"></div>
+                  <div
+                    style="position:absolute; width: 22px; height: 14px; border-radius: 4px; background: #ffffff; top: 16px; left: 4px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 6px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 12px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 2px; background: #888; top: 28px; left: 18px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 16px; height: 14px; border-radius: 4px; background: #ffffff; top: 4px; left: 14px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid #ffffff; top: -2px; left: 15px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 3px solid transparent; border-right: 3px solid transparent; border-bottom: 6px solid #ffffff; top: -2px; left: 24px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 1.5px solid transparent; border-right: 1.5px solid transparent; border-bottom: 4px solid #ff8db8; top: 0px; left: 16.5px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 0; height: 0; border-left: 1.5px solid transparent; border-right: 1.5px solid transparent; border-bottom: 4px solid #ff8db8; top: 0px; left: 25.5px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 16px; height: 3px; border-radius: 1px; background: #ff2222; top: 16px; left: 14px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 50%; background: #fdd659; top: 18px; left: 20px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 1px; background: #ff00ff; top: 8px; left: 17px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 4px; height: 4px; border-radius: 1px; background: #ff00ff; top: 8px; left: 25px;">
+                  </div>
+                  <div
+                    style="position:absolute; width: 2px; height: 2px; border-radius: 50%; background: #ff8db8; top: 12px; left: 22px;">
+                  </div>
+                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 10px; left: 11px;">
+                  </div>
+                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 13px; left: 11px;">
+                  </div>
+                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 10px; left: 31px;">
+                  </div>
+                  <div style="position:absolute; width: 4px; height: 1.5px; background: #999; top: 13px; left: 31px;">
+                  </div>
                 </div>
               </div>
             </div>
             <div class="skin-info" style="border-top: 1px solid rgba(255, 0, 255, 0.2);">
               <h4 style="color: #ff00ff; margin-bottom: 0.5rem;">Space Cat</h4>
-              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Rapidly fires highly-agile magenta energy orbs that deal chip damage.</p>
+              <div class="price" style="margin-bottom: 0.5rem;">💰 2000</div>
+              <p style="font-size: 0.85rem; color: #aaa; line-height: 1.3;">Rapidly fires highly-agile magenta energy
+                orbs that deal chip damage.</p>
             </div>
           </div>
         </div>
