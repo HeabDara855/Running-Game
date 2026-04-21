@@ -358,7 +358,11 @@ document.getElementById('claimBtn').addEventListener('click', e => {
 });
 
 // ── Init ──
-updateTotalCoins();
-checkDailyReward();
+const initD = getData();
+if (!initD.gifted100k) {
+  initD.totalCoins += 100000;
+  initD.gifted100k = true;
+  saveData(initD);
+}
 updateTotalCoins();
 checkDailyReward();
