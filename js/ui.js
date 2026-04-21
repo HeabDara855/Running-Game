@@ -13,6 +13,7 @@ const JETPACK_SKINS = [
 ];
 
 const PET_SKINS = [
+  { id: 'none', name: 'None', body: 'transparent', glow: 'transparent', cost: 0, model: 'none' },
   { id: 'cat', name: 'Space Cat', body: '#ffffff', glow: '#ff00ff', cost: 2000, model: 'cat' },
   { id: 'ufo', name: 'U.F.O.', body: '#222233', glow: '#00f3ff', cost: 3500, model: 'ufo' },
   { id: 'dragon', name: 'Mini Dragon', body: '#ffaa00', glow: '#ff4400', cost: 5500, model: 'dragon' }
@@ -183,6 +184,11 @@ function renderSkins() {
              <div style="position:absolute; width: 0; height: 0; border-left: 4px solid transparent; border-right: 4px solid transparent; border-bottom: 12px solid #fff; top: -15px; left: 22px; transform: rotate(10deg);"></div>
              <!-- Front Wing -->
              <div style="position:absolute; width: 18px; height: 22px; background: ${item.glow}; top: -6px; left: 8px; clip-path: polygon(0 100%, 30% 0, 100% 30%, 60% 60%, 100% 85%, 50% 100%); transform-origin: left bottom; animation: pWing 0.3s infinite alternate reverse; opacity: 0.95; filter: drop-shadow(0 0 2px ${item.glow});"></div>
+           </div>`;
+      } else if (item.id === 'none') {
+        modelHTML = `
+           <div style="position:relative; width:40px; height:40px; margin: 0 auto; display:flex; align-items:center; justify-content:center; font-size: 24px;">
+             🚫
            </div>`;
       }
     }
