@@ -26,7 +26,7 @@ Object.defineProperty(canvas, 'gameH', { get() { return this._logicalH || wrappe
 // ── CONSTANTS ────────────────────────────────
 const GRAVITY = 0.45, THRUST = -0.56, MAX_FALL = 8.5, MAX_RISE = -7;
 let BASE_SPEED = 5;
-const GROUND_RATIO = 0.87, TARGET_DT = 1000 / 60;
+const GROUND_RATIO = 0.72, TARGET_DT = 1000 / 60;
 
 // ── STATE ────────────────────────────────────
 let state = 'start', score = 0, distance = 0, runCoins = 0;
@@ -494,7 +494,7 @@ function spawnP(x, y, col, n) {
 // ── ENEMIES (multi-type shooting creatures) ──
 function spawnEnemy(forceType) {
   const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
-  const type = forceType || (Math.random() < 0.55 ? 'standard' : Math.random() < 0.7 ? 'spinning_robot' : 'chopper');
+  const type = forceType || (Math.random() < 0.33 ? 'standard' : Math.random() < 0.66 ? 'spinning_robot' : 'chopper');
   const shootInterval = gameMode === 'pro' ? Math.max(90, 160 - distance * 0.006) : Math.max(180, 280 - distance * 0.002);
   if (type === 'spinning_robot') {
     const ey = gY * 0.45 + Math.random() * (gY * 0.3);
@@ -914,22 +914,22 @@ function drawStandard(e) {
   if (e.flash > 0) ctx.globalAlpha = 0.5 + Math.sin(e.flash * 2) * 0.5;
   const t = frame;
   // Thruster
-  ctx.globalAlpha = 0.6 + Math.sin(t*0.5)*0.2; ctx.fillStyle = '#ff3300';
-  ctx.beginPath(); ctx.ellipse(-14, 0, 8, 4, 0, 0, Math.PI*2); ctx.fill();
+  ctx.globalAlpha = 0.6 + Math.sin(t * 0.5) * 0.2; ctx.fillStyle = '#ff3300';
+  ctx.beginPath(); ctx.ellipse(-14, 0, 8, 4, 0, 0, Math.PI * 2); ctx.fill();
   ctx.globalAlpha = 1;
   // Thruster trails
-  if(t%3===0) spawnP(e.x - 14 - Math.random()*5, e.y + (Math.random()-0.5)*2, '#ffaa00', 1);
+  if (t % 3 === 0) spawnP(e.x - 14 - Math.random() * 5, e.y + (Math.random() - 0.5) * 2, '#ffaa00', 1);
 
   // Sleek Drone Chassis
   ctx.fillStyle = '#222730';
   ctx.beginPath(); ctx.moveTo(-12, -8); ctx.lineTo(10, -6); ctx.lineTo(16, 0); ctx.lineTo(10, 6); ctx.lineTo(-12, 8); ctx.closePath(); ctx.fill();
   ctx.fillStyle = '#3a4454';
   ctx.beginPath(); ctx.moveTo(-6, -4); ctx.lineTo(6, -3); ctx.lineTo(10, 0); ctx.lineTo(6, 3); ctx.lineTo(-6, 4); ctx.closePath(); ctx.fill();
-  
+
   // Cyber Eye Scanner
   ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 10; ctx.fillStyle = '#00ffff';
-  ctx.beginPath(); ctx.ellipse(8, 0, 3, 3, 0, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-  ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(9, -1, 1, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.ellipse(8, 0, 3, 3, 0, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(9, -1, 1, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
 }
 
@@ -940,21 +940,21 @@ function drawSpinningRobot(e) {
   const t = frame; e.rot = (e.rot || 0) + 0.15;
   // Drone Body Base
   ctx.fillStyle = '#303030';
-  ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI*2); ctx.fill();
-  
+  ctx.beginPath(); ctx.arc(0, 0, 14, 0, Math.PI * 2); ctx.fill();
+
   // Spinning Blades
   ctx.save(); ctx.rotate(e.rot);
   ctx.fillStyle = '#8899aa'; ctx.shadowColor = '#00ffff'; ctx.shadowBlur = 5;
-  for(let i=0; i<3; i++) {
-    ctx.beginPath(); ctx.moveTo(0,0); ctx.lineTo(24, -4); ctx.lineTo(24, 4); ctx.closePath(); ctx.fill();
-    ctx.rotate(Math.PI*2 / 3);
+  for (let i = 0; i < 3; i++) {
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.lineTo(24, -4); ctx.lineTo(24, 4); ctx.closePath(); ctx.fill();
+    ctx.rotate(Math.PI * 2 / 3);
   }
   ctx.restore();
-  
+
   // Core
   ctx.shadowColor = '#ff00ff'; ctx.shadowBlur = 12; ctx.fillStyle = '#ff00ff';
-  ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI*2); ctx.fill(); ctx.shadowBlur = 0;
-  ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI*2); ctx.fill();
+  ctx.beginPath(); ctx.arc(0, 0, 6, 0, Math.PI * 2); ctx.fill(); ctx.shadowBlur = 0;
+  ctx.fillStyle = '#ffffff'; ctx.beginPath(); ctx.arc(0, 0, 3, 0, Math.PI * 2); ctx.fill();
   ctx.restore();
 }
 
@@ -1174,8 +1174,8 @@ function updateHearts() {
   heartsEl.innerHTML = hSVG.repeat(hearts);
 }
 function updateHUD() {
-  distEl.textContent = Math.floor(distance) + ' m'; 
-  coinEl.textContent = runCoins; 
+  distEl.textContent = Math.floor(distance) + ' m';
+  coinEl.textContent = runCoins;
   const isBossActive = boss && boss.entered && !boss.retreating && !boss.defeated;
   const lAmmo = document.getElementById('laserAmmoVal');
   const mAmmo = document.getElementById('missileAmmoVal');
@@ -1208,7 +1208,7 @@ function drawPlayer() {
       const accentC = pet.accent || '#ff2222'; // Collar
       const eyeC = pet.glow || '#ffee00'; // Eyes
       const isFiring = petObj.cooldown > 20;
-      
+
       // Tail wag
       ctx.save();
       ctx.translate(-9, 0); ctx.rotate(-0.1 + Math.sin(t * 0.15) * 0.3);
@@ -1236,7 +1236,7 @@ function drawPlayer() {
       ctx.beginPath(); ctx.moveTo(2, -14); ctx.lineTo(4, -20); ctx.lineTo(8, -14); ctx.fill();
       // Front Ear
       ctx.beginPath(); ctx.moveTo(10, -14); ctx.lineTo(12, -20); ctx.lineTo(16, -14); ctx.fill();
-      
+
       // Pink Inner Ears
       ctx.fillStyle = '#ff8db8';
       ctx.beginPath(); ctx.moveTo(3, -14); ctx.lineTo(4, -18); ctx.lineTo(7, -14); ctx.fill();
@@ -1253,7 +1253,7 @@ function drawPlayer() {
       ctx.fillStyle = eyeC;
       ctx.beginPath(); ctx.roundRect(4, -10, 4, 4, 1); ctx.fill();
       ctx.beginPath(); ctx.roundRect(12, -10, 4, 4, 1); ctx.fill();
-      
+
       // Nose
       ctx.fillStyle = '#ff8db8';
       ctx.beginPath(); ctx.arc(10, -5, 1.5, 0, Math.PI * 2); ctx.fill();
@@ -1308,13 +1308,13 @@ function drawPlayer() {
       ctx.translate(2, -2); ctx.rotate(-0.1 + wingFlap);
       ctx.fillStyle = wingC; ctx.shadowBlur = 4; ctx.shadowColor = wingC;
       ctx.beginPath();
-      ctx.moveTo(0, 0); 
-      ctx.lineTo(-4, -14); 
-      ctx.lineTo(-6, -22); 
-      ctx.quadraticCurveTo(-2, -18, 4, -16); 
-      ctx.quadraticCurveTo(8, -10, 12, -4); 
-      ctx.quadraticCurveTo(6, 0, 4, 4); 
-      ctx.quadraticCurveTo(2, 2, 0, 0); 
+      ctx.moveTo(0, 0);
+      ctx.lineTo(-4, -14);
+      ctx.lineTo(-6, -22);
+      ctx.quadraticCurveTo(-2, -18, 4, -16);
+      ctx.quadraticCurveTo(8, -10, 12, -4);
+      ctx.quadraticCurveTo(6, 0, 4, 4);
+      ctx.quadraticCurveTo(2, 2, 0, 0);
       ctx.closePath();
       ctx.fill();
       ctx.strokeStyle = 'rgba(0,0,0,0.2)'; ctx.lineWidth = 1.0;
@@ -1323,31 +1323,31 @@ function drawPlayer() {
       ctx.restore();
 
       // Tail
-      ctx.fillStyle = bodyC; 
-      ctx.beginPath(); ctx.moveTo(-6, 12); ctx.lineTo(-18, 14); ctx.lineTo(-24, 10); 
+      ctx.fillStyle = bodyC;
+      ctx.beginPath(); ctx.moveTo(-6, 12); ctx.lineTo(-18, 14); ctx.lineTo(-24, 10);
       ctx.lineTo(-20, 18); ctx.lineTo(-10, 20); ctx.closePath(); ctx.fill();
 
       // Tail Spade (yellow tip)
       ctx.fillStyle = accentC; ctx.shadowBlur = 6; ctx.shadowColor = accentC;
-      ctx.beginPath(); ctx.moveTo(-24, 10); ctx.lineTo(-32, 8); ctx.lineTo(-28, 14); 
+      ctx.beginPath(); ctx.moveTo(-24, 10); ctx.lineTo(-32, 8); ctx.lineTo(-28, 14);
       ctx.lineTo(-30, 20); ctx.lineTo(-20, 18); ctx.closePath(); ctx.fill();
       ctx.shadowBlur = 0;
 
       // Back Leg
       ctx.fillStyle = bodyC;
-      ctx.beginPath(); ctx.ellipse(-6, 20, 5, 4, 0, 0, Math.PI * 2); ctx.fill(); 
+      ctx.beginPath(); ctx.ellipse(-6, 20, 5, 4, 0, 0, Math.PI * 2); ctx.fill();
 
       // Main Body
       ctx.beginPath(); ctx.ellipse(0, 12, 14, 11, -0.2, 0, Math.PI * 2); ctx.fill();
-      
+
       // Yellow Belly
       ctx.fillStyle = accentC;
       ctx.beginPath(); ctx.ellipse(6, 15, 7, 7, -0.4, 0, Math.PI * 2); ctx.fill();
 
       // Front Leg
       ctx.fillStyle = bodyC;
-      ctx.beginPath(); ctx.ellipse(6, 22, 6, 4, 0, 0, Math.PI * 2); ctx.fill(); 
-      
+      ctx.beginPath(); ctx.ellipse(6, 22, 6, 4, 0, 0, Math.PI * 2); ctx.fill();
+
       // Little Arm (T-Rex style)
       ctx.beginPath(); ctx.ellipse(14, 12, 5, 3, 0.4, 0, Math.PI * 2); ctx.fill();
 
@@ -1403,12 +1403,12 @@ function drawPlayer() {
       ctx.translate(2, -2); ctx.rotate(-0.1 - wingFlap * 1.2);
       ctx.fillStyle = wingC; ctx.globalAlpha = 0.95;
       ctx.shadowBlur = 8; ctx.shadowColor = wingC;
-      
+
       ctx.beginPath();
       ctx.moveTo(0, 0); // Wing root
       ctx.lineTo(-6, -18); // Mid joint
       ctx.lineTo(-8, -28); // Top wing tip
-      
+
       // Scalloped trailing edge
       ctx.quadraticCurveTo(-2, -22, 6, -20); // Top web
       ctx.quadraticCurveTo(12, -14, 16, -6); // Mid web
@@ -1416,13 +1416,13 @@ function drawPlayer() {
       ctx.quadraticCurveTo(2, 4, 0, 0); // Return
       ctx.closePath();
       ctx.fill();
-      
+
       // Wing ribs (shadows)
       ctx.strokeStyle = 'rgba(0,0,0,0.15)'; ctx.lineWidth = 2;
       ctx.beginPath(); ctx.moveTo(-6, -18); ctx.lineTo(6, -20); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(-6, -18); ctx.lineTo(16, -6); ctx.stroke();
       ctx.beginPath(); ctx.moveTo(-6, -18); ctx.lineTo(6, 6); ctx.stroke();
-      
+
       ctx.restore();
 
       ctx.restore();
@@ -2118,7 +2118,7 @@ function shootPlayerGun() {
 
 function shootPlayerMissile() {
   if (state !== 'playing') return;
-  
+
   if (player.missileAmmo <= 0) return; // 3 ammo limit!
 
   if (player.missileCooldown > 0) return;
@@ -2150,7 +2150,7 @@ document.addEventListener('keydown', e => {
 document.getElementById('shootBtn').addEventListener('touchstart', e => {
   e.preventDefault(); e.stopPropagation();
   shootPlayerGun();
-}, {passive: false});
+}, { passive: false });
 document.getElementById('shootBtn').addEventListener('mousedown', e => {
   e.preventDefault(); e.stopPropagation();
   shootPlayerGun();
@@ -2158,7 +2158,7 @@ document.getElementById('shootBtn').addEventListener('mousedown', e => {
 document.getElementById('missileBtn').addEventListener('touchstart', e => {
   e.preventDefault(); e.stopPropagation();
   shootPlayerMissile();
-}, {passive: false});
+}, { passive: false });
 document.getElementById('missileBtn').addEventListener('mousedown', e => {
   e.preventDefault(); e.stopPropagation();
   shootPlayerMissile();
@@ -2230,7 +2230,7 @@ function startGame() {
   try {
     const W = canvas.gameW, H = canvas.gameH;
     player.x = W * .12; player.y = H * .4; player.vy = 0; player.vx = 0; player.rotation = 0; player.trail = []; player.onGround = false; player.exploded = false;
-    player.laserAmmo = 5; player.missileAmmo = 3;
+    player.laserAmmo = 10; player.missileAmmo = 5;
     obstacles = []; coins = []; pickups = []; heartPacks = []; particles = []; missiles = []; missileWarnings = [];
     enemies = []; enemyBullets = []; playerBullets = [];
 
@@ -2297,11 +2297,11 @@ function loop(ts) {
     document.getElementById('shootBtn').style.display = 'flex';
     if (document.getElementById('missileBtn')) document.getElementById('missileBtn').style.display = 'flex';
   }
-  
+
   if (player.shootCooldown > 0) player.shootCooldown -= dt;
   if (player.missileCooldown > 0) player.missileCooldown -= dt;
   if (player.saberSwing > 0) player.saberSwing -= Math.min(0.2 * dt, player.saberSwing);
-  
+
   window.bgX = bgX; window.frame = frame;
 
   drawBG(); drawBanner();
@@ -2697,10 +2697,10 @@ function loop(ts) {
       });
     }
     if (target) {
-      const dx = (target.x + (target.w||0) / 2) - pb.x, dy = (target.y + (target.h||0) / 2) - pb.y;
+      const dx = (target.x + (target.w || 0) / 2) - pb.x, dy = (target.y + (target.h || 0) / 2) - pb.y;
       const dist = Math.hypot(dx, dy);
       if (dist > 0) {
-        const turnSpeed = pb.type === 'player_missile' ? 2.5 : (pb.type === 'player_laser' ? 4 : 3); 
+        const turnSpeed = pb.type === 'player_missile' ? 2.5 : (pb.type === 'player_laser' ? 4 : 3);
         pb.vx += (dx / dist) * turnSpeed; pb.vy += (dy / dist) * turnSpeed;
         const s = Math.hypot(pb.vx, pb.vy), mg = speed * 2 + 10;
         if (s > mg) { pb.vx = (pb.vx / s) * mg; pb.vy = (pb.vy / s) * mg; }
@@ -2793,9 +2793,9 @@ function loop(ts) {
         if (pb.x + Math.sqrt(hitRadiusSq) > m.x && pb.x - Math.sqrt(hitRadiusSq) < m.x + m.w && pb.y + Math.sqrt(hitRadiusSq) > m.y && pb.y - Math.sqrt(hitRadiusSq) < m.y + m.h) {
           let missileDamage = (pb.type === 'cat' || pb.type === 'ufo') ? 1 : 2;
           m.hp = (m.hp || 2) - missileDamage;
-          
+
           if (pb.type === 'ufo') pb.life--; else pb.life = 0;
-          
+
           if (m.hp <= 0) {
             m.destroyed = true;
             for (let i = 0; i < 15; i++) spawnP(m.x, m.y, ['#ff0000', '#ff4400'][i % 2], 6);

@@ -11,7 +11,9 @@
   <meta name="theme-color" content="#080810">
   <title>Sky Runner - Endless Journey</title>
   <meta name="description" content="Khmer Sky Runner - A Jetpack Joyride-inspired endless runner with Cambodian themes">
-  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;500;700&display=swap" rel="stylesheet">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800;900&family=Inter:wght@400;500;700&display=swap"
+    rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 
@@ -31,35 +33,57 @@
       <div id="hudTop">
         <div style="display:flex; align-items:center; gap:12px;">
           <button id="pauseBtnHUD" title="Pause Game">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <rect x="6" y="4" width="4" height="16" rx="1" />
+              <rect x="14" y="4" width="4" height="16" rx="1" />
+            </svg>
           </button>
           <div id="distDisplay" class="hud-panel">
             <span id="distIcon" style="display:flex; align-items:center;">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg>
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                stroke-linecap="round" stroke-linejoin="round">
+                <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2" />
+              </svg>
             </span>
             <span id="distVal">0 m</span>
           </div>
         </div>
         <div id="coinDisplay" class="hud-panel">
           <span style="display:flex; align-items:center;">
-            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/><circle cx="12" cy="12" r="3"/></svg>
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+              stroke-linecap="round" stroke-linejoin="round">
+              <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2" />
+              <circle cx="12" cy="12" r="3" />
+            </svg>
           </span>
           <span id="coinVal">0</span>
         </div>
         <div style="display:flex; flex-direction:column; align-items:flex-end; gap: 4px;">
           <div id="heartsDisplay">❤️❤️❤️</div>
           <div id="ammoDisplay" style="display: flex; gap: 12px;">
-            <div class="hud-panel" style="color: #ff00ff; border-color: rgba(255,0,255,0.3); box-shadow: inset 0 0 10px rgba(255,0,255,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff00ff; padding: 6px 14px; font-size: 20px;">
+            <div class="hud-panel"
+              style="color: #ff00ff; border-color: rgba(255,0,255,0.3); box-shadow: inset 0 0 10px rgba(255,0,255,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff00ff; padding: 6px 14px; font-size: 20px;">
               <span style="display:flex; align-items:center; margin-right: 8px;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 10h12l3-3h3v4h-3l-3 3H4z"/><path d="M8 14v4l-4-4"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4 10h12l3-3h3v4h-3l-3 3H4z" />
+                  <path d="M8 14v4l-4-4" />
+                </svg>
               </span>
-              <span id="laserAmmoVal">x5</span>
+              <span id="laserAmmoVal">x10</span>
             </div>
-            <div class="hud-panel" style="color: #ff4400; border-color: rgba(255,68,0,0.3); box-shadow: inset 0 0 10px rgba(255,68,0,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff4400; padding: 6px 14px; font-size: 20px;">
+            <div class="hud-panel"
+              style="color: #ff4400; border-color: rgba(255,68,0,0.3); box-shadow: inset 0 0 10px rgba(255,68,0,0.1), 0 0 10px rgba(0,0,0,0.5); text-shadow: 0 0 6px #ff4400; padding: 6px 14px; font-size: 20px;">
               <span style="display:flex; align-items:center; margin-right: 8px;">
-                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5"/><path d="M11 20l9-9c1.66-1.66 1.66-4.34 0-6c-1.66-1.66-4.34-1.66-6 0l-9 9c-1.66 1.66-1.66 4.34 0 6c1.66 1.66 4.34 1.66 6 0z"/><circle cx="15" cy="9" r="1.5"/></svg>
+                <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+                  stroke-linecap="round" stroke-linejoin="round">
+                  <path d="M4.5 16.5c-1.5 1.26-2 5-2 5s3.74-.5 5-2l.5-.5" />
+                  <path
+                    d="M11 20l9-9c1.66-1.66 1.66-4.34 0-6c-1.66-1.66-4.34-1.66-6 0l-9 9c-1.66 1.66-1.66 4.34 0 6c1.66 1.66 4.34 1.66 6 0z" />
+                  <circle cx="15" cy="9" r="1.5" />
+                </svg>
               </span>
-              <span id="missileAmmoVal">x3</span>
+              <span id="missileAmmoVal">x5</span>
             </div>
           </div>
         </div>
@@ -70,8 +94,10 @@
           <div id="puFill"></div>
         </div>
       </div>
-      <button id="shootBtn" class="mobile-action-btn" style="right: 20px; bottom: 80px; background: rgba(255,20,80,0.8); box-shadow: 0 0 15px rgba(255,20,80,0.8); display: none;">🔫</button>
-      <button id="missileBtn" class="mobile-action-btn" style="right: 90px; bottom: 80px; background: rgba(255,100,0,0.8); box-shadow: 0 0 15px rgba(255,100,0,0.8); display: none;">🚀</button>
+      <button id="shootBtn" class="mobile-action-btn"
+        style="left: 20px; bottom: 80px; background: rgba(255,20,80,0.8); box-shadow: 0 0 15px rgba(255,20,80,0.8); display: none;">🔫</button>
+      <button id="missileBtn" class="mobile-action-btn"
+        style="left: 90px; bottom: 80px; background: rgba(255,100,0,0.8); box-shadow: 0 0 15px rgba(255,100,0,0.8); display: none;">🚀</button>
     </div>
 
     <!-- Start Screen -->
@@ -131,8 +157,12 @@
       <div class="panel panelSmall">
         <div class="panelTitle">Select Difficulty <span class="panelClose" id="diffClose">✕</span></div>
         <div style="display:flex; flex-direction:column; gap:12px; margin-top:10px;">
-          <button class="btn primary" id="diffBeginnerBtn" style="background: linear-gradient(180deg, #00d2ff 0%, #3a7bd5 100%); box-shadow: 0 4px 15px rgba(0,210,255,0.4);">Beginner Mode</button>
-          <button class="btn primary" id="diffProBtn" style="background: linear-gradient(180deg, #ff416c 0%, #ff4b2b 100%); box-shadow: 0 4px 15px rgba(255,65,108,0.4);">Pro Mode</button>
+          <button class="btn primary" id="diffBeginnerBtn"
+            style="background: linear-gradient(180deg, #00d2ff 0%, #3a7bd5 100%); box-shadow: 0 4px 15px rgba(0,210,255,0.4);">Beginner
+            Mode</button>
+          <button class="btn primary" id="diffProBtn"
+            style="background: linear-gradient(180deg, #ff416c 0%, #ff4b2b 100%); box-shadow: 0 4px 15px rgba(255,65,108,0.4);">Pro
+            Mode</button>
         </div>
       </div>
     </div>
@@ -170,10 +200,17 @@
     </div>
 
     <button id="muteBtn" class="corner-btn">
-      <svg id="muteIconSVG" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07"/></svg>
+      <svg id="muteIconSVG" width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+        stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+        <polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5" />
+        <path d="M19.07 4.93a10 10 0 0 1 0 14.14M15.54 8.46a5 5 0 0 1 0 7.07" />
+      </svg>
     </button>
     <button id="fullscreenBtn" class="corner-btn" title="Toggle Fullscreen">
-      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3"/></svg>
+      <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round">
+        <path d="M8 3H5a2 2 0 0 0-2 2v3m18 0V5a2 2 0 0 0-2-2h-3m0 18h3a2 2 0 0 0 2-2v-3M3 16v3a2 2 0 0 0 2 2h3" />
+      </svg>
     </button>
   </div>
 

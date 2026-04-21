@@ -78,6 +78,7 @@ canvas {
   top: 0;
   left: 0;
   right: 0;
+  bottom: 0;
   pointer-events: none;
   transition: opacity 0.3s ease;
   z-index: 10;
@@ -987,33 +988,235 @@ canvas {
 }
 
 /* CSS Character and Jetpack Models for Shop */
-.css-ninja { position: relative; width: 156px; height: 204px; margin: 0 auto; pointer-events: none; }
-.css-ninja > div { position: absolute; }
-.cn-ring { width: 80px; height: 80px; border: 8px solid var(--accent-saber, #ff00ff); border-radius: 50%; top: 60px; left: -20px; box-shadow: 0 0 15px var(--accent-saber, #ff00ff), inset 0 0 15px var(--accent-saber, #ff00ff); transform: scaleX(0.4); }
-.cn-body { width: 60px; height: 80px; background: var(--bg-body, #1c1f26); border-radius: 30px; top: 70px; left: 50px; z-index: 2; }
-.cn-core { width: 24px; height: 24px; background: var(--accent-glow, #00f3ff); border-radius: 50%; top: 90px; left: 68px; box-shadow: 0 0 15px var(--accent-glow, #00f3ff); z-index: 3; }
-.cn-head { width: 70px; height: 70px; background: var(--bg-body, #1c1f26); border-radius: 50%; top: 0; left: 45px; z-index: 4; }
-.cn-strap { width: 70px; height: 12px; background: #333; top: 28px; left: 45px; z-index: 5; }
-.cn-visor { width: 45px; height: 20px; background: var(--accent-glow, #00f3ff); border-radius: 10px; top: 24px; left: 65px; box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 5px #fff; z-index: 6; }
-.cn-arm { width: 24px; height: 50px; background: var(--bg-body, #1c1f26); top: 80px; left: 90px; transform: rotate(-30deg); border-radius: 12px; z-index: 5; }
-.cn-saber { width: 140px; height: 8px; background: #fff; top: 110px; left: 0; border-radius: 4px; box-shadow: 0 0 15px var(--accent-saber, #ff00ff), 0 0 5px var(--accent-saber, #ff00ff), 0 0 30px var(--accent-saber, #ff00ff); z-index: 6; transform: rotate(-15deg); }
-.cn-leg1 { width: 24px; height: 60px; background: var(--bg-body, #1c1f26); top: 140px; left: 50px; transform: rotate(20deg); border-radius: 12px; z-index: 1; }
-.cn-leg2 { width: 24px; height: 60px; background: var(--bg-body, #1c1f26); top: 140px; left: 86px; transform: rotate(-20deg); border-radius: 12px; z-index: 1; }
-.cn-boot1 { width: 30px; height: 14px; background: var(--accent-glow, #00f3ff); top: 190px; left: 35px; box-shadow: 0 0 10px var(--accent-glow, #00f3ff); border-radius: 4px; z-index: 2; }
-.cn-boot2 { width: 30px; height: 14px; background: var(--accent-glow, #00f3ff); top: 190px; left: 95px; box-shadow: 0 0 10px var(--accent-glow, #00f3ff); border-radius: 4px; z-index: 2; }
-.cn-jetpack { width: 34px; height: 50px; background: #2b303a; border-left: 4px solid var(--accent-glow, #00f3ff); border-radius: 8px; top: 75px; left: 24px; z-index: 1; }
-.cn-flame { width: 14px; height: 40px; background: #fff; border-radius: 10px; top: 122px; left: 34px; z-index: 0; box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 30px var(--accent-glow, #00f3ff); animation: jetFlame 0.1s linear infinite alternate; transform-origin: top center; filter: blur(2px); }
-
-@keyframes jetFlame {
-    0% { transform: scaleY(1); opacity: 0.8; }
-    100% { transform: scaleY(1.5); opacity: 1; }
+.css-ninja {
+  position: relative;
+  width: 156px;
+  height: 204px;
+  margin: 0 auto;
+  pointer-events: none;
 }
 
-.css-pack { position: relative; width: 40px; height: 80px; margin: 0 auto; transform: scale(0.65); transform-origin: top center; pointer-events: none; }
-.css-pack > div { position: absolute; }
-.cp-body { width: 34px; height: 50px; background: var(--bg-body, #2b303a); border-left: 4px solid var(--accent-glow, #00f3ff); border-right: 4px solid var(--accent-glow, #00f3ff); border-radius: 8px; top: 0; left: 3px; z-index: 1; }
-.cp-core { width: 14px; height: 14px; background: #222; border: 2px solid var(--accent-glow, #00f3ff); border-radius: 50%; top: 16px; left: 11px; z-index: 2; box-shadow: inset 0 0 10px var(--accent-glow, #00f3ff); }
-.cp-flame { width: 16px; height: 40px; background: #fff; border-radius: 10px; top: 46px; left: 12px; z-index: 0; box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 30px var(--accent-glow, #00f3ff); animation: jetFlame 0.1s linear infinite alternate; transform-origin: top center; filter: blur(2px); }
+.css-ninja>div {
+  position: absolute;
+}
+
+.cn-ring {
+  width: 80px;
+  height: 80px;
+  border: 8px solid var(--accent-saber, #ff00ff);
+  border-radius: 50%;
+  top: 60px;
+  left: -20px;
+  box-shadow: 0 0 15px var(--accent-saber, #ff00ff), inset 0 0 15px var(--accent-saber, #ff00ff);
+  transform: scaleX(0.4);
+}
+
+.cn-body {
+  width: 60px;
+  height: 80px;
+  background: var(--bg-body, #1c1f26);
+  border-radius: 30px;
+  top: 70px;
+  left: 50px;
+  z-index: 2;
+}
+
+.cn-core {
+  width: 24px;
+  height: 24px;
+  background: var(--accent-glow, #00f3ff);
+  border-radius: 50%;
+  top: 90px;
+  left: 68px;
+  box-shadow: 0 0 15px var(--accent-glow, #00f3ff);
+  z-index: 3;
+}
+
+.cn-head {
+  width: 70px;
+  height: 70px;
+  background: var(--bg-body, #1c1f26);
+  border-radius: 50%;
+  top: 0;
+  left: 45px;
+  z-index: 4;
+}
+
+.cn-strap {
+  width: 70px;
+  height: 12px;
+  background: #333;
+  top: 28px;
+  left: 45px;
+  z-index: 5;
+}
+
+.cn-visor {
+  width: 45px;
+  height: 20px;
+  background: var(--accent-glow, #00f3ff);
+  border-radius: 10px;
+  top: 24px;
+  left: 65px;
+  box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 5px #fff;
+  z-index: 6;
+}
+
+.cn-arm {
+  width: 24px;
+  height: 50px;
+  background: var(--bg-body, #1c1f26);
+  top: 80px;
+  left: 90px;
+  transform: rotate(-30deg);
+  border-radius: 12px;
+  z-index: 5;
+}
+
+.cn-saber {
+  width: 140px;
+  height: 8px;
+  background: #fff;
+  top: 110px;
+  left: 0;
+  border-radius: 4px;
+  box-shadow: 0 0 15px var(--accent-saber, #ff00ff), 0 0 5px var(--accent-saber, #ff00ff), 0 0 30px var(--accent-saber, #ff00ff);
+  z-index: 6;
+  transform: rotate(-15deg);
+}
+
+.cn-leg1 {
+  width: 24px;
+  height: 60px;
+  background: var(--bg-body, #1c1f26);
+  top: 140px;
+  left: 50px;
+  transform: rotate(20deg);
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.cn-leg2 {
+  width: 24px;
+  height: 60px;
+  background: var(--bg-body, #1c1f26);
+  top: 140px;
+  left: 86px;
+  transform: rotate(-20deg);
+  border-radius: 12px;
+  z-index: 1;
+}
+
+.cn-boot1 {
+  width: 30px;
+  height: 14px;
+  background: var(--accent-glow, #00f3ff);
+  top: 190px;
+  left: 35px;
+  box-shadow: 0 0 10px var(--accent-glow, #00f3ff);
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.cn-boot2 {
+  width: 30px;
+  height: 14px;
+  background: var(--accent-glow, #00f3ff);
+  top: 190px;
+  left: 95px;
+  box-shadow: 0 0 10px var(--accent-glow, #00f3ff);
+  border-radius: 4px;
+  z-index: 2;
+}
+
+.cn-jetpack {
+  width: 34px;
+  height: 50px;
+  background: #2b303a;
+  border-left: 4px solid var(--accent-glow, #00f3ff);
+  border-radius: 8px;
+  top: 75px;
+  left: 24px;
+  z-index: 1;
+}
+
+.cn-flame {
+  width: 14px;
+  height: 40px;
+  background: #fff;
+  border-radius: 10px;
+  top: 122px;
+  left: 34px;
+  z-index: 0;
+  box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 30px var(--accent-glow, #00f3ff);
+  animation: jetFlame 0.1s linear infinite alternate;
+  transform-origin: top center;
+  filter: blur(2px);
+}
+
+@keyframes jetFlame {
+  0% {
+    transform: scaleY(1);
+    opacity: 0.8;
+  }
+
+  100% {
+    transform: scaleY(1.5);
+    opacity: 1;
+  }
+}
+
+.css-pack {
+  position: relative;
+  width: 40px;
+  height: 80px;
+  margin: 0 auto;
+  transform: scale(0.65);
+  transform-origin: top center;
+  pointer-events: none;
+}
+
+.css-pack>div {
+  position: absolute;
+}
+
+.cp-body {
+  width: 34px;
+  height: 50px;
+  background: var(--bg-body, #2b303a);
+  border-left: 4px solid var(--accent-glow, #00f3ff);
+  border-right: 4px solid var(--accent-glow, #00f3ff);
+  border-radius: 8px;
+  top: 0;
+  left: 3px;
+  z-index: 1;
+}
+
+.cp-core {
+  width: 14px;
+  height: 14px;
+  background: #222;
+  border: 2px solid var(--accent-glow, #00f3ff);
+  border-radius: 50%;
+  top: 16px;
+  left: 11px;
+  z-index: 2;
+  box-shadow: inset 0 0 10px var(--accent-glow, #00f3ff);
+}
+
+.cp-flame {
+  width: 16px;
+  height: 40px;
+  background: #fff;
+  border-radius: 10px;
+  top: 46px;
+  left: 12px;
+  z-index: 0;
+  box-shadow: 0 0 15px var(--accent-glow, #00f3ff), 0 0 30px var(--accent-glow, #00f3ff);
+  animation: jetFlame 0.1s linear infinite alternate;
+  transform-origin: top center;
+  filter: blur(2px);
+}
 
 .skinModel {
   width: 48px;
@@ -1030,56 +1233,158 @@ canvas {
   background: rgba(255, 255, 255, 0.05);
 }
 
-/* Removed portrait-blocking rotate overlay so the game is responsive and playable on all platform orientations. */
+@media screen and (orientation: portrait) and (max-device-width: 768px) {
+  #rotateOverlay {
+    display: flex;
+    position: absolute;
+    inset: 0;
+    z-index: 99999;
+    background: var(--dark);
+    color: var(--cyan);
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-family: var(--font-head);
+    text-align: center;
+  }
+
+  #rotateOverlay p {
+    font-family: var(--font-tech);
+    color: var(--textLight);
+    margin-top: 16px;
+    font-size: 18px;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+  }
+
+  #gameWrapper {
+    display: none !important;
+  }
+}
 
 /* ── HUD MOBILE OPTIMIZATION ── */
-@media (max-width: 950px), (max-height: 500px) {
+@media (max-width: 950px),
+(max-height: 500px) {
   #hudTop {
     padding: 10px 15px 0;
     gap: 8px;
   }
+
   .hud-panel {
     padding: 6px 12px !important;
     font-size: 14px !important;
     gap: 6px;
     clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px);
   }
+
   .hud-panel svg {
     width: 16px !important;
     height: 16px !important;
   }
+
   #pauseBtnHUD {
     padding: 6px 12px;
   }
+
   #pauseBtnHUD svg {
     width: 16px !important;
     height: 16px !important;
   }
+
   #heartsDisplay {
     font-size: 14px !important;
     gap: 2px;
   }
+
   #puBar {
-    top: 55px !important;
+    top: 75px !important;
     left: 15px !important;
     padding: 4px 12px;
     font-size: 16px !important;
     clip-path: polygon(8px 0, 100% 0, 100% calc(100% - 8px), calc(100% - 8px) 100%, 0 100%, 0 8px);
   }
+
   #puTrack {
     width: 100px;
     height: 6px;
   }
+
   .mobile-action-btn {
+    display: flex !important;
     width: 48px !important;
     height: 48px !important;
     font-size: 20px !important;
     bottom: 20px !important;
   }
+
   #shootBtn {
     right: 15px !important;
+    left: auto !important;
   }
+
   #missileBtn {
     right: 75px !important;
+    left: auto !important;
+  }
+
+  .naka {
+    font-size: 44px !important;
+    filter: drop-shadow(0 10px 10px rgba(0, 243, 255, 0.3));
+  }
+
+  .screenTitle {
+    font-size: 32px !important;
+    letter-spacing: 2px !important;
+  }
+
+  .screenSub {
+    font-size: 12px !important;
+    padding: 2px 10px !important;
+    letter-spacing: 4px !important;
+  }
+
+  .dline {
+    margin: 8px auto 16px !important;
+  }
+
+  .btn {
+    padding: 10px 30px !important;
+    font-size: 14px !important;
+    clip-path: polygon(10px 0, 100% 0, 100% calc(100% - 10px), calc(100% - 10px) 100%, 0 100%, 0 10px) !important;
+  }
+
+  .startRow {
+    margin-top: 8px !important;
+    gap: 10px !important;
+  }
+
+  .startLeft {
+    gap: 4px !important;
+  }
+
+  .instruct {
+    font-size: 12px !important;
+    margin-top: 4px !important;
+    text-align: center;
+    color: var(--textMuted);
+  }
+
+  #startScreen {
+    gap: 8px !important;
+  }
+  
+  .goStats {
+    gap: 4px !important;
+    margin: 8px auto !important;
+  }
+
+  .goStat {
+    padding: 6px 16px !important;
+    font-size: 14px !important;
+  }
+
+  .goButtons {
+    gap: 10px !important;
+    margin-top: 8px !important;
   }
 }

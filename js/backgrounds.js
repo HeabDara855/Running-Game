@@ -298,7 +298,7 @@ angkorImg.src = 'img/angkor.png';
 
 // ── BIOME 1: ANGKOR WAT TEMPLE ──
 function drawBG_village() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const sp = bgX * 0.4; // Slower parallax for image
 
   if (angkorImg.complete && angkorImg.naturalWidth > 0) {
@@ -338,7 +338,7 @@ ruinsImg.src = 'img/ruins.jpg';
 
 // ── BIOME 2: ANCIENT RUINS ──
 function drawBG_forest() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const t = frame;
   const sp = bgX * 0.4; // Slower parallax for image
 
@@ -417,7 +417,7 @@ function drawBG_forest() {
 
 // ── BIOME 3: COMMAND CENTER (Control Room) ──
 function drawBG_city() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   drawLabWall(W, H, gY, '#0e0e25', '#181838', '#060618');
   const t = frame, sp = bgX * 0.95;
 
@@ -496,7 +496,7 @@ function drawBG_city() {
 
 // ── BIOME 4: REACTOR CORE ──
 function drawBG_mountain() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   drawLabWall(W, H, gY, '#2a1515', '#3a2020', '#1a0a0a');
   const t = frame, sp = bgX * 0.95;
 
@@ -561,7 +561,7 @@ function drawBG_mountain() {
 
 // ── BIOME 5: LAUNCH HANGAR ──
 function drawBG_ocean() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   drawLabWall(W, H, gY, '#1e2e40', '#283a50', '#0e1e30');
   const t = frame, sp = bgX * 0.95;
 
@@ -641,7 +641,7 @@ function drawBG_ocean() {
 
 // ── BIOME 6: SCI-FI BRIDGE (elevated walkway) ──
 function drawBG_bridge() {
-  const W = canvas.gameW, H = canvas.gameH, gY = H * 0.87;
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const t = frame, sp = bgX * 0.95;
 
   // Sky gradient (dusk / industrial atmosphere)
