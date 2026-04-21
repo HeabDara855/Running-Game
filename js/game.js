@@ -62,7 +62,7 @@ function toKhmer(n) { return String(n).split('').map(d => isNaN(d) ? d : KD[+d])
 const BIOMES = [
   { id: 'bridge', label: '🛤️ Jungle Outpost', minDist: 0 },
   { id: 'village', label: '🛕 Angkor Wat', minDist: 1000 },
-  { id: 'forest', label: '🏛️ Ancient Ruins', minDist: 2000 },
+  { id: 'forest', label: '🏛️ God Valley', minDist: 2000 },
   { id: 'city', label: '⚔️ Secret Catacombs', minDist: 3000 },
   { id: 'mountain', label: '🌋 Volcanic Depths', minDist: 4000 },
   { id: 'ocean', label: '🐉 Dragon\'s Peak', minDist: 5000 }

@@ -165,7 +165,7 @@ function drawLabFloor(W, H, gY) {
       n1: '#222', n2: 'rgba(255,255,255,0.2)',
       rp1: '#777', rp2: '#888', rb1: '#666'
     },
-    forest: { // Ancient Ruins - Pale Snowy Stone
+    forest: { // God Valley - Pale Snowy Stone
       sL1: '#637081', sL2: '#7f8c9f', sC1: '#4a5563', sC2: '#5b6a7a', sX: '#4a5563', sh: '#5b6a7a',
       dTop: '#d0d6df', dd1: '#bac3ce', dd2: '#9ba5b3', dd3: '#7d8a98', dd4: '#626f7d', dBot: '#4e5a66',
       dHi: '#e6ebf0', dShad: '#38434f', dSide1: '#5b6a7a', dSide2: '#38434f',
@@ -336,7 +336,7 @@ function drawBG_village() {
 const ruinsImg = new Image();
 ruinsImg.src = 'img/ruins.jpg';
 
-// ── BIOME 2: ANCIENT RUINS ──
+// ── BIOME 2: GOD VALLEY ──
 function drawBG_forest() {
   const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
   const t = frame;
