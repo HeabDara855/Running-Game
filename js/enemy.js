@@ -4,46 +4,49 @@ function spawnEnemy(forceType) {
   const type = forceType || (Math.random() < 0.33 ? 'standard' : Math.random() < 0.66 ? 'spinning_robot' : 'chopper');
   const shootInterval = gameMode === 'pro' ? Math.max(90, 160 - distance * 0.006) : Math.max(240, 360 - distance * 0.001);
   if (type === 'spinning_robot') {
+    // Hovers erratically in mid-air
     const ey = gY * 0.45 + Math.random() * (gY * 0.3);
     enemies.push({
       type: 'spinning_robot', x: W + 40, y: ey, baseY: ey, w: 32, h: 32,
-      hoverAmp: 8, hoverSpeed: 0.01, hoverPhase: Math.random() * 6.28, rot: 0,
+      hoverAmp: 30 + Math.random() * 15, hoverSpeed: 0.08 + Math.random() * 0.04,
+      hoverPhase: Math.random() * 6.28, rot: 0,
       shootTimer: shootInterval + Math.random() * 60, shootInterval: shootInterval,
-      hp: 2, flash: 0, shotCount: 0, fleeing: false
+      hp: 10, maxHp: 10, flash: 0, shotCount: 0, fleeing: false
     });
   } else if (type === 'chopper') {
-    const ey = 40 + Math.random() * (gY * 0.35);
+    // Flies high near the ceiling
+    const ey = 30 + Math.random() * 40;
     enemies.push({
       type: 'chopper', x: W + 60, y: ey, baseY: ey, w: 45, h: 32,
-      hoverAmp: 15 + Math.random() * 10, hoverSpeed: 0.015 + Math.random() * 0.01,
+      hoverAmp: 10 + Math.random() * 5, hoverSpeed: 0.015 + Math.random() * 0.01,
       hoverPhase: Math.random() * 6.28, rot: 0,
       shootTimer: shootInterval * 1.3 + Math.random() * 40, shootInterval: shootInterval * 1.3,
-      hp: 2, flash: 0, shotCount: 0, fleeing: false
+      hp: 15, maxHp: 15, flash: 0, shotCount: 0, fleeing: false
     });
   } else {
-    // standard drone
-    const ey = 50 + Math.random() * (gY - 120);
+    // The Standard: Hovers stably at mid-height
+    const ey = gY * 0.5 + (Math.random() - 0.5) * 40;
     enemies.push({
       type: 'standard', x: W + 30, y: ey, baseY: ey, w: 26, h: 26,
-      hoverAmp: 10 + Math.random() * 20, hoverSpeed: 0.02 + Math.random() * 0.02,
+      hoverAmp: 4 + Math.random() * 2, hoverSpeed: 0.01 + Math.random() * 0.01,
       hoverPhase: Math.random() * 6.28, rot: 0,
       shootTimer: shootInterval + Math.random() * 50, shootInterval,
-      hp: 2, flash: 0, shotCount: 0, fleeing: false
+      hp: 8, maxHp: 8, flash: 0, shotCount: 0, fleeing: false
     });
   }
 }
 function spawnEnemyBullet(ex, ey, bulletType) {
   const bulletSpeed = gameMode === 'pro' ? 2.8 + distance * 0.0003 : 1.0 + distance * 0.00005;
   if (bulletType === 'laser_beam') {
-    // Robot: shoots straight left (very predictable)
+    // Standard: shoots straight left (very predictable)
     enemyBullets.push({ x: ex, y: ey, vx: -bulletSpeed * 1.5, vy: 0, r: 10, life: 1, btype: 'laser_beam' });
   } else if (bulletType === 'fireball') {
-    // Dragon: shoots downward-left at a fixed angle
-    const angle = Math.PI * 0.75 + (Math.random() - 0.5) * 0.3;
-    enemyBullets.push({ x: ex, y: ey, vx: Math.cos(angle) * bulletSpeed, vy: Math.sin(angle) * bulletSpeed * 0.6, r: 9, life: 1, btype: 'fireball' });
+    // Chopper: shoots downward-left at a fixed angle
+    const angle = Math.PI * 0.75 + (Math.random() - 0.5) * 0.1;
+    enemyBullets.push({ x: ex, y: ey, vx: Math.cos(angle) * bulletSpeed, vy: Math.sin(angle) * bulletSpeed * 0.8, r: 9, life: 1, btype: 'fireball' });
   } else {
-    // Demon: shoots left with a slight random vertical spread (NOT aimed at player)
-    const spreadY = (Math.random() - 0.5) * 1.5;
+    // Spinning Robot: shoots left with an unpredictable spread
+    const spreadY = (Math.random() - 0.5) * 3.5;
     enemyBullets.push({ x: ex, y: ey, vx: -bulletSpeed, vy: spreadY, r: 7, life: 1, btype: 'demon' });
   }
   sfx.laser();

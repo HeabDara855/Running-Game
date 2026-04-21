@@ -915,10 +915,10 @@ function loop(ts) {
     else { si = Math.max(45, 55 - (distance - 9000) * 0.005); enemyChance = 0.75; missileChance = 0.35; }
   } else {
     // Beginner: Very relaxed, low enemy spawn chance
-    if (distance < 2000) { si = Math.max(220, 300 - distance * 0.01); enemyChance = 0.15; missileChance = 0.02; }
-    else if (distance < 5000) { si = Math.max(200, 260 - (distance - 2000) * 0.01); enemyChance = 0.20; missileChance = 0.04; }
-    else if (distance < 9000) { si = Math.max(180, 220 - (distance - 5000) * 0.01); enemyChance = 0.25; missileChance = 0.06; }
-    else { si = Math.max(160, 200 - (distance - 9000) * 0.005); enemyChance = 0.35; missileChance = 0.08; }
+    if (distance < 2000) { si = Math.max(220, 300 - distance * 0.01); enemyChance = 0.35; missileChance = 0.02; }
+    else if (distance < 5000) { si = Math.max(200, 260 - (distance - 2000) * 0.01); enemyChance = 0.45; missileChance = 0.04; }
+    else if (distance < 9000) { si = Math.max(180, 220 - (distance - 5000) * 0.01); enemyChance = 0.55; missileChance = 0.06; }
+    else { si = Math.max(160, 200 - (distance - 9000) * 0.005); enemyChance = 0.65; missileChance = 0.08; }
   }
   // Don't spawn regular enemies during boss fights or when dying
   const bossActive = boss && boss.entered && !boss.retreating;
@@ -1053,7 +1053,7 @@ function loop(ts) {
       return;
     }
     const baseMult = gameMode === 'pro' ? 1.0 : 0.5;
-    const moveSpeed = (e.type === 'dragon' ? spd * 0.25 : e.type === 'robot' ? spd * 0.35 : spd * 0.3) * baseMult;
+    const moveSpeed = (e.type === 'chopper' ? spd * 0.25 : e.type === 'spinning_robot' ? spd * 0.35 : spd * 0.3) * baseMult;
     e.x -= moveSpeed;
     // Movement: all enemies hover now
     e.hoverPhase += (e.hoverSpeed || 0.01) * dt;
@@ -1065,12 +1065,8 @@ function loop(ts) {
       // Add random delay so shooting is unpredictable
       e.shootTimer = e.shootInterval * (0.7 + Math.random() * 0.8);
       e.shotCount = (e.shotCount || 0) + 1;
-      const btype = e.type === 'robot' ? 'laser_beam' : e.type === 'dragon' ? 'fireball' : undefined;
+      const btype = e.type === 'standard' ? 'laser_beam' : e.type === 'chopper' ? 'fireball' : undefined;
       spawnEnemyBullet(e.x, e.y, btype);
-      // After 3 shots, start fleeing
-      if (e.shotCount >= 3) {
-        e.fleeing = true;
-      }
     }
     drawEnemyByType(e);
   });
