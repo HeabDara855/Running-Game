@@ -2155,6 +2155,14 @@ document.getElementById('shootBtn').addEventListener('mousedown', e => {
   e.preventDefault(); e.stopPropagation();
   shootPlayerGun();
 });
+document.getElementById('missileBtn').addEventListener('touchstart', e => {
+  e.preventDefault(); e.stopPropagation();
+  shootPlayerMissile();
+}, {passive: false});
+document.getElementById('missileBtn').addEventListener('mousedown', e => {
+  e.preventDefault(); e.stopPropagation();
+  shootPlayerMissile();
+});
 
 function hitPlayer() {
   if (invincible > 0) return;
@@ -2284,8 +2292,10 @@ function loop(ts) {
   if (!isBossActive) {
     distance += spd * 0.1;
     document.getElementById('shootBtn').style.display = 'none';
+    if (document.getElementById('missileBtn')) document.getElementById('missileBtn').style.display = 'none';
   } else {
     document.getElementById('shootBtn').style.display = 'flex';
+    if (document.getElementById('missileBtn')) document.getElementById('missileBtn').style.display = 'flex';
   }
   
   if (player.shootCooldown > 0) player.shootCooldown -= dt;
