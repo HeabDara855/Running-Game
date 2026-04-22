@@ -751,6 +751,11 @@ window.triggerVictory = function() {
   document.getElementById('giftPulse').classList.remove('hidden');
   document.getElementById('victoryGiftReward').classList.add('hidden');
   document.getElementById('victoryButtons').classList.add('hidden');
+  
+  // Victory FX
+  canvas.style.transition = 'filter 2s ease-out';
+  canvas.style.filter = 'blur(4px) brightness(1.2)';
+  screenShake = 60; // Big rumble!
 };
 
 function pauseGame() {
@@ -780,6 +785,8 @@ function goHome() {
 function startGame() {
   try {
     const W = canvas.gameW, H = canvas.gameH;
+    canvas.style.transition = 'none';
+    canvas.style.filter = 'none';
     player.x = W * .12; player.y = H * .4; player.vy = 0; player.vx = 0; player.rotation = 0; player.trail = []; player.onGround = false; player.exploded = false;
     player.laserAmmo = 10; player.missileAmmo = 5;
     obstacles = []; coins = []; pickups = []; heartPacks = []; particles = []; missiles = []; missileWarnings = [];
@@ -821,7 +828,7 @@ function startGame() {
 
 // ── MAIN LOOP ────────────────────────────────
 function loop(ts) {
-  if (state !== 'playing' && state !== 'dying') { loopRunning = false; return; }
+  if (state !== 'playing' && state !== 'dying' && state !== 'victory') { loopRunning = false; return; }
   const rawDt = ts - lastT; lastT = ts;
   const dt = Math.min(rawDt / TARGET_DT, 3);
   frame++;
@@ -843,6 +850,8 @@ function loop(ts) {
   if (state === 'dying') {
     player.deathSpeed *= 0.98;
     speed = player.deathSpeed;
+  } else if (state === 'victory') {
+    speed *= 0.98;
   } else {
     speed = (BASE_SPEED + speedAccel) * speedMult;
   }
@@ -897,6 +906,16 @@ function loop(ts) {
 
       player.deadTimer -= dt;
       if (player.deadTimer <= 0 && Math.abs(player.vx) < 1) gameOver();
+    } else if (state === 'victory') {
+      player.vy *= 0.9; // Smoothly stop vertical movement
+      
+      // Spawn massive background explosions!
+      if (Math.random() < 0.25) {
+        const W = canvas.gameW, H = canvas.gameH;
+        spawnP(Math.random() * W, Math.random() * (H * GROUND_RATIO), ['#ffaa00', '#ff0000', '#aaaaaa', '#ffffff', '#00f3ff', '#ff00ff'][Math.floor(Math.random() * 6)], 10 + Math.random()*20);
+        if (Math.random() < 0.1 && sfx.explode) sfx.explode();
+        screenShake = Math.max(screenShake, 5); // Keep shaking a bit
+      }
     } else if (isHolding && !startClickGuard) {
       player.vy += THRUST * dt;
       player.onGround = false;
