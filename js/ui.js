@@ -60,6 +60,17 @@ function renderSkins() {
   const unlockedList = currentTab === 'chars' ? d.unlockedSkins : (currentTab === 'jets' ? d.unlockedJets : (d.unlockedPets || ['none']));
   const selectedId = currentTab === 'chars' ? d.selectedSkin : (currentTab === 'jets' ? d.selectedJet : (d.selectedPet || 'none'));
 
+  if (currentTab === 'pets') {
+    list.innerHTML = `
+      <div style="margin-bottom: 20px; text-align: center; border: 1px solid rgba(255, 0, 255, 0.3); border-radius: 8px; padding: 10px; background: rgba(255, 0, 255, 0.05);">
+        <h2 style="color: #ff00ff; text-shadow: 0 0 10px rgba(255,0,255,0.5); font-size: 1.2rem; margin: 0 0 5px 0;">CYBER COMPANIONS (PETS)</h2>
+        <p style="font-size: 0.85rem; color: #aaa; margin: 0; line-height: 1.3;">
+          Unlock loyal, floating robotic pets that hover alongside you and fire advanced homing projectiles to assist in combat.
+        </p>
+      </div>
+    `;
+  }
+
   dataList.forEach(item => {
     const unlocked = unlockedList.includes(item.id);
     const active = selectedId === item.id;
@@ -84,7 +95,7 @@ function renderSkins() {
         style.innerHTML = `
           @keyframes pFloat { 0%,100% {transform: translateY(0px);} 50% {transform: translateY(-5px);} }
           @keyframes pTail { 0%,100% {transform: rotate(-10deg);} 50% {transform: rotate(20deg);} }
-          @keyframes pWing { 0%,100% {transform: rotateX(0deg);} 50% {transform: rotateX(60deg);} }
+          @keyframes pWing { 0%,100% {transform: rotate(-20deg);} 50% {transform: rotate(40deg);} }
           @keyframes pPulse { 0%,100% {opacity:0.4; transform:scale(0.8);} 50% {opacity:1; transform:scale(1.2);} }
         `;
         document.head.appendChild(style);

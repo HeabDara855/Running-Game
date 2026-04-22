@@ -196,6 +196,62 @@ function drawLabFloor(W, H, gY) {
       pl: 'rgba(0,0,0,0.5)', pGrain: '#5e1b1b',
       n1: '#2e0f0f', n2: 'rgba(255,100,100,0.2)',
       rp1: '#8c2626', rp2: '#a33030', rb1: '#6b1919'
+    },
+    neon_city: {
+      sL1: '#112233', sL2: '#224455', sC1: '#0a1a2a', sC2: '#112233', sX: '#1a0525', sh: '#0a1a2a',
+      dTop: '#ff00aa', dd1: '#cc0088', dd2: '#aa0066', dd3: '#880044', dd4: '#660033', dBot: '#330011',
+      dHi: '#ff66cc', dShad: '#220022', dSide1: '#5500aa', dSide2: '#220055',
+      pl: 'rgba(0,0,0,0.6)', pGrain: '#5500aa', n1: '#00ffff', n2: 'rgba(0,255,255,0.4)',
+      rp1: '#00ffff', rp2: '#55ffff', rb1: '#00aaaa'
+    },
+    cyber_wasteland: {
+      sL1: '#2a201b', sL2: '#3a2b22', sC1: '#1a1410', sC2: '#201610', sX: '#221a15', sh: '#2a201b',
+      dTop: '#d97f26', dd1: '#b6681b', dd2: '#915011', dd3: '#733f0b', dd4: '#522b05', dBot: '#2b1500',
+      dHi: '#f2a863', dShad: '#1f1000', dSide1: '#4a2f15', dSide2: '#2b1b0b',
+      pl: 'rgba(0,0,0,0.4)', pGrain: '#684523', n1: '#ff4400', n2: 'rgba(255,100,50,0.2)',
+      rp1: '#b6681b', rp2: '#d97f26', rb1: '#733f0b'
+    },
+    crystal_caverns: {
+      sL1: '#1b0c30', sL2: '#2b154a', sC1: '#120722', sC2: '#180a2b', sX: '#1b0c30', sh: '#2b154a',
+      dTop: '#a200ff', dd1: '#7a00cc', dd2: '#560099', dd3: '#3b006b', dd4: '#220042', dBot: '#110022',
+      dHi: '#cc66ff', dShad: '#0f001f', dSide1: '#490088', dSide2: '#1a0033',
+      pl: 'rgba(0,255,255,0.2)', pGrain: '#cc66ff', n1: '#00ffff', n2: 'rgba(0,255,255,0.6)',
+      rp1: '#7a00cc', rp2: '#a200ff', rb1: '#3b006b'
+    },
+    void_realm: {
+      sL1: '#050011', sL2: '#08001c', sC1: '#02000a', sC2: '#050011', sX: '#0a0022', sh: '#110033',
+      dTop: '#111111', dd1: '#1a1a1a', dd2: '#222222', dd3: '#1a1a1a', dd4: '#111111', dBot: '#000000',
+      dHi: '#333333', dShad: '#000000', dSide1: '#220044', dSide2: '#110022',
+      pl: 'rgba(255,0,255,0.4)', pGrain: '#110022', n1: '#ff00ff', n2: 'rgba(255,0,255,0.8)',
+      rp1: '#0a0022', rp2: '#110033', rb1: '#050011'
+    },
+    glitch_matrix: {
+      sL1: '#001a00', sL2: '#002a00', sC1: '#001100', sC2: '#001a00', sX: '#002200', sh: '#003300',
+      dTop: '#00ff00', dd1: '#00cc00', dd2: '#00aa00', dd3: '#008800', dd4: '#005500', dBot: '#002200',
+      dHi: '#ccffcc', dShad: '#001100', dSide1: '#004400', dSide2: '#001100',
+      pl: 'rgba(0,255,0,0.5)', pGrain: '#004400', n1: '#00ff00', n2: 'rgba(0,255,0,0.8)',
+      rp1: '#00aa00', rp2: '#00ff00', rb1: '#005500'
+    },
+    celestial_gates: {
+      sL1: '#ffcc00', sL2: '#ffdd44', sC1: '#b38f00', sC2: '#d4aa00', sX: '#ffcc00', sh: '#ffdd44',
+      dTop: '#ffffff', dd1: '#eeeeee', dd2: '#dddddd', dd3: '#cccccc', dd4: '#bbbbbb', dBot: '#aaaaaa',
+      dHi: '#ffffff', dShad: '#bbbbbb', dSide1: '#dddddd', dSide2: '#bbbbbb',
+      pl: 'rgba(255,215,0,0.5)', pGrain: '#ffdd44', n1: '#ffcc00', n2: 'rgba(255,255,255,0.9)',
+      rp1: '#ffcc00', rp2: '#ffdd44', rb1: '#d4aa00'
+    },
+    solar_flare: {
+      sL1: '#330000', sL2: '#440000', sC1: '#220000', sC2: '#330000', sX: '#441100', sh: '#551100',
+      dTop: '#ffdd00', dd1: '#ffaa00', dd2: '#ff6600', dd3: '#ee3300', dd4: '#aa1100', dBot: '#550000',
+      dHi: '#ffff66', dShad: '#330000', dSide1: '#aa2200', dSide2: '#550000',
+      pl: 'rgba(255,100,0,0.5)', pGrain: '#cc3300', n1: '#ffffee', n2: 'rgba(255,255,0,0.8)',
+      rp1: '#ffaa00', rp2: '#ffdd00', rb1: '#ee3300'
+    },
+    singularity_core: {
+      sL1: '#000000', sL2: '#111111', sC1: '#000000', sC2: '#0a0a0a', sX: '#000000', sh: '#222222',
+      dTop: '#00ffff', dd1: '#00ccff', dd2: '#0099ff', dd3: '#0066ff', dd4: '#0033ff', dBot: '#0000aa',
+      dHi: '#ffffff', dShad: '#000066', dSide1: '#0044bb', dSide2: '#002277',
+      pl: 'rgba(255,255,255,0.3)', pGrain: '#ffffff', n1: '#ffffff', n2: 'rgba(0,255,255,1)',
+      rp1: '#0099ff', rp2: '#00ffff', rb1: '#0033ff'
     }
   };
   const pal = palettes[curBiome] || palettes.bridge;
@@ -739,6 +795,401 @@ function drawBG_bridge() {
   }
 }
 
+// ── BIOME 7: NEON CITY ──
+function drawBG_neon_city() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  const skyG = ctx.createLinearGradient(0, 0, 0, gY);
+  skyG.addColorStop(0, '#050011'); skyG.addColorStop(1, '#220044');
+  ctx.fillStyle = skyG; ctx.fillRect(0, 0, W, gY);
+
+  // Distant skyscrapers
+  const citySp = sp * 0.15;
+  for (let i = 0; i < 40; i++) {
+    const cw = 40 + (i * 17) % 60;
+    const ch = 100 + (i * 31) % 250;
+    const cx = ((i * 123) % (W + 200)) - 100 - (citySp % (W + 200));
+    ctx.fillStyle = '#110022';
+    ctx.fillRect(cx, gY - ch, cw, ch);
+    // Neon outlines
+    ctx.strokeStyle = i % 2 === 0 ? '#ff00aa' : '#00ffff';
+    ctx.lineWidth = 1; ctx.strokeRect(cx, gY - ch, cw, ch);
+    // Windows
+    ctx.fillStyle = (i % 3 === 0) ? 'rgba(255,0,170,0.5)' : 'rgba(0,255,255,0.5)';
+    for (let wy = gY - ch + 10; wy < gY - 10; wy += 20) {
+      if (Math.sin(wy + i) > 0) ctx.fillRect(cx + 10, wy, cw - 20, 10);
+    }
+  }
+
+  // Flying cars
+  for (let i = 0; i < 8; i++) {
+    const fx = ((i * 311 + t * (2 + i * 0.5) - bgX * 1.5) % W + W) % W;
+    const fy = gY * 0.2 + (i * 83 % (gY * 0.5));
+    ctx.fillStyle = i % 2 === 0 ? '#ff0055' : '#00ffcc';
+    ctx.beginPath(); ctx.ellipse(fx, fy, 15, 4, 0, 0, Math.PI * 2); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.fillRect(fx - 5, fy - 1, 10, 2);
+    // Light trail
+    const tg = ctx.createLinearGradient(fx, fy, fx + 60, fy);
+    tg.addColorStop(0, i % 2 === 0 ? 'rgba(255,0,85,0.8)' : 'rgba(0,255,204,0.8)');
+    tg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = tg;
+    ctx.fillRect(fx, fy - 2, 60, 4);
+  }
+
+  drawLabFloor(W, H, gY, '#110022', '#220033', '#440055');
+}
+
+// ── BIOME 8: CYBER WASTELAND ──
+function drawBG_cyber_wasteland() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  const skyG = ctx.createLinearGradient(0, 0, 0, gY);
+  skyG.addColorStop(0, '#2a1a0a'); skyG.addColorStop(1, '#4a2a0a');
+  ctx.fillStyle = skyG; ctx.fillRect(0, 0, W, gY);
+
+  // Toxic smog rolling
+  ctx.save(); ctx.globalCompositeOperation = 'screen';
+  for (let i = 0; i < 3; i++) {
+    const fogOx = (bgX * (0.3 + i * 0.2) + t) % W;
+    const fg = ctx.createRadialGradient(W / 2 - fogOx + (i * W / 2), gY, 100, W / 2 - fogOx + (i * W / 2), gY, gY);
+    fg.addColorStop(0, 'rgba(200, 100, 0, 0.2)');
+    fg.addColorStop(1, 'rgba(0,0,0,0)');
+    ctx.fillStyle = fg; ctx.fillRect(0, 0, W, gY);
+  }
+  ctx.restore();
+
+  // Floating embers/ashes
+  ctx.fillStyle = '#ff6600';
+  for (let i = 0; i < 50; i++) {
+    const ax = ((i * 71 - bgX * 1.2 + t * (1 + i * 0.02)) % W + W) % W;
+    const ay = ((i * 113 - t * 1.5 + Math.sin(t * 0.02 + i) * 20) % gY + gY) % gY;
+    const size = 1 + (i % 3);
+    ctx.globalAlpha = 0.3 + Math.sin(t * 0.1 + i) * 0.5;
+    ctx.beginPath(); ctx.arc(ax, ay, size, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  // Ruined metal husks in BG
+  const huskSp = 400; const huskOx = (sp * 0.5) % huskSp;
+  ctx.fillStyle = '#1a0d05';
+  for (let i = -huskSp; i < W + huskSp; i += huskSp) {
+    const rx = i - huskOx;
+    ctx.beginPath(); ctx.moveTo(rx, gY); ctx.lineTo(rx + 60, gY - 120); ctx.lineTo(rx + 120, gY - 80); ctx.lineTo(rx + 150, gY); ctx.fill();
+  }
+
+  drawLabFloor(W, H, gY, '#2a1000', '#3a1a0a', '#1a0800');
+}
+
+// ── BIOME 9: CRYSTAL CAVERNS ──
+function drawBG_crystal_caverns() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  ctx.fillStyle = '#0a001a'; ctx.fillRect(0, 0, W, gY);
+
+  // Background Crystal Spikes
+  const cSp = 200, cOx = (sp * 0.4) % cSp;
+  for (let i = -cSp; i < W + cSp; i += 100) {
+    const cx = i - cOx;
+    const ch = 100 + Math.sin(i) * 50;
+    const cg = ctx.createLinearGradient(cx, gY - ch, cx, gY);
+    cg.addColorStop(0, '#aa00ff'); cg.addColorStop(1, '#220044');
+    ctx.fillStyle = cg;
+    ctx.beginPath(); ctx.moveTo(cx, gY); ctx.lineTo(cx + 30, gY - ch); ctx.lineTo(cx + 60, gY); ctx.fill();
+    // Inner bright facet
+    ctx.fillStyle = 'rgba(255,255,255,0.1)';
+    ctx.beginPath(); ctx.moveTo(cx + 20, gY); ctx.lineTo(cx + 30, gY - ch); ctx.lineTo(cx + 45, gY); ctx.fill();
+  }
+
+  // Floating crystalline dust
+  for (let i = 0; i < 60; i++) {
+    const dx = ((i * 87 - bgX * 0.8) % W + W) % W;
+    const dy = gY * 0.1 + (i * 41 % (gY * 0.8)) + Math.sin(t * 0.02 + i) * 15;
+    ctx.fillStyle = i % 2 === 0 ? '#00ffff' : '#ff00ff';
+    ctx.globalAlpha = 0.5 + 0.5 * Math.sin(t * 0.05 + i);
+    ctx.fillRect(dx, dy, 3, 3);
+  }
+  ctx.globalAlpha = 1;
+
+  drawLabFloor(W, H, gY, '#110022', '#220033', '#330055');
+}
+
+// ── BIOME 10: THE VOID REALM ──
+function drawBG_void_realm() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  ctx.fillStyle = '#02000a'; ctx.fillRect(0, 0, W, gY);
+
+  // Swirling galaxy core in background
+  ctx.save();
+  ctx.translate(W * 0.5, gY * 0.4);
+  ctx.rotate(t * 0.005);
+  const gg = ctx.createRadialGradient(0, 0, 0, 0, 0, W * 0.8);
+  gg.addColorStop(0, 'rgba(100, 0, 200, 0.4)');
+  gg.addColorStop(0.5, 'rgba(50, 0, 100, 0.1)');
+  gg.addColorStop(1, 'rgba(0,0,0,0)');
+  ctx.fillStyle = gg;
+  ctx.beginPath(); ctx.arc(0, 0, W * 0.8, 0, Math.PI * 2); ctx.fill();
+
+  // Galaxy arms
+  ctx.strokeStyle = 'rgba(200, 50, 255, 0.2)';
+  ctx.lineWidth = 15;
+  for (let a = 0; a < 4; a++) {
+    ctx.beginPath();
+    for (let r = 0; r < W * 0.6; r += 20) {
+      const angle = a * (Math.PI / 2) + r * 0.01;
+      const x = Math.cos(angle) * r; const y = Math.sin(angle) * r;
+      if (r === 0) ctx.moveTo(x, y); else ctx.lineTo(x, y);
+    }
+    ctx.stroke();
+  }
+  ctx.restore();
+
+  // Floating ancient glyphs
+  ctx.font = '24px sans-serif'; ctx.textAlign = 'center';
+  const runes = ['✧', '⎈', '✦', '⚝', '❂', '✺'];
+  for (let i = 0; i < 15; i++) {
+    const rx = ((i * 153 - bgX * 0.6) % W + W) % W;
+    const ry = gY * 0.2 + (i * 71 % (gY * 0.6)) + Math.sin(t * 0.01 + i) * 30;
+    ctx.fillStyle = `rgba(200, 100, 255, ${0.3 + 0.3 * Math.sin(t * 0.03 + i)})`;
+    ctx.fillText(runes[i % runes.length], rx, ry);
+  }
+
+  drawLabFloor(W, H, gY, '#050011', '#0a0022', '#110033');
+}
+
+// ── BIOME 11: CELESTIAL GATES ──
+function drawBG_celestial_gates() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+
+  // Holy Sky
+  const skyG = ctx.createLinearGradient(0, 0, 0, gY);
+  skyG.addColorStop(0, '#ffeebb'); skyG.addColorStop(1, '#ffd700');
+  ctx.fillStyle = skyG; ctx.fillRect(0, 0, W, gY);
+
+  // Background angelic rings
+  const ringSp = 600, ringOx = (sp * 0.2) % ringSp;
+  for (let i = -ringSp; i < W + ringSp; i += ringSp) {
+    const rx = i - ringOx;
+    ctx.save();
+    ctx.translate(rx + 300, gY * 0.2);
+    ctx.rotate(t * 0.005);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.4)';
+    ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.ellipse(0, 0, 150, 50, 0, 0, Math.PI * 2); ctx.stroke();
+    ctx.rotate(-t * 0.01);
+    ctx.beginPath(); ctx.ellipse(0, 0, 200, 80, Math.PI / 4, 0, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Golden majestic light shafts
+  ctx.save(); ctx.globalCompositeOperation = 'overlay';
+  for (let i = 0; i < 5; i++) {
+    const xl = (sp * 0.5 + i * 200) % W;
+    const shaftG = ctx.createLinearGradient(xl, 0, xl - 150, gY);
+    shaftG.addColorStop(0, 'rgba(255,255,255,0.8)');
+    shaftG.addColorStop(1, 'rgba(255,255,255,0)');
+    ctx.fillStyle = shaftG;
+    ctx.beginPath(); ctx.moveTo(xl, 0); ctx.lineTo(xl + 100, 0); ctx.lineTo(xl - 50, gY); ctx.lineTo(xl - 150, gY); ctx.fill();
+  }
+  ctx.restore();
+
+  // Passing clouds
+  for (let i = 0; i < 6; i++) {
+    const cx = ((i * 300 - bgX * 0.7) % (W + 400) + (W + 400)) % (W + 400) - 200;
+    const cy = 20 + i * 40;
+    ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+    ctx.beginPath();
+    ctx.arc(cx, cy, 30, 0, Math.PI * 2);
+    ctx.arc(cx + 30, cy - 15, 40, 0, Math.PI * 2);
+    ctx.arc(cx + 60, cy, 30, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  drawLabFloor(W, H, gY, '#ffdd44', '#ffcc00', '#ffffff');
+}
+
+// ── BIOME 10.5: GLITCH MATRIX (28,000m) ──
+function drawBG_glitch_matrix() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  ctx.fillStyle = '#000500'; ctx.fillRect(0, 0, W, gY);
+
+  // Digital Rain (Matrix style)
+  ctx.font = '14px monospace';
+  ctx.textAlign = 'center';
+  for (let i = 0; i < 60; i++) {
+    const rx = ((i * 123 - sp * (0.2 + (i % 3) * 0.1)) % W + W) % W;
+    let ry = ((t * (2 + i % 5) + i * 87) % gY + gY) % gY;
+
+    // Trail of fading characters
+    for (let c = 0; c < 8; c++) {
+      const cy = ry - c * 14;
+      if (cy < 0) continue;
+      // Corrupted letters/numbers
+      const char = String.fromCharCode(0x30A0 + Math.floor(Math.random() * 96));
+      const alpha = Math.max(0, 1 - (c * 0.15));
+      ctx.fillStyle = c === 0 ? `rgba(200, 255, 200, ${alpha})` : `rgba(0, 255, 0, ${alpha * 0.7})`;
+      ctx.fillText(char, rx, cy);
+    }
+  }
+
+  // Glitching background blocks (Corrupted geometry)
+  for (let i = 0; i < 15; i++) {
+    if (Math.random() > 0.9) {
+      const gx = Math.random() * W;
+      const gy = Math.random() * gY;
+      const gw = 10 + Math.random() * 200;
+      const gh = 5 + Math.random() * 80;
+
+      // Random chromatic aberration colors
+      ctx.fillStyle = Math.random() > 0.5 ? 'rgba(0, 255, 0, 0.15)' : (Math.random() > 0.5 ? 'rgba(255, 0, 255, 0.1)' : 'rgba(0, 255, 255, 0.1)');
+      ctx.fillRect(gx, gy, gw, gh);
+    }
+  }
+
+  // Scanline overlay
+  ctx.fillStyle = 'rgba(0, 20, 0, 0.3)';
+  for (let y = 0; y < gY; y += 4) {
+    ctx.fillRect(0, y, W, 2);
+  }
+
+  // Random entire screen jitter / chromatic split
+  if (Math.random() > 0.97) {
+    ctx.save();
+    ctx.globalCompositeOperation = 'difference';
+    ctx.fillStyle = '#00ff00';
+    ctx.fillRect(0, Math.random() * gY, W, 3 + Math.random() * 15);
+    ctx.restore();
+  }
+
+  drawLabFloor(W, H, gY, '#001a00', '#002a00', '#004400');
+}
+
+// ── BIOME 11.5: SOLAR FLARE (37,000m) ──
+function drawBG_solar_flare() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+
+  // Background gradient: Burning Sun Corona
+  const skyG = ctx.createLinearGradient(0, 0, 0, gY);
+  skyG.addColorStop(0, '#ffff00'); skyG.addColorStop(0.3, '#ff6600');
+  skyG.addColorStop(0.7, '#cc0000'); skyG.addColorStop(1, '#330000');
+  ctx.fillStyle = skyG; ctx.fillRect(0, 0, W, gY);
+
+  // Plasma rolling / convection cells (Sun Surface)
+  ctx.save(); ctx.globalCompositeOperation = 'overlay';
+  for (let i = 0; i < 8; i++) {
+    const cx = ((i * 300 - sp * 0.5) % (W + 400) + (W + 400)) % (W + 400) - 200;
+    const cy = gY * 0.8 + Math.sin(t * 0.02 + i) * 100;
+    const cr = 150 + Math.sin(t * 0.03 + i * 2) * 50;
+    const cg = ctx.createRadialGradient(cx, cy, 0, cx, cy, cr);
+    cg.addColorStop(0, 'rgba(255, 255, 100, 0.6)');
+    cg.addColorStop(1, 'rgba(255, 0, 0, 0)');
+    ctx.fillStyle = cg; ctx.beginPath(); ctx.arc(cx, cy, cr, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.restore();
+
+  // Majestic Solar Prominences (Giant arcs of fire)
+  const arcSp = 800;
+  const arcOx = (sp * 0.3) % arcSp;
+  for (let i = -arcSp; i < W + arcSp; i += arcSp) {
+    const ax = i - arcOx;
+    ctx.save();
+    ctx.translate(ax + 400, gY);
+    ctx.scale(1, 0.6 + 0.2 * Math.sin(t * 0.01)); // Pulsing height!
+    ctx.strokeStyle = 'rgba(255, 150, 0, 0.5)';
+    ctx.lineWidth = 20;
+    ctx.beginPath(); ctx.arc(0, 0, 250, Math.PI, Math.PI * 2); ctx.stroke();
+    ctx.strokeStyle = 'rgba(255, 255, 100, 0.8)';
+    ctx.lineWidth = 8;
+    ctx.beginPath(); ctx.arc(0, 0, 250, Math.PI, Math.PI * 2); ctx.stroke();
+    // Inner smaller arc
+    ctx.rotate(0.2);
+    ctx.strokeStyle = 'rgba(255, 50, 0, 0.4)';
+    ctx.lineWidth = 30;
+    ctx.beginPath(); ctx.arc(-50, 0, 180, Math.PI, Math.PI * 2); ctx.stroke();
+    ctx.restore();
+  }
+
+  // Floating extreme heat embers / plasma droplets
+  for (let i = 0; i < 60; i++) {
+    const px = ((i * 97 - sp * 0.8) % W + W) % W;
+    const py = gY - ((t * (3 + i % 4) + i * 17) % gY);
+    ctx.fillStyle = i % 3 === 0 ? '#ffffff' : (i % 2 === 0 ? '#ffff00' : '#ff0000');
+    const size = 1 + (i % 4);
+    ctx.globalAlpha = 0.5 + 0.5 * Math.random();
+    ctx.beginPath(); ctx.arc(px, py + Math.sin(t * 0.1 + i) * 15, size, 0, Math.PI * 2); ctx.fill();
+  }
+  ctx.globalAlpha = 1;
+
+  drawLabFloor(W, H, gY, '#330000', '#551100', '#cc3300');
+}
+
+// ── BIOME 12: SINGULARITY CORE ──
+function drawBG_singularity_core() {
+  const W = canvas.gameW, H = canvas.gameH, gY = H * GROUND_RATIO;
+  const t = frame, sp = bgX * 0.95;
+  ctx.fillStyle = '#000000'; ctx.fillRect(0, 0, W, gY);
+
+  // Reality warping grid
+  ctx.strokeStyle = 'rgba(0, 255, 255, 0.3)';
+  ctx.lineWidth = 1;
+  const gridSp = 50;
+  const gridOx = sp % gridSp;
+
+  // Verticals
+  for (let x = -gridSp; x < W + gridSp; x += gridSp) {
+    const rx = x - gridOx;
+    ctx.beginPath();
+    for (let y = 0; y <= gY; y += 20) {
+      // Massive sine wave distortion
+      const warpX = rx + Math.sin(y * 0.02 + t * 0.05) * 30 * Math.sin(rx * 0.01);
+      if (y === 0) ctx.moveTo(warpX, y); else ctx.lineTo(warpX, y);
+    }
+    ctx.stroke();
+  }
+
+  // Horizontals
+  const gridOy = (t * 1.5) % gridSp;
+  for (let y = -gridSp; y < gY + gridSp; y += gridSp) {
+    const ry = y + gridOy;
+    ctx.beginPath();
+    for (let x = 0; x <= W; x += 20) {
+      const warpY = ry + Math.cos(x * 0.02 + t * 0.05) * 30 * Math.cos(ry * 0.01);
+      if (x === 0) ctx.moveTo(x, warpY); else ctx.lineTo(x, warpY);
+    }
+    ctx.stroke();
+  }
+
+  // Black Holes spawning in background
+  ctx.save();
+  for (let i = 0; i < 3; i++) {
+    const bx = ((i * 600 - bgX * 0.4) % (W + 800) + (W + 800)) % (W + 800) - 400;
+    const by = gY * 0.5 + Math.sin(t * 0.01 + i) * 100;
+
+    // Accretion disk
+    ctx.translate(bx, by);
+    ctx.rotate(t * 0.05);
+    ctx.strokeStyle = '#00ffff'; ctx.lineWidth = 4;
+    ctx.beginPath(); ctx.ellipse(0, 0, 120 + Math.sin(t * 0.1) * 10, 30, 0, 0, Math.PI * 2); ctx.stroke();
+    // Inner Event Horizon
+    ctx.rotate(-t * 0.05);
+    ctx.fillStyle = '#000000';
+    ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.fill();
+    // Eclipse glow
+    ctx.shadowColor = '#0066ff'; ctx.shadowBlur = 40;
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 50, 0, Math.PI * 2); ctx.stroke();
+    ctx.shadowBlur = 0;
+    ctx.translate(-bx, -by);
+  }
+  ctx.restore();
+
+  drawLabFloor(W, H, gY, '#000000', '#0a0a0a', '#00ffff');
+}
+
 // ── DISPATCHER ──
 function drawBG() {
   switch (curBiome) {
@@ -748,6 +1199,14 @@ function drawBG() {
     case 'mountain': drawBG_mountain(); break;
     case 'ocean': drawBG_ocean(); break;
     case 'bridge': drawBG_bridge(); break;
+    case 'neon_city': drawBG_neon_city(); break;
+    case 'cyber_wasteland': drawBG_cyber_wasteland(); break;
+    case 'crystal_caverns': drawBG_crystal_caverns(); break;
+    case 'void_realm': drawBG_void_realm(); break;
+    case 'glitch_matrix': drawBG_glitch_matrix(); break;
+    case 'celestial_gates': drawBG_celestial_gates(); break;
+    case 'solar_flare': drawBG_solar_flare(); break;
+    case 'singularity_core': drawBG_singularity_core(); break;
   }
 }
 

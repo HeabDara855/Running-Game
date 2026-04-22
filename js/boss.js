@@ -30,13 +30,43 @@ function spawnBoss(bossType) {
       hp: gameMode === 'pro' ? 240 : 120, maxHp: gameMode === 'pro' ? 240 : 120, phase: 0, shootTimer: 25, shootInterval: gameMode === 'pro' ? 30 : 60, bossIdx: 3,
       entered: false, defeated: false, retreating: false, t: 0, wingFrame: 0
     };
-  } else {
-    // Annihilator at 19000m (Final Boss)
+  } else if (bossType === 5) {
+    // Annihilator at 19000m
     boss = {
       type: 'annihilator', x: W + 150, y: gY * 0.4, targetX: W * 0.6, w: 120, h: 120,
       hp: gameMode === 'pro' ? 320 : 160, maxHp: gameMode === 'pro' ? 320 : 160, phase: 0, shootTimer: 50, shootInterval: gameMode === 'pro' ? 50 : 90, bossIdx: 4,
       entered: false, defeated: false, retreating: false, t: 0, orbitalAngle: 0
     };
+  } else if (bossType === 6) {
+    // Dreadnought (15,000m)
+    boss = {
+      type: 'dreadnought', x: W + 200, y: gY * 0.4, targetX: W * 0.65, w: 140, h: 80,
+      hp: gameMode === 'pro' ? 400 : 200, maxHp: gameMode === 'pro' ? 400 : 200, phase: 0, shootTimer: 60, shootInterval: gameMode === 'pro' ? 60 : 100, bossIdx: 5,
+      entered: false, defeated: false, retreating: false, t: 0
+    };
+  } else if (bossType === 7) {
+    // Voidweaver (25,000m)
+    boss = {
+      type: 'voidweaver', x: W + 150, y: gY * 0.3, targetX: W * 0.7, w: 130, h: 100,
+      hp: gameMode === 'pro' ? 500 : 250, maxHp: gameMode === 'pro' ? 500 : 250, phase: 0, shootTimer: 55, shootInterval: gameMode === 'pro' ? 55 : 95, bossIdx: 6,
+      entered: false, defeated: false, retreating: false, t: 0, spinPhase: 0
+    };
+  } else if (bossType === 8) {
+    // Celestial Seraph (35,000m)
+    boss = {
+      type: 'celestial', x: W + 120, y: gY * 0.35, targetX: W * 0.6, w: 150, h: 150,
+      hp: gameMode === 'pro' ? 600 : 300, maxHp: gameMode === 'pro' ? 600 : 300, phase: 0, shootTimer: 45, shootInterval: gameMode === 'pro' ? 45 : 85, bossIdx: 7,
+      entered: false, defeated: false, retreating: false, t: 0, wingGlow: 0
+    };
+    player.missileAmmo += 5; // Care package!
+  } else if (bossType === 9) {
+    // The Singularity God Engine (50,000m)
+    boss = {
+      type: 'singularity', x: W + 200, y: gY * 0.4, targetX: W * 0.55, w: 180, h: 180,
+      hp: gameMode === 'pro' ? 1000 : 500, maxHp: gameMode === 'pro' ? 1000 : 500, phase: 0, shootTimer: 40, shootInterval: gameMode === 'pro' ? 40 : 70, bossIdx: 8,
+      entered: false, defeated: false, retreating: false, t: 0, ringRotation: 0
+    };
+    player.missileAmmo += 15; // +10 originally, user requested +5 more! (15 total)
   }
   banner = { text: '⚠️ BOSS INCOMING ⚠️', timer: 150 }; window.banner = banner;
   startMusic('boss_' + boss.type);
@@ -51,20 +81,7 @@ function updateBoss(dt, spd) {
     if (boss.x <= boss.targetX) { boss.entered = true; boss.x = boss.targetX; }
     return;
   }
-  // Retreating
-  if (boss.retreating) {
-    boss.x += spd * 3;
-    boss.y -= 1.5 * dt;
-    if (boss.x > canvas.gameW + 200) {
-      boss = null;
-      startMusic(curBiome); // Revert to regular biome music
-      banner = { text: '🏆 BOSS DEFEATED! 🏆', timer: 200 }; window.banner = banner;
-      // Reward
-      runCoins += 25; sfx.coin();
-      for (let i = 0; i < 40; i++) spawnP(canvas.gameW * 0.5, canvas.gameH * 0.4, ['#FFD700', '#ff6600', '#00ffaa', '#ff44cc'][i % 4], 1);
-    }
-    return;
-  }
+  // Retreating logic removed — Bosses now explode instantly.
   // Boss no longer drains HP over time — player must physically shoot them to win!
   // boss.hp -= dt * (boss.type === 'annihilator' ? 1.8 : boss.type === 'overlord' ? 1.5 : boss.type === 'warden' ? 1.2 : 1.0);
   // Dynamic vertical movement: Sentinel sweeps aggressively but stays visible
@@ -74,6 +91,16 @@ function updateBoss(dt, spd) {
   } else if (boss.type === 'annihilator' && !boss.retreating) {
     boss.y = (gY * 0.45 + Math.sin(boss.t * 0.02) * gY * 0.4); // Huge sweeping vertical hover
     boss.x = boss.targetX + Math.cos(boss.t * 0.01) * 60; // Sweeping horizontal
+  } else if (boss.type === 'dreadnought' && !boss.retreating) {
+    boss.y = (gY * 0.65 + Math.sin(boss.t * 0.03) * gY * 0.1); // Tank base
+  } else if (boss.type === 'voidweaver' && !boss.retreating) {
+    boss.y = (gY * 0.3 + Math.sin(boss.t * 0.02) * gY * 0.3); // High sweeping
+    boss.x = boss.targetX + Math.sin(boss.t * 0.015) * 80;
+  } else if (boss.type === 'celestial' && !boss.retreating) {
+    boss.y = (gY * 0.4 + Math.sin(boss.t * 0.04) * 40); // Fast tight bobbing
+  } else if (boss.type === 'singularity' && !boss.retreating) {
+    boss.y = (gY * 0.4 + Math.sin(boss.t * 0.015) * gY * 0.35); // Majestic sweeping
+    boss.x = boss.targetX + Math.sin(boss.t * 0.008) * 100;
   } else if (!boss.retreating) {
     boss.y = (gY * 0.2 + Math.sin(boss.t * 0.02) * gY * 0.25); // Regular hover for other bosses
   }
@@ -156,14 +183,66 @@ function updateBoss(dt, spd) {
         });
       });
       sfx.missileLaunch();
+    } else if (boss.type === 'dreadnought') {
+      const bs = gameMode === 'pro' ? 8.0 : 5.5; // Significantly boosted speed
+      const dx = player.x - (boss.x - 50);
+      const dy = player.y - boss.y;
+      const targetAngle = Math.atan2(dy, dx);
+      
+      // Massive tracking volley: 5 plasma javelins targeting player's precise altitude
+      [-0.15, -0.08, 0, 0.08, 0.15].forEach(offset => {
+        const angle = targetAngle + offset;
+        enemyBullets.push({ x: boss.x - 50, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 16, life: 1, btype: 'dreadnought_laser' });
+      });
+      sfx.laser();
+    } else if (boss.type === 'voidweaver') {
+      const bs = gameMode === 'pro' ? 4.5 : 3.0;
+      [-0.4, 0, 0.4].forEach(offset => {
+        const angle = Math.PI + offset + Math.sin(boss.t * 0.05) * 0.5;
+        enemyBullets.push({ x: boss.x - 50, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 16, life: 1, btype: 'void_web' });
+      });
+      sfx.missileLaunch();
+    } else if (boss.type === 'celestial') {
+      const bs = gameMode === 'pro' ? 5.0 : 3.5;
+      [-0.6, -0.3, 0, 0.3, 0.6].forEach(offset => {
+        const angle = Math.PI + offset;
+        enemyBullets.push({ x: boss.x - 30, y: boss.y - 20, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 10, life: 1, btype: 'celestial_blade' });
+      });
+      sfx.laser();
+    } else if (boss.type === 'singularity') {
+      const bs = gameMode === 'pro' ? 6.0 : 4.5;
+      for (let i=0; i<8; i++) {
+        const angle = Math.PI + (i * 0.2) + Math.cos(boss.t * 0.02) * 1.5;
+        enemyBullets.push({ x: boss.x - 60, y: boss.y, vx: Math.cos(angle) * bs, vy: Math.sin(angle) * bs, r: 20, life: 1, btype: 'black_hole' });
+      }
+      sfx.missileLaunch();
     }
   }
   // Check defeated
   if (boss.hp <= 0) {
-    boss.defeated = true; boss.retreating = true;
-    const idx = boss.bossIdx !== undefined ? boss.bossIdx : (boss.type === 'sentinel' ? 0 : boss.type === 'warden' ? 1 : 2);
+    boss.defeated = true;
+    const idx = boss.bossIdx !== undefined ? boss.bossIdx : 0;
     bossDefeated[idx] = true;
-    sfx.hit(); spawnP(boss.x, boss.y, '#ffaa00', 30);
+    sfx.hit(); 
+    
+    // Massive Explosion
+    for (let i = 0; i < 100; i++) {
+       spawnP(boss.x + (Math.random()-0.5)*boss.w, boss.y + (Math.random()-0.5)*boss.h, ['#ffaa00', '#ff0000', '#aaaaaa', '#ffffff', '#00f3ff'][i % 5], 4 + Math.random()*5);
+    }
+    
+    const isSingularity = boss.type === 'singularity';
+    if (isSingularity) {
+      if (typeof window.triggerVictory === 'function') window.triggerVictory();
+    } else {
+      startMusic(curBiome); // Revert to regular biome music
+      banner = { text: '🏆 BOSS DEFEATED! 🏆', timer: 200 }; window.banner = banner;
+      runCoins += 25; 
+    }
+    
+    sfx.coin();
+    for (let i = 0; i < 40; i++) spawnP(boss.x, boss.y, ['#FFD700', '#ff6600', '#00ffaa', '#ff44cc'][i % 4], 2);
+    
+    boss = null;
   }
 }
 
@@ -368,6 +447,127 @@ function drawBoss() {
     ctx.restore();
 
     ctx.shadowBlur = 0;
+  } else if (b.type === 'dreadnought') {
+    // DREADNOUGHT TANK (15,000m)
+    const scale = 3.0;
+    ctx.scale(scale, scale);
+    ctx.translate(0, Math.sin(t * 0.1) * 2); // heavy bobbing
+    
+    // Treads
+    ctx.fillStyle = '#111116';
+    ctx.fillRect(-22, 10, 44, 8);
+    for(let i=-20; i<20; i+=6) {
+      ctx.fillStyle = '#444';
+      ctx.beginPath(); ctx.arc(i, 14, 2, 0, Math.PI*2); ctx.fill();
+    }
+    
+    // Heavy Chassis
+    const bg = ctx.createLinearGradient(0, -10, 0, 10);
+    bg.addColorStop(0, '#552222'); bg.addColorStop(1, '#220000');
+    ctx.fillStyle = bg;
+    ctx.beginPath(); ctx.moveTo(-25, 12); ctx.lineTo(-20, -12); ctx.lineTo(20, -12); ctx.lineTo(25, 12); ctx.fill();
+    ctx.strokeStyle = '#ff2200'; ctx.lineWidth = 1; ctx.stroke();
+    
+    // Main Plasma Cannons
+    ctx.fillStyle = '#441111';
+    ctx.fillRect(-35, -8, 20, 6);
+    ctx.fillRect(-35, 4, 20, 6);
+    
+    ctx.shadowColor = '#ff0000'; ctx.shadowBlur = 15;
+    ctx.fillStyle = '#ff2200';
+    ctx.beginPath(); ctx.arc(-35, -5, 3, 0, Math.PI*2); ctx.fill();
+    ctx.beginPath(); ctx.arc(-35, 7, 3, 0, Math.PI*2); ctx.fill();
+    
+    // Core Eye
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(-10, 0, 4, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+  } else if (b.type === 'voidweaver') {
+    // VOID WEAVER (25,000m)
+    const scale = 3.0;
+    ctx.scale(scale, scale);
+    b.spinPhase += 0.05;
+    ctx.translate(0, Math.sin(t * 0.1) * 3);
+    
+    ctx.shadowColor = '#aa00ff'; ctx.shadowBlur = 25;
+    
+    // Rotating geometric spider legs
+    ctx.strokeStyle = '#aa00ff'; ctx.lineWidth = 4;
+    for(let i=0; i<8; i++){
+      const angle = b.spinPhase + i * Math.PI / 4;
+      ctx.beginPath(); 
+      ctx.moveTo(0, 0);
+      ctx.lineTo(Math.cos(angle)*15, Math.sin(angle)*15);
+      ctx.lineTo(Math.cos(angle-0.5)*30, Math.sin(angle-0.5)*30);
+      ctx.stroke();
+    }
+    
+    // Dark matter Core
+    ctx.fillStyle = '#1a0033';
+    ctx.beginPath(); ctx.arc(0, 0, 15, 0, Math.PI*2); ctx.fill();
+    ctx.fillStyle = '#ffffff';
+    ctx.beginPath(); ctx.arc(0, 0, 5 + Math.sin(t*0.2)*2, 0, Math.PI*2); ctx.fill();
+    ctx.shadowBlur = 0;
+
+  } else if (b.type === 'celestial') {
+    // CELESTIAL SERAPH (35,000m)
+    const scale = 3.5;
+    ctx.scale(scale, scale);
+    b.wingGlow = Math.abs(Math.sin(t * 0.05));
+    ctx.translate(0, Math.sin(t * 0.1) * 2);
+
+    ctx.shadowColor = '#ffd700'; ctx.shadowBlur = 20 + b.wingGlow * 15;
+    
+    // Hardlight Wings
+    ctx.fillStyle = `rgba(255, 215, 0, ${0.3 + b.wingGlow * 0.4})`;
+    // Top wing
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(15, -40, 40, -10); ctx.quadraticCurveTo(20, -5, 0, 0); ctx.fill();
+    // Bottom wing
+    ctx.beginPath(); ctx.moveTo(0, 0); ctx.quadraticCurveTo(15, 40, 40, 10); ctx.quadraticCurveTo(20, 5, 0, 0); ctx.fill();
+    
+    // Core Entity
+    ctx.fillStyle = '#ffffff';
+    ctx.shadowColor = '#ffffff';
+    ctx.beginPath(); ctx.arc(0, 0, 8, 0, Math.PI*2); ctx.fill();
+    
+    // Halo
+    ctx.strokeStyle = '#ffd700'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.ellipse(-5, -15, 12, 4, -0.2, 0, Math.PI*2); ctx.stroke();
+    
+    ctx.shadowBlur = 0;
+
+  } else if (b.type === 'singularity') {
+    // THE SINGULARITY (FINAL BOSS 50,000m)
+    const scale = 4.0;
+    ctx.scale(scale, scale);
+    b.ringRotation += 0.02;
+    ctx.translate(0, Math.sin(t * 0.05) * 4);
+    
+    // Accretion disk rings
+    ctx.lineWidth = 3;
+    for(let i=1; i<=4; i++){
+      ctx.shadowColor = i%2===0 ? '#ff00ff' : '#00f3ff';
+      ctx.shadowBlur = 15;
+      ctx.strokeStyle = i%2===0 ? '#ff00ff' : '#00f3ff';
+      ctx.save();
+      ctx.rotate(b.ringRotation * (i%2===0 ? 1 : -1.5) * i);
+      ctx.beginPath(); ctx.ellipse(0, 0, 20 + i*10, 6 + i*2, 0, 0, Math.PI*2); ctx.stroke();
+      
+      // Floating runes/nodes on the rings
+      ctx.fillStyle = '#ffffff';
+      ctx.beginPath(); ctx.arc(20 + i*10, 0, 2, 0, Math.PI*2); ctx.fill();
+      ctx.restore();
+    }
+    
+    // Black hole core (eats light)
+    ctx.shadowBlur = 0;
+    ctx.fillStyle = '#000000';
+    ctx.beginPath(); ctx.arc(0, 0, 15 + Math.sin(t*0.2)*2, 0, Math.PI*2); ctx.fill();
+    
+    // Event horizon rim
+    ctx.strokeStyle = '#ffffff'; ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.arc(0, 0, 15 + Math.sin(t*0.2)*2, 0, Math.PI*2); ctx.stroke();
   }
   ctx.restore();
   // Health bar
@@ -390,10 +590,18 @@ function drawBossHP() {
   // Glow on bar
   ctx.fillStyle = 'rgba(255,255,255,0.2)'; ctx.fillRect(bx, by, barW * ratio, barH / 2);
   // Boss name
-  const bossName = boss.type === 'sentinel' ? '🎯 SENTINEL TURRET' : boss.type === 'warden' ? '🤖 WARDEN MECH' : '🚁 OVERLORD GUNSHIP';
-  ctx.fillStyle = '#ffcc00'; ctx.font = 'bold 14px sans-serif'; ctx.textAlign = 'center';
-  ctx.shadowColor = '#ff6600'; ctx.shadowBlur = 8;
+  let bossName = '';
+  if (boss.type === 'sentinel') bossName = '🎯 SENTINEL TURRET';
+  else if (boss.type === 'warden') bossName = '🤖 WARDEN MECH';
+  else if (boss.type === 'overlord') bossName = '🚁 OVERLORD GUNSHIP';
+  else if (boss.type === 'annihilator') bossName = '👁️ THE ANNIHILATOR';
+  else if (boss.type === 'dreadnought') bossName = '🚂 DREADNOUGHT TANK';
+  else if (boss.type === 'voidweaver') bossName = '🕸️ VOID WEAVER';
+  else if (boss.type === 'celestial') bossName = '✨ CELESTIAL SERAPH';
+  else if (boss.type === 'singularity') bossName = '🌌 THE SINGULARITY';
+  
+  ctx.fillStyle = '#ffffff'; ctx.font = 'bold 16px sans-serif'; ctx.textAlign = 'center';
+  ctx.shadowColor = barColor; ctx.shadowBlur = 10;
   ctx.fillText(bossName, W / 2, by - 8);
   ctx.shadowBlur = 0;
-}
-
+}

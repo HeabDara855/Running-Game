@@ -65,7 +65,15 @@ const BIOMES = [
   { id: 'forest', label: '🏛️ God Valley', minDist: 2000 },
   { id: 'city', label: '⚔️ Secret Catacombs', minDist: 3000 },
   { id: 'mountain', label: '🌋 Volcanic Depths', minDist: 4000 },
-  { id: 'ocean', label: '🐉 Dragon\'s Peak', minDist: 5000 }
+  { id: 'ocean', label: '🐉 Dragon\'s Peak', minDist: 5000 },
+  { id: 'neon_city', label: '🌃 Neon Outskirts', minDist: 7000 },
+  { id: 'cyber_wasteland', label: '☢️ Cyber Wasteland', minDist: 15000 },
+  { id: 'crystal_caverns', label: '💠 Crystal Caverns', minDist: 19000 },
+  { id: 'void_realm', label: '🌌 The Void Realm', minDist: 25000 },
+  { id: 'glitch_matrix', label: '📟 Glitch Matrix', minDist: 28000 },
+  { id: 'celestial_gates', label: '✨ Celestial Gates', minDist: 35000 },
+  { id: 'solar_flare', label: '☀️ Solar Flare', minDist: 37000 },
+  { id: 'singularity_core', label: '🌀 Singularity Core', minDist: 50000 }
 ];
 function getBiome(d) { let b = BIOMES[0]; for (const bi of BIOMES) if (d >= bi.minDist) b = bi; return b.id; }
 function checkBiome() {
@@ -149,6 +157,44 @@ document.getElementById('diffProBtn').addEventListener('click', e => {
 document.getElementById('homeBtn').addEventListener('click', e => {
   e.stopPropagation(); goHome();
 });
+
+// Victory Mechanics
+document.getElementById('victoryGiftBox').addEventListener('click', e => {
+  e.stopPropagation();
+  // Open gift!
+  sfx.tada();
+  document.getElementById('victoryGiftBox').style.pointerEvents = 'none'; // disable clicks
+  document.getElementById('giftEmoji').textContent = '🌟';
+  document.getElementById('giftPulse').classList.add('hidden');
+  document.getElementById('victoryGiftReward').classList.remove('hidden');
+  
+  // Award 15k!
+  runCoins += 15000;
+  addCoins(15000);
+  
+  // Show buttons
+  document.getElementById('victoryButtons').classList.remove('hidden');
+  
+  // If pro mode, hide "Next Level to Pro" button
+  if (gameMode === 'pro') {
+    document.getElementById('victoryNextLevelBtn').style.display = 'none';
+  } else {
+    document.getElementById('victoryNextLevelBtn').style.display = 'inline-block';
+  }
+});
+document.getElementById('victoryNextLevelBtn').addEventListener('click', e => {
+  e.stopPropagation();
+  gameMode = 'pro';
+  document.getElementById('victoryScreen').classList.add('hidden');
+  startClickGuard = true; setTimeout(() => startClickGuard = false, 150);
+  startGame();
+});
+document.getElementById('victoryHomeBtn').addEventListener('click', e => {
+  e.stopPropagation(); 
+  document.getElementById('victoryScreen').classList.add('hidden');
+  goHome();
+});
+
 document.getElementById('muteBtn').addEventListener('click', e => {
   e.stopPropagation();
   const isMuted = toggleMute(state);
@@ -686,6 +732,27 @@ function gameOver() {
   document.getElementById('hud').classList.add('hidden');
 }
 
+window.triggerVictory = function() {
+  state = 'victory'; 
+  stopMusic(); stopJetpackSound(); 
+  if (sfx.yay) sfx.yay();
+  
+  // Score calc
+  score = Math.floor(distance) + runCoins * 5;
+  const best = getBestScore();
+  addScore(score); addCoins(runCoins);
+  
+  document.getElementById('hud').classList.add('hidden');
+  document.getElementById('victoryScreen').classList.remove('hidden');
+  
+  // Reset gift elements
+  document.getElementById('victoryGiftBox').style.pointerEvents = 'auto';
+  document.getElementById('giftEmoji').textContent = '🎁';
+  document.getElementById('giftPulse').classList.remove('hidden');
+  document.getElementById('victoryGiftReward').classList.add('hidden');
+  document.getElementById('victoryButtons').classList.add('hidden');
+};
+
 function pauseGame() {
   state = 'paused'; stopMusic(); stopJetpackSound();
   document.getElementById('pauseScreen').classList.remove('hidden');
@@ -724,15 +791,24 @@ function startGame() {
 
     score = 0; distance = 0; runCoins = 0; frame = 0;
     hearts = gameMode === 'pro' ? 3 : 5;
-    BASE_SPEED = gameMode === 'pro' ? 6 : 5;
+    BASE_SPEED = gameMode === 'pro' ? 5.5 : 5;
     invincible = 0;
     activePU = null; puTimer = 0; shieldActive = false; bgX = 0;
-    boss = null; bossDefeated = [false, false, false, false, false]; bossWarning = 0;
+    boss = null; bossDefeated = new Array(9).fill(false); bossWarning = 0;
     graceFrames = 60;
     curBiome = 'bridge'; window.curBiome = 'bridge';
     banner = { text: '', timer: 0 }; window.banner = banner;
     speed = BASE_SPEED; updateHearts(); updateHUD(); updatePUBar();
     for (let i = 0; i < 3; i++) spawnCoinPattern();
+    
+    // Immediately spawn the new enemies at the very start to demonstrate them!
+    if (typeof spawnEnemy !== 'undefined') {
+      spawnEnemy('walker');
+      if (enemies.length > 0) enemies[enemies.length - 1].x = W + 50;
+      spawnEnemy('scorpion');
+      if (enemies.length > 0) enemies[enemies.length - 1].x = W + 400;
+    }
+    
     document.getElementById('startScreen').classList.add('hidden');
     document.getElementById('gameOverScreen').classList.add('hidden');
     document.getElementById('hud').classList.remove('hidden');
@@ -754,15 +830,15 @@ function loop(ts) {
   // Phase-based difficulty (Flattens out endgame to prevent impossibility)
   let speedAccel;
   if (gameMode === 'pro') {
-    if (distance < 2000) speedAccel = distance * 0.0008;
-    else if (distance < 4000) speedAccel = 1.6 + (distance - 2000) * 0.0018;
-    else if (distance < 9000) speedAccel = 5.2 + (distance - 4000) * 0.0012;
-    else speedAccel = 11.2 + (distance - 9000) * 0.0005;
+    if (distance < 2000) speedAccel = distance * 0.0008; // 1.6
+    else if (distance < 4000) speedAccel = 1.6 + (distance - 2000) * 0.0012; // 4.0
+    else if (distance < 9000) speedAccel = 4.0 + (distance - 4000) * 0.0007; // 7.5
+    else speedAccel = 7.5; // Flatline at 7.5 max
   } else {
-    if (distance < 2000) speedAccel = distance * 0.0005;
-    else if (distance < 4000) speedAccel = 1.0 + (distance - 2000) * 0.0010;
-    else if (distance < 9000) speedAccel = 3.0 + (distance - 4000) * 0.0008;
-    else speedAccel = 7.0 + (distance - 9000) * 0.0003;
+    if (distance < 2000) speedAccel = distance * 0.0005; // 1.0
+    else if (distance < 4000) speedAccel = 1.0 + (distance - 2000) * 0.0010; // 3.0
+    else if (distance < 9000) speedAccel = 3.0 + (distance - 4000) * 0.0009; // 7.5
+    else speedAccel = 7.5; // Flatline at 7.5 max
   }
   if (state === 'dying') {
     player.deathSpeed *= 0.98;
@@ -905,7 +981,11 @@ function loop(ts) {
   if (!boss && distance >= 4000 && !bossDefeated[0]) spawnBoss(1); // Sentinel Turret at 4000m (index 0)
   if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m (index 2)
   if (!boss && distance >= 12000 && !bossDefeated[3]) spawnBoss(4); // Supreme Overlord at 12000m (index 3)
+  if (!boss && distance >= 15000 && !bossDefeated[5]) spawnBoss(6); // Dreadnought at 15000m (index 5)
   if (!boss && distance >= 19000 && !bossDefeated[4]) spawnBoss(5); // Annihilator at 19000m (index 4)
+  if (!boss && distance >= 25000 && !bossDefeated[6]) spawnBoss(7); // Void Weaver at 25000m (index 6)
+  if (!boss && distance >= 35000 && !bossDefeated[7]) spawnBoss(8); // Celestial Seraph at 35000m (index 7)
+  if (!boss && distance >= 50000 && !bossDefeated[8]) spawnBoss(9); // Singularity Final Boss at 50000m (index 8)
   // ── PHASE-BASED SPAWNING ──
   let si, enemyChance, missileChance;
   if (gameMode === 'pro') {
@@ -954,9 +1034,9 @@ function loop(ts) {
   for (let c of coins) { if (c.x > maxCoinX) maxCoinX = c.x; }
   if (state === 'playing' && maxCoinX < canvas.gameW - 100 && frame % 60 === 0 && !bossActive) spawnCoinPattern();
 
-  if (state === 'playing' && frame % 200 === 0) spawnPickup();
-  // Heart packs: spawn every ~300 frames, only when player has lost hearts (now up to 5 hearts max)
-  if (state === 'playing' && frame % 300 === 0 && hearts < 5) spawnHeartPack();
+  if (state === 'playing' && frame % 140 === 0) spawnPickup();
+  // Heart packs: spawn every ~180 frames, only when player has lost hearts (now up to 5 hearts max)
+  if (state === 'playing' && frame % 180 === 0 && hearts < 5) spawnHeartPack();
   // Ultimate packs: rare, every ~400 frames, only after 500m
   if (state === 'playing' && frame % 400 === 0 && distance > 500 && Math.random() < 0.8) spawnUltimatePack();
 
@@ -1055,9 +1135,9 @@ function loop(ts) {
     const baseMult = gameMode === 'pro' ? 1.0 : 0.5;
     const moveSpeed = (e.type === 'chopper' ? spd * 0.25 : e.type === 'spinning_robot' ? spd * 0.35 : spd * 0.3) * baseMult;
     e.x -= moveSpeed;
-    // Movement: all enemies hover now
-    e.hoverPhase += (e.hoverSpeed || 0.01) * dt;
-    e.y = e.baseY + Math.sin(e.hoverPhase) * (e.hoverAmp || 8);
+    // Movement: all enemies hover now (unless explicitly set to 0)
+    e.hoverPhase += (e.hoverSpeed !== undefined ? e.hoverSpeed : 0.01) * dt;
+    e.y = e.baseY + Math.sin(e.hoverPhase) * (e.hoverAmp !== undefined ? e.hoverAmp : 8);
     if (e.flash > 0) e.flash -= dt;
     // Shooting (randomized timing)
     e.shootTimer -= dt;
@@ -1065,7 +1145,7 @@ function loop(ts) {
       // Add random delay so shooting is unpredictable
       e.shootTimer = e.shootInterval * (0.7 + Math.random() * 0.8);
       e.shotCount = (e.shotCount || 0) + 1;
-      const btype = e.type === 'standard' ? 'laser_beam' : e.type === 'chopper' ? 'fireball' : undefined;
+      const btype = e.type === 'standard' ? 'laser_beam' : e.type === 'chopper' ? 'fireball' : e.type === 'walker' ? 'walker_plasma' : e.type === 'scorpion' ? 'scorpion_venom' : undefined;
       spawnEnemyBullet(e.x, e.y, btype);
     }
     drawEnemyByType(e);
