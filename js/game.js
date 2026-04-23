@@ -38,6 +38,7 @@ let shieldActive = false;
 let graceFrames = 0, lastT = 0, loopRunning = false;
 // Boss system
 let boss = null, bossDefeated = [false, false, false, false, false], bossWarning = 0;
+let finalBossWarningTriggered = false;
 let isHolding = false, startClickGuard = false;
 let curBiome = 'bridge'; window.curBiome = curBiome;
 let banner = { text: '', timer: 0 }; window.banner = banner;
@@ -801,7 +802,7 @@ function startGame() {
     BASE_SPEED = gameMode === 'pro' ? 5.5 : 5;
     invincible = 0;
     activePU = null; puTimer = 0; shieldActive = false; bgX = 0;
-    boss = null; bossDefeated = new Array(9).fill(false); bossWarning = 0;
+    boss = null; bossDefeated = new Array(9).fill(false); bossWarning = 0; finalBossWarningTriggered = false;
     graceFrames = 60;
     curBiome = 'bridge'; window.curBiome = 'bridge';
     banner = { text: '', timer: 0 }; window.banner = banner;
@@ -996,6 +997,12 @@ function loop(ts) {
   else { player.onGround = false; }
 
   // ── BOSS SPAWNING ──
+  if (distance >= 42000 && !finalBossWarningTriggered) {
+    finalBossWarningTriggered = true;
+    banner = { text: '⚠️ THE FINAL BOSS IS COMING ⚠️', timer: 250 }; window.banner = banner;
+    if (sfx.warning) sfx.warning();
+  }
+
   if (!boss && distance >= 2000 && !bossDefeated[1]) spawnBoss(2); // Warden Mech at 2000m (index 1)
   if (!boss && distance >= 4000 && !bossDefeated[0]) spawnBoss(1); // Sentinel Turret at 4000m (index 0)
   if (!boss && distance >= 6000 && !bossDefeated[2]) spawnBoss(3); // Overlord Gunship at 6000m (index 2)
